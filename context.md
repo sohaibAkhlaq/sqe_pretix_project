@@ -366,11 +366,14 @@ sqe_project/
 ## 7. Confirmed Project Parameters & Instructor Query Strategy
 
 ### 7.1. Confirmed Project Settings
-1. **Team Composition:** 3 Members:
-   - **24i-3108 (Sohaib)** — Member 1 (Area A: Static Analysis, White-box, Mutation, CI)
-   - **24i-3107 (M. Hasaam)** — Member 2 (Area B: API Testing, Data Generation, Performance)
-   - **24i-3074 (Shaiman)** — Member 3 (Area C: Use Cases, E2E Playwright, Usability, A11y, Security)
-2. **Execution Environment:** Docker Desktop on Windows.
+1. **Team Composition (3 Members):**
+   - **Sohaib (24i-3108):** Member 1 (Area A: Static Analysis, White-box, Mutation, CI)
+     - GitHub: `sohaibAkhlaq` (`sohaibakhlaq@users.noreply.github.com`)
+   - **M. Hasaam (24i-3107):** Member 2 (Area B: API Testing, Data Generation, Performance)
+     - GitHub: `M-Hasaam` (`m.hasaam.official@gmail.com`)
+   - **Shaiman (24i-3074):** Member 3 (Area C: Use Cases, E2E Playwright, Usability, A11y, Security)
+     - GitHub: `ShaimanQasir` (`shaiman.qasir.official@gmail.com`)
+2. **Execution Environment:** Docker Desktop on Windows (Engine 29.9.3).
 3. **Static Analysis & Gate Platform:** SonarCloud (official cloud platform for SonarQube with GitHub Actions PR gate integration).
 
 ### 7.2. Course Instructor Inquiries (Phase 0, Step 2 Analysis & Email Template)
