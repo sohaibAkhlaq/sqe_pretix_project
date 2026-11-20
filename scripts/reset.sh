@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # SE3002 Software Quality Engineering - Database Reset Script
 # Purges transient order mutations and restores the database to identical seeded state
+# Empirically verifies reset idempotency via dual execution.
 
 set -euo pipefail
 
@@ -11,7 +12,14 @@ echo "========================================================"
 echo "SE3002 SQE Pretix Reset: Restoring State to Clean Seed"
 echo "========================================================"
 
-# Purge and re-seed
-"$SCRIPT_DIR/seed.sh"
+if [ -f "$PROJECT_ROOT/.venv/Scripts/python.exe" ]; then
+    PYTHON_BIN="$PROJECT_ROOT/.venv/Scripts/python.exe"
+elif [ -f "$PROJECT_ROOT/.venv/bin/python" ]; then
+    PYTHON_BIN="$PROJECT_ROOT/.venv/bin/python"
+else
+    PYTHON_BIN="python"
+fi
 
-echo "System state reset successfully verified."
+"$PYTHON_BIN" "$SCRIPT_DIR/reset.py" --verify-idempotency
+
+echo "System state reset and idempotency successfully verified."
