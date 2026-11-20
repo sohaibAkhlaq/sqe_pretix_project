@@ -1,0 +1,20 @@
+{
+  "suite": "SE3002 pretix Playwright E2E Suite",
+  "phase": "Phase 5 (Gate 5)",
+  "duration_seconds": 9.2,
+  "status": "PASS",
+  "timestamp": "2026-11-20T15:04:54Z",
+  "screenshots_captured": [
+    "01_cart_checkout_step.png",
+    "02_order_placed_confirmation.png",
+    "03_storefront_inventory.png",
+    "04_control_panel_orders.png",
+    "05_auditor_dashboard.png"
+  ],
+  "test_modules": [
+    "tests/team/e2e/test_customer_order_flow.py",
+    "tests/team/e2e/test_sold_out_ui_flow.py",
+    "tests/team/e2e/test_organizer_control_panel_flow.py",
+    "tests/team/e2e/test_auditor_access_control_ui.py"
+  ]
+}
