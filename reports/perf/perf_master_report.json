@@ -3,14 +3,14 @@
     "title": "SE3002 Performance, Concurrency & Fault Recovery Audit",
     "author": "M. Hasaam (24i-3107)",
     "gate": "gate-9",
-    "timestamp": "2026-11-20T20:41:41Z",
+    "timestamp": "2026-11-20T20:56:45Z",
     "target": "pretix v2026.9.3 on Docker Desktop Windows"
   },
   "baseline_profile": {
     "description": "1 Virtual User, 30s steady state read path",
     "sla_p95_ms_target": 500.0,
-    "measured_p95_ms": 92.3,
-    "measured_avg_ms": 38.44,
+    "measured_p95_ms": 72.79,
+    "measured_avg_ms": 38.26,
     "measured_error_rate": 0,
     "throughput_rps": 3.46,
     "total_requests": 104,
@@ -19,10 +19,10 @@
   "concurrency_profile": {
     "description": "5 Concurrent VUs competing for finite quota",
     "sla_error_rate_500_target": 0.0,
-    "measured_p95_ms": 111.12,
-    "measured_avg_ms": 50.3,
-    "throughput_rps": 9.04,
-    "total_requests": 280,
+    "measured_p95_ms": 149.39,
+    "measured_avg_ms": 54.28,
+    "throughput_rps": 8.89,
+    "total_requests": 276,
     "race_condition_prevented": true,
     "status": "PASSED"
   },
@@ -30,7 +30,7 @@
     "target_service": "pretix_redis",
     "fault_type": "Unexpected Process Termination (SIGKILL)",
     "rto_sla_target_seconds": 15.0,
-    "measured_rto_seconds": 0.66,
+    "measured_rto_seconds": 0.67,
     "data_integrity_verified": true,
     "status": "PASSED"
   },

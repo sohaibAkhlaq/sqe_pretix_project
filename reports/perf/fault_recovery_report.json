@@ -5,7 +5,7 @@
   "recovery_mechanism": "Automated Service Restoral",
   "pre_fault_status": "HTTP 200 OK",
   "recovery_time_objective_target_seconds": 15.0,
-  "measured_rto_seconds": 0.66,
+  "measured_rto_seconds": 0.67,
   "recovery_attempts": 1,
   "data_integrity_verified": true,
   "status": "PASSED"
