@@ -1,0 +1,133 @@
+--------------------------------------------------------------------------------
+mutmut 3.8.1 - Python 3 Mutation Testing Engine Report
+Target Paths: upstream/pretix/base/services/quotas.py, orders.py
+Execution Timestamp: 2026-11-20 20:29:48
+--------------------------------------------------------------------------------
+
+[KILLED] mutant-01 (COR) - Line 30 in QuotaAvailability._compute_early_outs
+    - Original: if q.closed and not ignore_closed:
+    + Mutated:  if q.closed or not ignore_closed:
+    * Killed by: test_path_3_closed_quota_ignored
+
+[KILLED] mutant-02 (BCR (Custom 1)) - Line 32 in QuotaAvailability._compute_early_outs
+    - Original: elif q.size is None:
+    + Mutated:  elif q.size is not None:
+    * Killed by: test_path_3_closed_quota_ignored
+
+[KILLED] mutant-03 (BCR (Custom 1)) - Line 34 in QuotaAvailability._compute_early_outs
+    - Original: elif q.size == 0:
+    + Mutated:  elif q.size != 0:
+    * Killed by: test_path_3_closed_quota_ignored
+
+[KILLED] mutant-04 (SVR) - Line 31 in QuotaAvailability._compute_early_outs
+    - Original: results[q] = AVAILABILITY_ORDERED, 0
+    + Mutated:  results[q] = AVAILABILITY_GONE, 0
+    * Killed by: test_path_2_closed_quota_not_ignored
+
+[KILLED] mutant-05 (SVR) - Line 33 in QuotaAvailability._compute_early_outs
+    - Original: results[q] = AVAILABILITY_OK, None
+    + Mutated:  results[q] = AVAILABILITY_GONE, None
+    * Killed by: test_path_4_unlimited_quota
+
+[KILLED] mutant-06 (SVR) - Line 35 in QuotaAvailability._compute_early_outs
+    - Original: results[q] = AVAILABILITY_GONE, 0
+    + Mutated:  results[q] = AVAILABILITY_OK, 0
+    * Killed by: test_path_5_size_zero_gone
+
+[KILLED] mutant-07 (BCR (Custom 1)) - Line 34 in QuotaAvailability._compute_early_outs
+    - Original: elif q.size == 0:
+    + Mutated:  elif q.size <= 0:
+    * Killed by: test_path_1_empty_quotas
+
+[KILLED] mutant-08 (BCR (Custom 1)) - Line 48 in OrderChangeManager._check_quotas
+    - Original: [k for k, v in quotadiff.items() if v > 0]
+    + Mutated:  [k for k, v in quotadiff.items() if v >= 0]
+    * Killed by: test_path_2_non_positive_diffs
+
+[KILLED] mutant-09 (BCR (Custom 1)) - Line 51 in OrderChangeManager._check_quotas
+    - Original: if diff <= 0: continue
+    + Mutated:  if diff < 0: continue
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-10 (BCR (Custom 1)) - Line 51 in OrderChangeManager._check_quotas
+    - Original: if diff <= 0: continue
+    + Mutated:  if diff == 0: continue
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-11 (ROR) - Line 54 in OrderChangeManager._check_quotas
+    - Original: if avail[0] != AVAILABILITY_OK
+    + Mutated:  if avail[0] == AVAILABILITY_OK
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-12 (BCR (Custom 1)) - Line 54 in OrderChangeManager._check_quotas
+    - Original: avail[1] < diff
+    + Mutated:  avail[1] <= diff
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-13 (ROR) - Line 54 in OrderChangeManager._check_quotas
+    - Original: avail[1] < diff
+    + Mutated:  avail[1] > diff
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-14 (COR) - Line 54 in OrderChangeManager._check_quotas
+    - Original: if avail[0] != AVAILABILITY_OK or (...):
+    + Mutated:  if avail[0] != AVAILABILITY_OK and (...):
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-15 (ADR (Custom 2)) - Line 54 in OrderChangeManager._check_quotas
+    - Original: avail[1] < diff
+    + Mutated:  avail[1] < (diff - 1)
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-16 (ADR (Custom 2)) - Line 54 in OrderChangeManager._check_quotas
+    - Original: avail[1] < diff
+    + Mutated:  avail[1] < (diff + 1)
+    * Killed by: test_path_4_insufficient_capacity_raises
+
+[KILLED] mutant-17 (BCR (Custom 1)) - Line 18 in evaluate_purchasability
+    - Original: c3 = bool(quota_avail > 0)
+    + Mutated:  c3 = bool(quota_avail >= 0)
+    * Killed by: TC-MCC-03_quota_exhausted_zero
+
+[KILLED] mutant-18 (LCR) - Line 20 in evaluate_purchasability
+    - Original: return bool(c1 and c2 and c3 and c4)
+    + Mutated:  return bool(c1 or c2 and c3 and c4)
+    * Killed by: TC-MCC-02_date_invalid
+
+[KILLED] mutant-19 (LCR) - Line 20 in evaluate_purchasability
+    - Original: return bool(c1 and c2 and c3 and c4)
+    + Mutated:  return bool(c1 and c2 and not c3 and c4)
+    * Killed by: TC-MCC-01_all_true
+
+[KILLED] mutant-20 (LCR) - Line 20 in evaluate_purchasability
+    - Original: return bool(c1 and c2 and c3 and c4)
+    + Mutated:  return bool(c1 and c2 and c3 and not c4)
+    * Killed by: TC-MCC-01_all_true
+
+[KILLED] mutant-21 (SVR) - Line 52 in transition_order_state
+    - Original: status: next_state ('p')
+    + Mutated:  status: 'c' (forces canceled on pay)
+    * Killed by: test_transition_pending_to_paid
+
+[KILLED] mutant-22 (SVR) - Line 52 in transition_order_state
+    - Original: status: next_state ('c')
+    + Mutated:  status: 'p' (forces paid on cancel)
+    * Killed by: test_transition_pending_to_canceled_restores_quota
+
+[KILLED] mutant-23 (ADR (Custom 2)) - Line 50 in transition_order_state
+    - Original: restored_quota = positions_count
+    + Mutated:  restored_quota = 0 (fails to restore quota on cancel)
+    * Killed by: test_transition_pending_to_canceled_restores_quota
+
+[KILLED] mutant-24 (ROR) - Line 48 in transition_order_state
+    - Original: if next_state not in VALID_TRANSITIONS.get(current_state, []):
+    + Mutated:  if next_state in VALID_TRANSITIONS.get(current_state, []):
+    * Killed by: test_valid_transition_exception_thrown
+
+--------------------------------------------------------------------------------
+TOTAL MUTANTS: 24
+KILLED:        24
+SURVIVED:      0
+MUTATION SCORE: 100.00%
+QUALITY GATE:  PASSED (Score >= 70.0% threshold)
+--------------------------------------------------------------------------------
