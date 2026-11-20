@@ -1,0 +1,155 @@
+{
+  "timestamp": "2026-11-20T13:53:39Z",
+  "spike": "Spike 2 - Idempotency-Key, Quota Availability Readback, Order Cancellation",
+  "steps": [
+    {
+      "step": "initial_quota",
+      "data": {
+        "paid_orders": 0,
+        "pending_orders": 2,
+        "exited_orders": 0,
+        "blocking_vouchers": 0,
+        "cart_positions": 0,
+        "waiting_list": 2,
+        "available_number": 8,
+        "available": true,
+        "total_size": 10
+      }
+    },
+    {
+      "step": "order_creation_1",
+      "idempotency_key": "85fa2362-df94-4a93-9db5-575c4123a4bb",
+      "status_code": 201,
+      "order_code": "HL3SS",
+      "order_status": "n"
+    },
+    {
+      "step": "post_order_quota",
+      "data": {
+        "paid_orders": 0,
+        "pending_orders": 3,
+        "exited_orders": 0,
+        "blocking_vouchers": 0,
+        "cart_positions": 0,
+        "waiting_list": 3,
+        "available_number": 7,
+        "available": true,
+        "total_size": 10
+      }
+    },
+    {
+      "step": "order_creation_repeated_idempotency",
+      "idempotency_key": "85fa2362-df94-4a93-9db5-575c4123a4bb",
+      "status_code": 201,
+      "order_code": "HL3SS"
+    },
+    {
+      "step": "post_repeat_quota",
+      "data": {
+        "paid_orders": 0,
+        "pending_orders": 3,
+        "exited_orders": 0,
+        "blocking_vouchers": 0,
+        "cart_positions": 0,
+        "waiting_list": 3,
+        "available_number": 7,
+        "available": true,
+        "total_size": 10
+      }
+    },
+    {
+      "step": "cancel_order",
+      "status_code": 200,
+      "response": {
+        "code": "HL3SS",
+        "event": "sqe2026",
+        "status": "c",
+        "testmode": false,
+        "secret": "o87jzahmyg7e4m0i",
+        "email": "customer@example.com",
+        "phone": null,
+        "locale": "en",
+        "datetime": "2026-11-20T13:53:39.738164Z",
+        "expires": "2026-12-04T23:59:59Z",
+        "payment_date": null,
+        "payment_provider": null,
+        "fees": [],
+        "total": "50.00",
+        "tax_rounding_mode": "line",
+        "comment": "",
+        "custom_followup_at": null,
+        "invoice_address": null,
+        "positions": [
+          {
+            "id": 3,
+            "order": "HL3SS",
+            "positionid": 1,
+            "item": 1,
+            "variation": null,
+            "price": "50.00",
+            "attendee_name": "Test Attendee",
+            "attendee_name_parts": {
+              "_legacy": "Test Attendee"
+            },
+            "company": null,
+            "street": null,
+            "zipcode": null,
+            "city": null,
+            "country": null,
+            "state": null,
+            "discount": null,
+            "attendee_email": null,
+            "voucher": null,
+            "tax_rate": "0.00",
+            "tax_value": "0.00",
+            "secret": "8s3fkbyp6cqaab4cphd5g38wfqa9em42",
+            "addon_to": null,
+            "subevent": null,
+            "checkins": [],
+            "print_logs": [],
+            "downloads": [],
+            "answers": [],
+            "tax_rule": null,
+            "pseudonymization_id": "VBXAPRBLMY",
+            "seat": null,
+            "canceled": false,
+            "tax_code": null,
+            "valid_from": null,
+            "valid_until": null,
+            "blocked": null,
+            "voucher_budget_use": null,
+            "plugin_data": {}
+          }
+        ],
+        "downloads": [],
+        "checkin_attention": false,
+        "checkin_text": null,
+        "last_modified": "2026-11-20T13:53:41.665006Z",
+        "payments": [],
+        "refunds": [],
+        "require_approval": false,
+        "sales_channel": "web",
+        "url": "http://localhost:8000/sqe/sqe2026/order/HL3SS/o87jzahmyg7e4m0i/",
+        "customer": null,
+        "valid_if_pending": false,
+        "api_meta": {},
+        "cancellation_date": "2026-11-20T13:53:41.664607Z",
+        "plugin_data": {}
+      }
+    },
+    {
+      "step": "post_cancel_quota",
+      "data": {
+        "paid_orders": 0,
+        "pending_orders": 2,
+        "exited_orders": 0,
+        "blocking_vouchers": 0,
+        "cart_positions": 0,
+        "waiting_list": 2,
+        "available_number": 8,
+        "available": true,
+        "total_size": 10
+      }
+    }
+  ]
+}

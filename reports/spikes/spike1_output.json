@@ -1,0 +1,148 @@
+{
+  "timestamp": "2026-11-20T13:53:35Z",
+  "spike": "Spike 1 - Install, Migrate, User Roles, Seeded Records",
+  "endpoints_checked": [
+    {
+      "endpoint": "/organizers/sqe/",
+      "status": 200,
+      "response": {
+        "name": "SE3002 Quality Engineering Org",
+        "slug": "sqe",
+        "public_url": "http://localhost:8000/sqe/",
+        "plugins": []
+      }
+    },
+    {
+      "endpoint": "/organizers/sqe/events/sqe2026/",
+      "status": 200,
+      "response": {
+        "name": {
+          "en": "SQE International Conference 2026"
+        },
+        "slug": "sqe2026",
+        "live": true,
+        "testmode": false,
+        "currency": "EUR",
+        "date_from": "2026-12-20T13:45:16.351581Z",
+        "date_to": "2026-12-22T13:45:16.351674Z",
+        "date_admission": null,
+        "is_public": true,
+        "presale_start": null,
+        "presale_end": null,
+        "location": null,
+        "geo_lat": null,
+        "geo_lon": null,
+        "has_subevents": false,
+        "meta_data": {},
+        "seating_plan": null,
+        "plugins": [],
+        "seat_category_mapping": {},
+        "timezone": "UTC",
+        "item_meta_properties": {},
+        "valid_keys": {
+          "pretix_sig1": []
+        },
+        "all_sales_channels": true,
+        "limit_sales_channels": [],
+        "public_url": "http://localhost:8000/sqe/sqe2026/",
+        "sales_channels": [
+          "web"
+        ]
+      }
+    },
+    {
+      "endpoint": "/items/1/",
+      "status": 200,
+      "response": {
+        "id": 1,
+        "category": null,
+        "name": {
+          "en": "Conference Admission Ticket"
+        },
+        "internal_name": null,
+        "active": true,
+        "all_sales_channels": true,
+        "limit_sales_channels": [],
+        "description": null,
+        "default_price": "50.00",
+        "free_price": false,
+        "free_price_suggestion": null,
+        "tax_rate": "0.00",
+        "tax_rule": null,
+        "admission": false,
+        "personalized": false,
+        "position": 0,
+        "picture": null,
+        "available_from": null,
+        "available_from_mode": "hide",
+        "available_until": null,
+        "available_until_mode": "hide",
+        "require_voucher": false,
+        "hide_without_voucher": false,
+        "allow_cancel": true,
+        "require_bundling": false,
+        "min_per_order": null,
+        "max_per_order": null,
+        "checkin_attention": false,
+        "checkin_text": null,
+        "has_variations": false,
+        "variations": [],
+        "addons": [],
+        "bundles": [],
+        "program_times": [],
+        "original_price": null,
+        "require_approval": false,
+        "generate_tickets": null,
+        "show_quota_left": null,
+        "hidden_if_available": null,
+        "hidden_if_item_available": null,
+        "hidden_if_item_available_mode": "hide",
+        "allow_waitinglist": true,
+        "issue_giftcard": false,
+        "meta_data": {},
+        "require_membership": false,
+        "require_membership_types": [],
+        "require_membership_hidden": false,
+        "grant_membership_type": null,
+        "grant_membership_duration_like_event": true,
+        "grant_membership_duration_days": 0,
+        "grant_membership_duration_months": 0,
+        "validity_mode": null,
+        "validity_fixed_from": null,
+        "validity_fixed_until": null,
+        "validity_dynamic_duration_minutes": null,
+        "validity_dynamic_duration_hours": null,
+        "validity_dynamic_duration_days": null,
+        "validity_dynamic_duration_months": null,
+        "validity_dynamic_start_choice": false,
+        "validity_dynamic_start_choice_day_limit": null,
+        "media_policy": null,
+        "media_type": null,
+        "sales_channels": [
+          "web"
+        ]
+      }
+    },
+    {
+      "endpoint": "/quotas/1/availability/",
+      "status": 200,
+      "response": {
+        "paid_orders": 0,
+        "pending_orders": 2,
+        "exited_orders": 0,
+        "blocking_vouchers": 0,
+        "cart_positions": 0,
+        "waiting_list": 2,
+        "available_number": 8,
+        "available": true,
+        "total_size": 10
+      }
+    },
+    {
+      "role_check": "Auditor Read-Only",
+      "view_orders_status": 200,
+      "mutate_items_status": 403,
+      "permission_enforced": true
+    }
+  ]
+}
