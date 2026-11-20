@@ -36,6 +36,13 @@ jobs:
           radon cc -s -a tests/team/unit/
           radon mi -s tests/team/unit/
 
+      - name: "SonarQube / SonarCloud Quality Gate Scan"
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
+
       - name: "Gate 2: White-Box Unit Tests & Branch Coverage Gate (Threshold >= 80%)"
         run: |
           echo "======================================================================="

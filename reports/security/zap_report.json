@@ -1,7 +1,7 @@
 {
   "@programName": "OWASP ZAP Baseline Scanner (Emulated Engine)",
   "@version": "2.14.0",
-  "generated": "Fri, 20 Nov 2026 20:55:25",
+  "generated": "Fri, 20 Nov 2026 21:08:52",
   "site": [
     {
       "@name": "http://localhost:8345",

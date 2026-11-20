@@ -1,9 +1,9 @@
 {
   "suite": "SE3002 pretix Usability & Accessibility Suite",
   "phase": "Phase 6 (Gate 6)",
-  "duration_seconds": 9.41,
+  "duration_seconds": 7.13,
   "status": "PASS",
-  "timestamp": "2026-11-20T15:54:17Z",
+  "timestamp": "2026-11-20T16:08:22Z",
   "screenshots_captured": [
     "01_keyboard_tab_focus.png",
     "02_login_remediation_before.png",

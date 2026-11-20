@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-20T20:55:22.063223",
+  "timestamp": "2026-11-20T21:08:50.227678",
   "tool": "pip-audit 2.10.1",
   "target": "requirements-test.txt",
   "dependencies_scanned": 48,
