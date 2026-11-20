@@ -27,7 +27,7 @@ done
 
 if [ "$RETRY_COUNT" -eq "$MAX_RETRIES" ]; then
     echo "Warning: Healthcheck endpoint did not respond, checking root URL..."
-    curl -I http://localhost:8345/ || true
+    curl -I http://localhost:8345/
 fi
 
 echo "Pretix container services successfully started!"
