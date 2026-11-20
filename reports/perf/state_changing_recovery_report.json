@@ -1,0 +1,15 @@
+{
+  "test_id": "TC-STATE-RECOVERY-01",
+  "operation": "POST /api/v1/organizers/sqe/events/sqe2026/orders/",
+  "state_changing": true,
+  "simulated_failure": "pretix_redis container stopped mid-flight",
+  "pre_failure_quota": 10,
+  "post_failure_unrestored_orders": 0,
+  "recovery_time_seconds": 0.48,
+  "retry_status_code": 201,
+  "order_code": "UTCMD",
+  "post_recovery_quota": 9,
+  "idempotent_replay_code": "UTCMD",
+  "total_duplicate_records": 0,
+  "status": "PASSED"
+}

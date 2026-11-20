@@ -1,0 +1,152 @@
+{
+    "metrics": {
+        "http_req_receiving": {
+            "avg": 0.15094358974358973,
+            "min": 0,
+            "med": 0,
+            "max": 6.9676,
+            "p(90)": 0.54065,
+            "p(95)": 0.605475
+        },
+        "data_sent": {
+            "count": 360728,
+            "rate": 5972.99479713056
+        },
+        "checks": {
+            "passes": 1404,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_failed": {
+            "passes": 458,
+            "fails": 478,
+            "value": 0.4893162393162393
+        },
+        "iteration_duration": {
+            "med": 596.4182000000001,
+            "max": 3363.0423,
+            "p(90)": 723.7251699999999,
+            "p(95)": 774.202575,
+            "avg": 643.3852260683765,
+            "min": 553.0289
+        },
+        "http_req_duration": {
+            "p(90)": 110.6448,
+            "p(95)": 147.324275,
+            "avg": 70.95016485042737,
+            "min": 23.8374,
+            "med": 47.455,
+            "max": 2731.9315,
+            "thresholds": {
+                "p(95)<1000": false
+            }
+        },
+        "http_req_blocked": {
+            "p(95)": 0,
+            "avg": 0.13982126068376066,
+            "min": 0,
+            "med": 0,
+            "max": 24.7628,
+            "p(90)": 0
+        },
+        "http_req_sending": {
+            "max": 1.2634,
+            "p(90)": 0,
+            "p(95)": 0.506875,
+            "avg": 0.0387375,
+            "min": 0,
+            "med": 0
+        },
+        "http_req_waiting": {
+            "p(95)": 146.529575,
+            "avg": 70.76048376068373,
+            "min": 22.5088,
+            "med": 47.3923,
+            "max": 2731.9315,
+            "p(90)": 110.3669
+        },
+        "http_reqs": {
+            "count": 936,
+            "rate": 15.498445172302135
+        },
+        "http_req_failed{status_5xx:true}": {
+            "passes": 0,
+            "fails": 0,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_tls_handshaking": {
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0
+        },
+        "data_received": {
+            "count": 492263,
+            "rate": 8150.9734143728265
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 44.34895,
+            "max": 2731.9315,
+            "p(90)": 103.06703,
+            "p(95)": 153.712815,
+            "avg": 77.60095188284517,
+            "min": 23.8374
+        },
+        "iterations": {
+            "count": 468,
+            "rate": 7.749222586151068
+        },
+        "http_req_connecting": {
+            "avg": 0.010917307692307691,
+            "min": 0,
+            "med": 0,
+            "max": 2.2472,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "vus_max": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        },
+        "vus": {
+            "value": 5,
+            "min": 5,
+            "max": 5
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "read status is 200": {
+                    "path": "::read status is 200",
+                    "id": "30e618622b67ff6ebde6cb3c197f8eef",
+                    "passes": 468,
+                    "fails": 0,
+                    "name": "read status is 200"
+                },
+                "expected status 201 or 400": {
+                    "id": "277c5523dddf96fd2d402f3c11dbaee7",
+                    "passes": 468,
+                    "fails": 0,
+                    "name": "expected status 201 or 400",
+                    "path": "::expected status 201 or 400"
+                },
+                "no internal server error 500": {
+                    "name": "no internal server error 500",
+                    "path": "::no internal server error 500",
+                    "id": "5f826efd3bad95d0b698e4ab3467cff7",
+                    "passes": 468,
+                    "fails": 0
+                }
+            }
+    }
+}

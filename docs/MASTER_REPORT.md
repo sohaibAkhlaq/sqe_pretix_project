@@ -299,20 +299,36 @@ Configured `.github/workflows/pr-gate.yml` and demonstrated in `docs/ci-gate-dem
 
 ## 10. Performance, Concurrency & Fault Recovery (Area 2: M. Hasaam)
 
-### 10.1 Load & Concurrency Profiles
-* **Baseline Read Profile (1 VU, 30s):**
-  - $p95$ Latency: **$92.30\text{ ms}$** (SLA target: $< 500\text{ ms}$).
-  - Error Rate: **$0.00\%$** (104/104 requests successful).
-* **Concurrency Stress Profile (5 VUs, 30s, 280 attempts):**
-  - Quota Invariant: Exactly 10 orders accepted ($10 = 10$ capacity limit), 130 rejected with HTTP 400 (Quota Full).
-  - Overselling Count: **0 tickets oversold** ($Q_{\text{final}} = 0$). Zero HTTP 500 errors.
+### 10.1 Target Operation Selection & SLA Limit Justification
+* **Selected Operation:** Quota Availability Check (`GET /api/v1/organizers/sqe/events/sqe2026/quotas/1/availability/`) and Order Creation (`POST /api/v1/organizers/sqe/events/sqe2026/orders/`) from **Workflow A (Order Placement)**.
+* **Pre-Set Response-Time Limit:** $p95 \le 500\text{ ms}$ (95% of requests must complete within 0.5 seconds).
+* **Pre-Set Failure Limit:** Unexpected failure rate $< 1.0\%$ (fewer than 1 in 100 requests may fail unexpectedly with HTTP 500 or network drops).
+* **Engineering Justification:** Storefront event ticketing is a real-time, high-stakes domain subject to flash-crowd traffic. According to industry web usability standards (Nielsen Norman Group and Google Core Web Vitals), sub-500ms latency ensures an instantaneous user experience and prevents user drop-off during peak ticket rushes. The $<1.0\%$ unexpected failure limit guarantees high transaction reliability and prevents inventory desynchronization.
 
-### 10.2 Infrastructure Fault Injection & Chaos Recovery
-* Terminated `pretix_redis` container mid-flight.
-* Fault contained without database corruption or web process crash.
-* Restarted Redis container; measured Recovery Time Objective (RTO):
-  $$\text{Measured RTO} = 0.66\text{ seconds} \quad (\text{Target: } < 15.0\text{ seconds})$$
-* Post-recovery data integrity verified 100% intact.
+### 10.2 Dual 60-Second Grafana k6 OSS Benchmark Runs
+Executed using **Grafana k6 OSS v2.2.0** (`tests/team/perf/load_baseline_60s.js` and `tests/team/perf/load_concurrency_60s.js`). Each setup was executed twice for at least 60 seconds on the identical machine build, with a complete database reset (`scripts/reset.py`) executed before every run to ensure deterministic starting data (Quota = 10, Orders = 0):
+
+| Workload Setup | Run # | Duration | Total Requests | Completed RPS | $p95$ Latency | Avg Latency | Unexpected Failures | SLA Status |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Setup 1 (1 VU)** | Run 1 | 60.0s | 167 | 2.78 req/s | **87.71 ms** | 58.77 ms | **0.00%** (0 / 167) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 1 (1 VU)** | Run 2 | 60.0s | 168 | 2.79 req/s | **110.34 ms** | 57.41 ms | **0.00%** (0 / 168) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)** | Run 1 | 60.0s | 936 | 15.50 req/s | **147.32 ms** | 70.95 ms | **0.00%** (0 / 936) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)** | Run 2 | 60.0s | 900 | 14.82 req/s | **214.70 ms** | 84.75 ms | **0.00%** (0 / 900) | **PASS** ($p95 < 500\text{ms}$) |
+
+* **Comparison against SLA Targets:**
+  - **Latency:** All runs achieved $p95$ latency substantially lower than the $500\text{ ms}$ ceiling ($87.71\text{ ms} - 214.70\text{ ms}$, representing a $57\% - 82\%$ safety margin).
+  - **Reliability:** Across $>2,170$ total requests, **0 unexpected 5xx server errors occurred (0.00% failure rate)**, comfortably satisfying the $<1.0\%$ threshold. Under 5 VUs, exactly 10 tickets were sold, and subsequent orders were gracefully rejected with HTTP 400 (`quota_sold_out`) without server crash.
+
+### 10.3 Controlled Failure-and-Recovery for State-Changing Operation
+Automated in `tests/team/perf/test_state_changing_recovery.py` (`TC-STATE-RECOVERY-01`) targeting `POST /orders/` with `X-Idempotency-Key`:
+1. **Simulated Dependency Failure:** Stopped the distributed cache and locking broker (`pretix_redis`) container mid-flight while a state-changing order was submitted.
+2. **Post-Failure Persisted State Verification:** Checked PostgreSQL to confirm zero orphaned orders or corrupt entries were committed during the outage (Orders count = 0, Quota remaining = 10).
+3. **Dependency Restoration:** Restarted `pretix_redis`; service health restored in **$RTO = 0.48\text{ seconds}$** (Target: $< 15.0\text{s}$).
+4. **Retry Execution:** Retried the state-changing order with the identical `X-Idempotency-Key`. The client polled respecting Pretix's `Retry-After: 5` idempotency lock window; order creation succeeded with **HTTP 201 Created** (Order Code: `UTCMD`).
+5. **Expected Final State & Zero Duplication:**
+   - Quota decremented exactly once ($10 \to 9$).
+   - Subsequent replay with the same idempotency key returned HTTP 201 with identical code `UTCMD`.
+   - Verified PostgreSQL: Total matching orders = **exactly 1 (0 duplicate records)**. Raw report saved in `reports/perf/state_changing_recovery_report.json`.
 
 ---
 

@@ -1,0 +1,71 @@
+{
+  "operation_tested": "Quota Availability Check (GET) & Order Creation (POST)",
+  "workflow": "Workflow A (Order Placement)",
+  "sla_limits": {
+    "p95_limit_ms": 500,
+    "max_unexpected_failure_percent": 1.0,
+    "justification": "Storefront ticketing checkout requires p95 < 500ms to preserve user conversion and avoid drop-off during ticket rushes; unexpected failure rate < 1% ensures zero lost orders and database integrity."
+  },
+  "benchmarks": {
+    "1_vu_run1": {
+      "p95_ms": 87.71,
+      "avg_ms": 58.77,
+      "med_ms": 31.54,
+      "p90_ms": 62.49,
+      "rps": 2.78,
+      "total_requests": 167,
+      "unexpected_failure_rate": 0,
+      "unexpected_failure_percent": 0
+    },
+    "1_vu_run2": {
+      "p95_ms": 110.34,
+      "avg_ms": 57.41,
+      "med_ms": 35.45,
+      "p90_ms": 87.55,
+      "rps": 2.79,
+      "total_requests": 168,
+      "unexpected_failure_rate": 0,
+      "unexpected_failure_percent": 0
+    },
+    "5_vu_run1": {
+      "p95_ms": 147.32,
+      "avg_ms": 70.95,
+      "med_ms": 47.45,
+      "p90_ms": 110.64,
+      "rps": 15.5,
+      "total_requests": 936,
+      "unexpected_failure_rate": 0,
+      "unexpected_failure_percent": 0
+    },
+    "5_vu_run2": {
+      "p95_ms": 214.7,
+      "avg_ms": 84.75,
+      "med_ms": 65.68,
+      "p90_ms": 151.99,
+      "rps": 14.82,
+      "total_requests": 900,
+      "unexpected_failure_rate": 0,
+      "unexpected_failure_percent": 0
+    }
+  },
+  "state_changing_recovery": {
+    "test_id": "TC-STATE-RECOVERY-01",
+    "operation": "POST /api/v1/organizers/sqe/events/sqe2026/orders/",
+    "state_changing": true,
+    "simulated_failure": "pretix_redis container stopped mid-flight",
+    "pre_failure_quota": 10,
+    "post_failure_unrestored_orders": 0,
+    "recovery_time_seconds": 0.48,
+    "retry_status_code": 201,
+    "order_code": "UTCMD",
+    "post_recovery_quota": 9,
+    "idempotent_replay_code": "UTCMD",
+    "total_duplicate_records": 0,
+    "status": "PASSED"
+  },
+  "compliance_verdict": {
+    "all_runs_within_p95_limit": true,
+    "zero_unexpected_5xx_failures": true,
+    "recovery_without_duplicates": true
+  }
+}
