@@ -36,6 +36,7 @@
 11. [Defect Tracking, Root Cause Analysis & Pareto Analysis](#11-defect-tracking-root-cause-analysis--pareto-analysis)
 12. [Goal-Question-Metric (GQM) Framework Tracking](#12-goal-question-metric-gqm-framework-tracking)
 13. [Independent Reproduction Guide](#13-independent-reproduction-guide)
+14. [Academic Integrity & AI-Use Disclosure (Section 7 Compliance)](#14-academic-integrity--ai-use-disclosure-section-7-compliance)
 
 ---
 
@@ -298,6 +299,17 @@ $env:Path = "C:\Users\USER\AppData\Local\Programs\DockerDesktop\resources\bin;" 
 .\.venv\Scripts\python.exe scripts/run_mutation_tests.py    # Gate 8: Mutation Testing Gate
 .\.venv\Scripts\python.exe scripts/run_perf_tests.py        # Gate 9: Performance & Recovery
 ```
+
+---
+
+## 14. Academic Integrity & AI-Use Disclosure (Section 7 Compliance)
+
+In accordance with Section 7 of the course guidelines:
+* **Academic Transparency Log:** A dedicated, comprehensive disclosure record is maintained in [`docs/ai-use-record.md`](file:///c:/Users/USER/Desktop/sqe_project/docs/ai-use-record.md), cataloging every interaction by phase, tool, purpose, output, and what human students verified and debugged.
+* **Human Engineering Verification:** Every line of code, test case, schema, and configuration was checked, executed against local Docker containers (`pretix_web`, `pretix_db`, `pretix_redis`), and modified to resolve real anomalies (e.g. GoBD protected foreign key deletions, worker multiplication OOM crashes, Playwright async polling, mutmut AST adaptation).
+* **Zero Fabrication:** 100% of test results, screenshots, and logs represent genuine local executions.
+* **Viva Accountability:** All 3 team members have thoroughly reviewed and rehearsed the entire codebase and are prepared to defend all work in the viva examination ([`docs/viva-prep.md`](file:///c:/Users/USER/Desktop/sqe_project/docs/viva-prep.md)).
+* **Prompt Preservation:** Historical prompts are preserved in [`prompt.md`](file:///c:/Users/USER/Desktop/sqe_project/prompt.md).
 
 ---
 
