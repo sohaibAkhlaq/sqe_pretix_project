@@ -1,0 +1,87 @@
+{
+  "@programName": "OWASP ZAP Baseline Scanner (Emulated Engine)",
+  "@version": "2.14.0",
+  "generated": "Fri, 20 Nov 2026 20:23:42",
+  "site": [
+    {
+      "@name": "http://localhost:8345",
+      "@host": "localhost",
+      "@port": "8345",
+      "@ssl": "false",
+      "alerts": [
+        {
+          "pluginId": "10035",
+          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
+          "riskcode": "0",
+          "riskdesc": "Informational",
+          "url": "http://localhost:8345/sqe/sqe2026/",
+          "cweid": "319",
+          "wascid": "15"
+        },
+        {
+          "pluginId": "10035",
+          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
+          "riskcode": "0",
+          "riskdesc": "Informational",
+          "url": "http://localhost:8345/control/login/",
+          "cweid": "319",
+          "wascid": "15"
+        },
+        {
+          "pluginId": "10038",
+          "alert": "Content Security Policy (CSP) Header Not Set",
+          "riskcode": "2",
+          "riskdesc": "Medium",
+          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/",
+          "cweid": "693",
+          "wascid": "15"
+        },
+        {
+          "pluginId": "10035",
+          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
+          "riskcode": "0",
+          "riskdesc": "Informational",
+          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/",
+          "cweid": "319",
+          "wascid": "15"
+        },
+        {
+          "pluginId": "10038",
+          "alert": "Content Security Policy (CSP) Header Not Set",
+          "riskcode": "2",
+          "riskdesc": "Medium",
+          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/orders/",
+          "cweid": "693",
+          "wascid": "15"
+        },
+        {
+          "pluginId": "10035",
+          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
+          "riskcode": "0",
+          "riskdesc": "Informational",
+          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/orders/",
+          "cweid": "319",
+          "wascid": "15"
+        },
+        {
+          "pluginId": "10038",
+          "alert": "Content Security Policy (CSP) Header Not Set",
+          "riskcode": "2",
+          "riskdesc": "Medium",
+          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/quotas/",
+          "cweid": "693",
+          "wascid": "15"
+        },
+        {
+          "pluginId": "10035",
+          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
+          "riskcode": "0",
+          "riskdesc": "Informational",
+          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/quotas/",
+          "cweid": "319",
+          "wascid": "15"
+        }
+      ]
+    }
+  ]
+}

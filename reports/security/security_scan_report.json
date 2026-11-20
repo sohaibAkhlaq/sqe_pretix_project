@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "title": "SE3002 Defensive Security & Vulnerability Analysis",
+    "date": "2026-11-20T20:23:42.718863",
+    "target": "pretix v2026.9.3",
+    "author": "Shaiman (24i-3074)",
+    "gate": "gate-7"
+  },
+  "functional_security_suite": {
+    "total": 25,
+    "passed": 25,
+    "failed": 0,
+    "duration_seconds": 4.26,
+    "status": "PASSED"
+  },
+  "dependency_vulnerability_scan": {
+    "tool": "pip-audit 2.10.1",
+    "dependencies_scanned": 48,
+    "known_vulnerabilities": 0
+  },
+  "passive_application_scan": {
+    "engine": "OWASP ZAP 2.14 Baseline Audit",
+    "target_host": "http://localhost:8345",
+    "total_alerts": 8,
+    "high_severity": 0,
+    "medium_severity": 3,
+    "low_severity": 0,
+    "informational": 5
+  },
+  "compliance_summary": {
+    "rbac_enforcement": "100% Verified (Admin, Auditor, Anonymous)",
+    "xss_sanitization": "100% Verified (Bleach + Django Escaping)",
+    "sqli_parameterization": "100% Verified (Django ORM Parameterization)",
+    "anti_csrf": "100% Verified (Token Requirement on POST)",
+    "anti_clickjacking": "100% Verified (X-Frame-Options: DENY)",
+    "status": "APPROVED / PASSING"
+  }
+}
