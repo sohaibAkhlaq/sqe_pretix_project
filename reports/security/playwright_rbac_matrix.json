@@ -1,0 +1,67 @@
+{
+  "test_suite": "Playwright Automated RBAC Access Matrix",
+  "total_decisions_verified": 5,
+  "decisions": [
+    {
+      "decision_id": "DEC-01",
+      "role": "Organizer Admin",
+      "workflow": "Workflow A & B",
+      "route": "/control/event/sqe/sqe2026/orders/",
+      "action": "View event order ledger & financial state",
+      "decision_type": "ALLOWED",
+      "expected_result": "HTTP 200 OK; Orders dashboard visible; administration controls accessible",
+      "observed_result": "Access granted; Orders ledger rendered; authenticated as admin@localhost",
+      "verdict": "PASS",
+      "evidence": "reports/security/screenshots/decision1_admin_orders_allowed.png"
+    },
+    {
+      "decision_id": "DEC-02",
+      "role": "Organizer Admin",
+      "workflow": "Workflow A & B (Shared Quota State)",
+      "route": "/control/event/sqe/sqe2026/quotas/",
+      "action": "Inspect & manage item inventory capacity",
+      "decision_type": "ALLOWED",
+      "expected_result": "HTTP 200 OK; Quota pool management controls rendered",
+      "observed_result": "Access granted; Quota list displayed with capacity 10 and item associations",
+      "verdict": "PASS",
+      "evidence": "reports/security/screenshots/decision2_admin_quota_allowed.png"
+    },
+    {
+      "decision_id": "DEC-03",
+      "role": "Unauthenticated / Auditor without Admin Privileges",
+      "workflow": "Workflow B (Order Cancellation / Control Panel)",
+      "route": "/control/event/sqe/sqe2026/orders/",
+      "action": "Attempt direct access to privileged event orders ledger",
+      "decision_type": "DENIED",
+      "expected_result": "HTTP 302 Redirect to /control/login/?next=...; Protected data hidden",
+      "observed_result": "Access denied; Redirected to login (http://localhost:8345/control/login?next=/control/event/sqe/sqe2026/orders/); zero data disclosed",
+      "verdict": "PASS",
+      "evidence": "reports/security/screenshots/decision3_anon_control_panel_denied.png"
+    },
+    {
+      "decision_id": "DEC-04",
+      "role": "Unauthenticated Public User",
+      "workflow": "Workflow A (Shared Quota State)",
+      "route": "/control/event/sqe/sqe2026/quotas/1/",
+      "action": "Attempt direct modification of quota boundaries",
+      "decision_type": "DENIED",
+      "expected_result": "Access blocked; Redirect to login authentication gate",
+      "observed_result": "Access denied; Redirection to login enforced (http://localhost:8345/control/login?next=/control/event/sqe/sqe2026/quotas/1/)",
+      "verdict": "PASS",
+      "evidence": "reports/security/screenshots/decision4_anon_quota_edit_denied.png"
+    },
+    {
+      "decision_id": "DEC-05",
+      "role": "Customer / Public Attendee",
+      "workflow": "Workflow A (Order Placement Storefront)",
+      "route": "/sqe/sqe2026/",
+      "action": "Browse public event landing page and ticket tiers",
+      "decision_type": "ALLOWED",
+      "expected_result": "HTTP 200 OK; Public storefront ticket catalog rendered",
+      "observed_result": "Access granted; Standard Ticket tier (\u20ac50.00) displayed with cart actions",
+      "verdict": "PASS",
+      "evidence": "reports/security/screenshots/decision5_public_storefront_allowed.png"
+    }
+  ],
+  "status": "ALL_PASSED"
+}

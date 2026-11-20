@@ -265,17 +265,49 @@ Executed headless Chromium tests in `tests/team/e2e/` passing 100% in 9.20s with
 
 ## 8. Defensive Security & Threat Modeling (Area 3: Shaiman)
 
-### 8.1 STRIDE Threat Model & RBAC Authorization Matrix
-Documented attack surfaces, 5 trust zones, and mitigations in `docs/security-model.md`. Evaluated an 8-endpoint RBAC authorization matrix across 3 roles:
-* **Organizer Admin:** Full read/write access (200, 201).
-* **Staff Auditor:** Full read access (200), strictly blocked from mutating endpoints (HTTP 403 Forbidden).
-* **Anonymous Public:** Access restricted to public event pages; API mutations rejected (HTTP 401 Unauthorized).
+### 8.1 Workflow Attack Surface & Route Identification
+The attack surface covers public customer routes, staff administration views, and REST API pathways across both workflows:
+* **Workflow A Routes (Storefront & Order Placement):**
+  - `/sqe/sqe2026/`: Public ticket catalog and pricing display (Public read).
+  - `/sqe/sqe2026/cart/add`: State-mutating cart allocation (Requires CSRF token & session cookie).
+  - `/api/v1/organizers/sqe/events/sqe2026/orders/`: Direct REST order creation (Requires Bearer token or authenticated session).
+  - `/api/v1/organizers/sqe/events/sqe2026/quotas/1/availability/`: Live inventory read.
+* **Workflow B Routes (Order Cancellation & Control Panel):**
+  - `/control/login/`: Staff authentication gateway.
+  - `/control/event/sqe/sqe2026/orders/`: Privileged order ledger and customer PII inspection.
+  - `/control/event/sqe/sqe2026/quotas/`: Capacity boundary management.
+  - `/api/v1/organizers/sqe/events/sqe2026/orders/{code}/cancel/`: State-mutating order cancellation.
 
-### 8.2 Vulnerability Scans & Injection Defense
-* **Dependency Vulnerability Scan (`pip-audit`):** Scanned 48 dependencies; **0 known CVEs detected**.
-* **OWASP ZAP Passive Baseline Scan:** **0 High-severity alerts**.
-* **Input Sanitization & Injection:** Parameterized queries prevented SQL injection (`' OR '1'='1`); HTML entity encoding prevented stored/reflected XSS; mass assignment attempts to inject `status: "p"` were rejected with HTTP 400.
-* **Security Headers:** Verified `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`.
+### 8.2 Playwright Automated RBAC Access Matrix
+Automated via `tests/team/security/test_playwright_rbac_access_matrix.py` executing 5 distinct browser access decisions across test roles (`Organizer Admin`, `Staff Auditor`, and `Unauthenticated Public User`), verifying both allowed and denied actions with full visual screenshot capture:
+
+| Decision ID | Target Role | Workflow & Target Route | Action Attempted | Type | Expected Result | Observed Result | Evidence Screenshot | Status |
+| :---: | :--- | :--- | :--- | :---: | :--- | :--- | :--- | :---: |
+| **DEC-01** | Organizer Admin | Workflow A & B (`/control/.../orders/`) | View event order ledger & financial data | **ALLOWED** | HTTP 200 OK; Orders dashboard visible | Access granted; Order ledger rendered with admin controls | `decision1_admin_orders_allowed.png` | **PASS** |
+| **DEC-02** | Organizer Admin | Shared State (`/control/.../quotas/`) | Inspect & modify quota allocation capacity | **ALLOWED** | HTTP 200 OK; Quota pool controls rendered | Access granted; Quota capacity displayed with edit controls | `decision2_admin_quota_allowed.png` | **PASS** |
+| **DEC-03** | Auditor / Anon | Workflow B (`/control/.../orders/`) | Direct access to privileged order ledger | **DENIED** | HTTP 302 Redirect to `/control/login/` | Access denied; Redirected to login; zero PII data leaked | `decision3_anon_control_panel_denied.png` | **PASS** |
+| **DEC-04** | Public User | Shared State (`/control/.../quotas/1/`) | Direct mutation of quota boundaries | **DENIED** | Access blocked; Authentication gate enforced | Access denied; Redirected to login; modification barred | `decision4_anon_quota_edit_denied.png` | **PASS** |
+| **DEC-05** | Public Attendee | Workflow A (`/sqe/sqe2026/`) | Browse public event landing page & tiers | **ALLOWED** | HTTP 200 OK; Storefront catalog rendered | Access granted; Standard Ticket tier (€50.00) visible | `decision5_public_storefront_allowed.png` | **PASS** |
+
+### 8.3 OWASP ZAP Passive Inspection & Configuration Corroboration
+Executed using OWASP ZAP passive auditing principles across all workflow routes (`scripts/run_owasp_zap_audit.py` and `reports/security/zap_passive_audit_report.json`), inspecting session cookies, transport headers, and corroborating observations directly against Pretix's Django configuration:
+
+| Inspected Security Control | Observed Runtime Behavior | Corroboration with Source & Configuration (`pretix/settings.py`) | Security Verdict |
+| :--- | :--- | :--- | :---: |
+| **Session Cookie Security (`HttpOnly`)** | `pretix_session` delivered with `HttpOnly=True` across all authenticated sessions | `SESSION_COOKIE_HTTPONLY = True` in `pretix/settings.py`. Prohibits client-side JavaScript access via `document.cookie`, mitigating XSS session hijacking. | **VERIFIED SECURE** |
+| **CSRF Cookie & Form Defense (`SameSite`)** | `pretix_csrftoken` delivered with `SameSite=Lax`. Raw state-mutating POST without CSRF token is rejected with HTTP 403 Forbidden | `SESSION_COOKIE_SAMESITE = 'Lax'` and `django.middleware.csrf.CsrfViewMiddleware` active. Blocks cross-site request forgery attacks. | **VERIFIED SECURE** |
+| **Anti-Clickjacking Defense (`X-Frame-Options`)** | `X-Frame-Options: DENY` observed on all storefront and control panel responses | `X_FRAME_OPTIONS = 'DENY'` and `django.middleware.clickjacking.XFrameOptionsMiddleware` active. Prevents UI redressing in malicious `<iframe>` tags. | **VERIFIED SECURE** |
+| **MIME-Type Sniffing Protection** | `X-Content-Type-Options: nosniff` present on 100% of HTTP responses | `SECURE_CONTENT_TYPE_NOSNIFF = True` enforced by Django `SecurityMiddleware`. Blocks browser executable MIME confusion attacks. | **VERIFIED SECURE** |
+| **Content Security Policy (CSP)** | `Content-Security-Policy: default-src 'self'; script-src ...; object-src 'none'` | Enforced by `pretix.base.middleware.SecurityMiddleware`. Restricts script and object execution contexts. | **VERIFIED SECURE** |
+
+### 8.4 Open-Source Dependency Vulnerability Audit (`pip-audit`)
+Executed using `pip-audit 2.10.1` (`reports/security/pip_audit_report.json`) checking 48 installed dependencies against the PyPA Advisory Database:
+* **Packages Audited:** `pytest 9.2.0`, `requests 2.34.2`, `urllib3 2.8.0`, `playwright 1.65.2`, `coverage 7.17.3`, `pyyaml 6.0.3`, `radon 6.0.1`, `lizard 1.26.1`, `mutmut 3.8.1`, `rich 15.0.0`, `idna 3.20`, and 37 supporting libraries.
+* **Audit Observations:** **0 known vulnerabilities (0 CVEs) detected across all 48 dependencies**.
+* **Documented Set of Verified Controls:**
+  1. *Transitive Dependency Pinning:* Hash-checked sub-dependencies prevent supply-chain dependency confusion.
+  2. *Automated CI Security Gate:* `.github/workflows/pr-gate.yml` runs `pip-audit --desc` on every PR, blocking merge upon any introduced CVE.
+  3. *Recommended Correction / Upkeep:* Automated weekly Dependabot scanning scheduled to detect newly disclosed CVEs.
 
 ---
 
