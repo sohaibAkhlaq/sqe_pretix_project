@@ -1,0 +1,496 @@
+openapi: 3.0.3
+info:
+  title: pretix Order & Quota Quality Engineering API Specification
+  description: >
+    Formal OpenAPI 3.0 contract specification for pretix Order and Quota services.
+    Covers Workflows A & B, idempotent order creation, cancellation, payment, expiration,
+    and role-based access control.
+  version: 1.0.0
+  contact:
+    name: M. Hasaam (Lead API & Performance Engineer, 24i-3107)
+    email: m.hasaam.official@gmail.com
+
+servers:
+  - url: http://localhost:8345/api/v1
+    description: Local Docker Development Stack
+
+security:
+  - TokenAuth: []
+
+paths:
+  /organizers/{organizer}/:
+    get:
+      summary: Retrieve Organizer Details
+      description: Returns multi-tenant organizer profile.
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+      responses:
+        '200':
+          description: Organizer found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organizer'
+        '404':
+          description: Organizer not found
+
+  /organizers/{organizer}/events/{event}/:
+    get:
+      summary: Retrieve Event Details
+      description: Returns event scheduling, status, and currency.
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+      responses:
+        '200':
+          description: Event found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+
+  /organizers/{organizer}/events/{event}/items/{id}/:
+    get:
+      summary: Retrieve Item (Ticket Product)
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Item not found
+
+  /organizers/{organizer}/events/{event}/quotas/{id}/availability/:
+    get:
+      summary: Inspect Quota Availability (Shared State)
+      description: >
+        Calculates remaining capacity for a quota pool.
+        Shared record inspected by Workflow A (creation) and updated by Workflow B (cancellation).
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Availability metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuotaAvailability'
+
+  /organizers/{organizer}/events/{event}/orders/:
+    get:
+      summary: List Orders
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+      responses:
+        '200':
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+
+    post:
+      summary: Place Order (Workflow A)
+      description: >
+        Creates a new order holding quota. Supports idempotency via X-Idempotency-Key.
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+        - name: X-Idempotency-Key
+          in: header
+          required: false
+          schema:
+            type: string
+            format: uuid
+            example: 123e4567-e89b-12d3-a456-426614174000
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreatePayload'
+      responses:
+        '201':
+          description: Order placed successfully (Pending state)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Validation error or quota sold out
+          content:
+            application/json:
+              schema:
+                type: object
+        '403':
+          description: Forbidden (Auditor read-only token rejection)
+
+  /organizers/{organizer}/events/{event}/orders/{code}/:
+    get:
+      summary: Get Order Detail
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            example: W1R4X
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Order not found
+
+  /organizers/{organizer}/events/{event}/orders/{code}/mark_canceled/:
+    post:
+      summary: Cancel Order (Workflow B)
+      description: Transitions order to 'c' (Canceled) and restores quota availability.
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            example: W1R4X
+      responses:
+        '200':
+          description: Order canceled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Order already canceled or illegal transition
+        '403':
+          description: Forbidden for read-only tokens
+
+  /organizers/{organizer}/events/{event}/orders/{code}/mark_paid/:
+    post:
+      summary: Mark Order as Paid (Workflow B)
+      description: Transitions order from 'n' to 'p' (Paid).
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            example: W1R4X
+      responses:
+        '200':
+          description: Order marked paid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Illegal state transition (e.g. order is canceled)
+        '403':
+          description: Forbidden for read-only tokens
+
+  /organizers/{organizer}/events/{event}/orders/{code}/mark_expired/:
+    post:
+      summary: Mark Order as Expired (Workflow B)
+      description: Transitions order to 'e' (Expired) and releases quota hold.
+      parameters:
+        - name: organizer
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+            example: sqe2026
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            example: W1R4X
+      responses:
+        '200':
+          description: Order marked expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Illegal transition
+        '403':
+          description: Forbidden for read-only tokens
+
+components:
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Bearer Token format: 'Token <api_token>'"
+
+  schemas:
+    Organizer:
+      type: object
+      properties:
+        name:
+          type: string
+          example: SE3002 Quality Engineering Org
+        slug:
+          type: string
+          example: sqe
+
+    Event:
+      type: object
+      properties:
+        name:
+          type: object
+          properties:
+            en:
+              type: string
+              example: SQE International Conference 2026
+        slug:
+          type: string
+          example: sqe2026
+        live:
+          type: boolean
+          example: true
+        currency:
+          type: string
+          example: EUR
+
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: object
+          properties:
+            en:
+              type: string
+              example: Conference Admission Ticket
+        default_price:
+          type: string
+          example: "50.00"
+        active:
+          type: boolean
+          example: true
+
+    QuotaAvailability:
+      type: object
+      properties:
+        paid_orders:
+          type: integer
+          example: 0
+        pending_orders:
+          type: integer
+          example: 2
+        available_number:
+          type: integer
+          example: 8
+        available:
+          type: boolean
+          example: true
+        total_size:
+          type: integer
+          example: 10
+
+    OrderCreatePayload:
+      type: object
+      required:
+        - email
+        - locale
+        - positions
+      properties:
+        email:
+          type: string
+          format: email
+          example: attendee@example.com
+        locale:
+          type: string
+          example: en
+        sales_channel:
+          type: string
+          example: web
+        positions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionCreatePayload'
+
+    PositionCreatePayload:
+      type: object
+      required:
+        - item
+        - price
+      properties:
+        item:
+          type: integer
+          example: 1
+        price:
+          type: string
+          example: "50.00"
+        attendee_name:
+          type: string
+          example: John Doe
+        attendee_email:
+          type: string
+          format: email
+          example: attendee@example.com
+
+    Order:
+      type: object
+      properties:
+        code:
+          type: string
+          example: W1R4X
+        status:
+          type: string
+          enum: [n, p, e, c]
+          example: n
+        total:
+          type: string
+          example: "50.00"
+        email:
+          type: string
+          example: attendee@example.com
+        positions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              item:
+                type: integer
+              price:
+                type: string
+              attendee_name:
+                type: string
+              attendee_email:
+                type: string

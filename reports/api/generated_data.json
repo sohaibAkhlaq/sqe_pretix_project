@@ -1,0 +1,528 @@
+{
+  "metadata": {
+    "generator": "SE3002 Automated Data Generator v1.0",
+    "constraints": {
+      "organizer_slug": "sqe",
+      "event_slug": "sqe2026",
+      "item_id": 1,
+      "item_name": "Conference Admission Ticket",
+      "quota_size": 10,
+      "default_price": "50.00",
+      "currency": "EUR",
+      "locale": "en",
+      "sales_channel": "web"
+    },
+    "seed": 42
+  },
+  "bva_quantity": [
+    {
+      "point": "min - 1",
+      "quantity": 0,
+      "valid": false,
+      "category": "Underflow Boundary"
+    },
+    {
+      "point": "min",
+      "quantity": 1,
+      "valid": true,
+      "category": "Minimum Valid Boundary"
+    },
+    {
+      "point": "min + 1",
+      "quantity": 2,
+      "valid": true,
+      "category": "Just Above Minimum"
+    },
+    {
+      "point": "nominal",
+      "quantity": 5,
+      "valid": true,
+      "category": "Nominal Operating Value"
+    },
+    {
+      "point": "max - 1",
+      "quantity": 9,
+      "valid": true,
+      "category": "Just Below Maximum"
+    },
+    {
+      "point": "max",
+      "quantity": 10,
+      "valid": true,
+      "category": "Maximum Capacity Boundary"
+    },
+    {
+      "point": "max + 1",
+      "quantity": 11,
+      "valid": false,
+      "category": "Overflow Boundary"
+    }
+  ],
+  "bva_price": [
+    {
+      "point": "min - 1",
+      "price": "-0.01",
+      "valid": false,
+      "category": "Negative Price Boundary"
+    },
+    {
+      "point": "min",
+      "price": "0.00",
+      "valid": true,
+      "category": "Free Ticket Boundary"
+    },
+    {
+      "point": "min + 1",
+      "price": "0.01",
+      "valid": true,
+      "category": "Minimal Cent Boundary"
+    },
+    {
+      "point": "nominal",
+      "price": "50.00",
+      "valid": true,
+      "category": "Nominal Ticket Price"
+    },
+    {
+      "point": "max - 1",
+      "price": "9999.99",
+      "valid": true,
+      "category": "High End Tier Boundary"
+    },
+    {
+      "point": "max",
+      "price": "10000.00",
+      "valid": true,
+      "category": "Maximum Allowed Price Boundary"
+    },
+    {
+      "point": "max + 1",
+      "price": "10000.01",
+      "valid": false,
+      "category": "Overflow Price Boundary"
+    }
+  ],
+  "equivalence_partitions": {
+    "valid_partition": [
+      {
+        "case_id": "EP-VAL-01",
+        "description": "Standard Single Ticket Purchase",
+        "quantity": 1,
+        "expected_status": 201,
+        "payload": {
+          "email": "john.doe@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 1",
+              "attendee_email": "john.doe@example.com"
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "EP-VAL-02",
+        "description": "Multi-ticket Purchase (Nominal Quantity)",
+        "quantity": 2,
+        "expected_status": 201,
+        "payload": {
+          "email": "multi.buyer@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 1",
+              "attendee_email": "multi.buyer@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 2",
+              "attendee_email": "multi.buyer@example.com"
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "EP-VAL-03",
+        "description": "Bulk Order Consuming Full Available Quota",
+        "quantity": 10,
+        "expected_status": 201,
+        "payload": {
+          "email": "vip.delegation@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 1",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 2",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 3",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 4",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 5",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 6",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 7",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 8",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 9",
+              "attendee_email": "vip.delegation@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 10",
+              "attendee_email": "vip.delegation@example.com"
+            }
+          ]
+        }
+      }
+    ],
+    "invalid_partition": [
+      {
+        "case_id": "EP-INV-01",
+        "description": "Empty Positions Array (Zero Tickets)",
+        "quantity": 0,
+        "expected_status": 400,
+        "payload": {
+          "email": "zero.tickets@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": []
+        }
+      },
+      {
+        "case_id": "EP-INV-02",
+        "description": "Order Exceeding Total Quota Capacity",
+        "quantity": 11,
+        "expected_status": 400,
+        "payload": {
+          "email": "overbook@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 1",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 2",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 3",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 4",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 5",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 6",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 7",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 8",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 9",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 10",
+              "attendee_email": "overbook@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 11",
+              "attendee_email": "overbook@example.com"
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "EP-INV-03",
+        "description": "Malformed Customer Email Format",
+        "quantity": 1,
+        "expected_status": 400,
+        "payload": {
+          "email": "invalid-email-format-without-at",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Bad Email"
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "EP-INV-04",
+        "description": "Non-Existent Item ID Reference",
+        "quantity": 1,
+        "expected_status": 400,
+        "payload": {
+          "email": "ghost.item@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 999999,
+              "price": "50.00",
+              "attendee_name": "Ghost"
+            }
+          ]
+        }
+      }
+    ],
+    "boundary_partition": [
+      {
+        "case_id": "EP-BND-01",
+        "description": "Lower Boundary (Quantity = 1)",
+        "quantity": 1,
+        "expected_status": 201,
+        "payload": {
+          "email": "lower.bound@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 1",
+              "attendee_email": "lower.bound@example.com"
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "EP-BND-02",
+        "description": "Upper Boundary (Quantity = Quota Capacity)",
+        "quantity": 10,
+        "expected_status": 201,
+        "payload": {
+          "email": "upper.bound@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 1",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 2",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 3",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 4",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 5",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 6",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 7",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 8",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 9",
+              "attendee_email": "upper.bound@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 10",
+              "attendee_email": "upper.bound@example.com"
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "EP-BND-03",
+        "description": "Immediate Overflow Boundary (Quantity = Quota Capacity + 1)",
+        "quantity": 11,
+        "expected_status": 400,
+        "payload": {
+          "email": "overflow@example.com",
+          "locale": "en",
+          "sales_channel": "web",
+          "positions": [
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 1",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 2",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 3",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 4",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 5",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 6",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 7",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 8",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 9",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 10",
+              "attendee_email": "overflow@example.com"
+            },
+            {
+              "item": 1,
+              "price": "50.00",
+              "attendee_name": "Attendee Test 11",
+              "attendee_email": "overflow@example.com"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
