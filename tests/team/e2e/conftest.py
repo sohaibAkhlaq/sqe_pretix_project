@@ -3,6 +3,12 @@ Playwright E2E Test Configuration.
 Manages browser lifecycle, context, viewport, and screenshot artifacts.
 """
 import os
+import sys
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 import pytest
 from playwright.sync_api import sync_playwright
 

@@ -3,6 +3,14 @@ Pytest configuration for Defensive Security & Vulnerability Test Suite.
 Provides API tokens, authentication headers for Admin, Auditor, and Anonymous clients,
 and endpoint mappings for security verification.
 """
+import sys
+from pathlib import Path
+
+# Add project root to sys.path so 'scripts' and other packages are importable
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 import pytest
 import requests
 from scripts.get_tokens import get_tokens

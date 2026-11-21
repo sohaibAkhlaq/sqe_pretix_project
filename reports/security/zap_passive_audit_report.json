@@ -1,6 +1,6 @@
 {
   "scanner": "OWASP ZAP Passive Scanner (Integrated Playwright & HTTP Inspection)",
-  "scan_timestamp": "2026-11-21T12:32:57Z",
+  "scan_timestamp": "2026-11-21T18:39:33Z",
   "total_routes_inspected": 5,
   "total_passive_alerts": 5,
   "alerts_by_risk": {
