@@ -34,7 +34,7 @@
 8. [Use Case Specification (Rubric Component 8 — 3 Marks, CLO3)](#8-use-case-specification-rubric-component-8--3-marks-clo3)
 9. [Use Case Test Automation (Rubric Component 9 — 6 Marks, CLO2)](#9-use-case-test-automation-rubric-component-9--6-marks-clo2)
 10. [Usability & Accessibility Testing (Rubric Component 11 — 5 Marks, CLO3)](#10-usability--accessibility-testing-rubric-component-11--5-marks-clo3)
-11. [Defensive Security & Threat Modeling (Rubric Component 12 — 6 Marks, CLO3)](#11-defensive-security--threat-modeling-rubric-component-12--6-marks-clo3)
+11. [Defensive Security & Threat Modeling (Rubric Component 12 — 6 Marks, CLO2)](#11-defensive-security--threat-modeling-rubric-component-12--6-marks-clo2)
 12. [Mutation Testing & CI PR Quality Gate (Rubric Component 10 — 8 Marks, CLO2)](#12-mutation-testing--ci-pr-quality-gate-rubric-component-10--8-marks-clo2)
 13. [Performance, Concurrency & Fault Recovery (Rubric Component 13 — 5 Marks, CLO2)](#13-performance-concurrency--fault-recovery-rubric-component-13--5-marks-clo2)
 14. [Defect Tracking, Root Cause Analysis & Structured Findings (Rubric Component 14 — 7 Marks, CLO3)](#14-defect-tracking-root-cause-analysis--structured-findings-rubric-component-14--7-marks-clo3)
@@ -1252,7 +1252,7 @@ Automated in `tests/team/a11y/test_keyboard_navigation.py`:
 
 ---
 
-## 11. Defensive Security & Threat Modeling (Rubric Component 12 — 6 Marks, CLO3)
+## 11. Defensive Security & Threat Modeling (Rubric Component 12 — 6 Marks, CLO2)
 
 ### 11.1 Workflow Attack Surface & Route Identification
 The attack surface covers public customer routes, staff administration views, and REST API pathways across both workflows:

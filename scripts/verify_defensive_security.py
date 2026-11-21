@@ -89,7 +89,7 @@ def audit_defensive_security():
     with open(master_report, "r", encoding="utf-8") as f:
         report_text = f.read()
 
-    assert "## 11. Defensive Security & Threat Modeling (Rubric Component 12 — 6 Marks, CLO3)" in report_text, "Missing Section 11 header"
+    assert "## 11. Defensive Security & Threat Modeling (Rubric Component 12 — 6 Marks, CLO2)" in report_text, "Missing Section 11 header"
     assert "Figure 11.1: DEC-01" in report_text, "Missing Figure 11.1"
     assert "Figure 11.2: DEC-02" in report_text, "Missing Figure 11.2"
     assert "Figure 11.3: DEC-03" in report_text, "Missing Figure 11.3"
