@@ -5,11 +5,11 @@
   "simulated_failure": "pretix_redis container stopped mid-flight",
   "pre_failure_quota": 10,
   "post_failure_unrestored_orders": 0,
-  "recovery_time_seconds": 0.48,
+  "recovery_time_seconds": 0.4,
   "retry_status_code": 201,
-  "order_code": "UTCMD",
+  "order_code": "R93ZF",
   "post_recovery_quota": 9,
-  "idempotent_replay_code": "UTCMD",
+  "idempotent_replay_code": "R93ZF",
   "total_duplicate_records": 0,
   "status": "PASSED"
 }
