@@ -12,23 +12,76 @@
 
 ## 1. Traceability & Distribution Matrix
 
-Six comprehensive Use Cases were designed—two per group member—capturing the end-to-end operational life cycle of pretix's Order and Quota management. Each Use Case specifies 1 Normal Flow, 2 Alternative Flows, and 2 Exception Flows, yielding a verified total of **30 distinct execution flows**.
+Six comprehensive Use Cases were designed—two per group member—capturing the end-to-end operational life cycle of pretix's Order and Quota management. Each Use Case specifies 1 Normal Flow, 2 Alternative Flows, and 2 Exception Flows, yielding a verified total of **30 distinct execution flows**. Every use case is formally derived from functional requirements (FR1–FR8) and business rules (BR1–BR4).
 
-| UC ID | Use Case Name | Primary Actor | Target Scope | Owner | Total Flows |
-| :---: | :--- | :--- | :--- | :---: | :---: |
-| **UC1** | Customer Single Ticket Purchase via Storefront | Customer (Guest) | Storefront Checkout (Workflow A) | Sohaib | 5 Flows |
-| **UC2** | Customer Self-Service Order Cancellation | Customer (Buyer) | Storefront Secret Link (Workflow B) | Sohaib | 5 Flows |
-| **UC3** | Multi-Ticket Group Reservation | Customer (Group) | Multi-position Cart (Workflow A) | M. Hasaam | 5 Flows |
-| **UC4** | Quota Depletion & Out-of-Stock Handling | Customer (Guest) | Quota Boundary & Guard (Workflow A) | M. Hasaam | 5 Flows |
-| **UC5** | Organizer Order Administration & Mutation | Organizer Admin | Control Panel Management (Workflow B) | Shaiman | 5 Flows |
-| **UC6** | Pending Order Expiration & Capacity Reclamation | System / Admin | Temporal Expiration (Workflow B) | Shaiman | 5 Flows |
-| **TOTAL**| **Entire End-to-End Workflow Scope** | — | **Workflows A & B** | **Team** | **30 Flows** |
+| UC ID | Use Case Name | Primary Actor | Target Scope | Derived Requirements | Owner | Normal | Alt | Exc | Total Flows |
+| :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **UC1** | Customer Single Ticket Purchase via Storefront | Customer (Guest) | Storefront Checkout (Workflow A) | FR1, FR2, BR1 | Sohaib | 1 | 2 | 2 | 5 Flows |
+| **UC2** | Customer Self-Service Order Cancellation | Customer (Buyer) | Storefront Secret Link (Workflow B) | FR3, BR3 | Sohaib | 1 | 2 | 2 | 5 Flows |
+| **UC3** | Multi-Ticket Group Reservation | Customer (Group) | Multi-position Cart (Workflow A) | FR1, FR8, PR4 | M. Hasaam | 1 | 2 | 2 | 5 Flows |
+| **UC4** | Quota Depletion & Out-of-Stock Handling | Customer (Guest) | Quota Boundary & Guard (Workflow A) | FR2, BR1, BR2 | M. Hasaam | 1 | 2 | 2 | 5 Flows |
+| **UC5** | Organizer Order Administration & Mutation | Organizer Admin | Control Panel Management (Workflow B) | FR4, FR7, BR3 | Shaiman | 1 | 2 | 2 | 5 Flows |
+| **UC6** | Pending Order Expiration & Capacity Reclamation | System / Admin | Temporal Expiration (Workflow B) | FR5, BR4 | Shaiman | 1 | 2 | 2 | 5 Flows |
+| **TOTAL**| **Entire End-to-End Scope** | — | **Workflows A & B** | **All 12 Specs** | **Team** | **6** | **12** | **12** | **30 Flows** |
 
 ---
 
-## 2. Use Case 1: Customer Single Ticket Purchase via Storefront (UC1)
+## 2. High-Level Use Case Architecture & System Interaction Diagram
+
+```mermaid
+flowchart TD
+    subgraph Actors
+        Guest["Customer (Guest / Buyer)"]
+        Admin["Organizer Administrator"]
+        SystemWorker["System Worker (Celery/Cron)"]
+    end
+
+    subgraph Workflow_A["Workflow A: Storefront Order Placement"]
+        UC1(["UC1: Single Ticket Purchase"])
+        UC3(["UC3: Multi-Ticket Group Reservation"])
+        UC4(["UC4: Quota Depletion Handling"])
+    end
+
+    subgraph Workflow_B["Workflow B: Order Lifecycle & Quota Recovery"]
+        UC2(["UC2: Customer Self-Service Cancellation"])
+        UC5(["UC5: Admin Order Administration"])
+        UC6(["UC6: Order Expiry & Capacity Reclamation"])
+    end
+
+    subgraph Shared_State["Shared Database State"]
+        QuotaState[("Quota ID 1 Pool (Capacity: 10)")]
+        OrderState[("Order Ledger (pretix_orders)")]
+    end
+
+    Guest --> UC1
+    Guest --> UC3
+    Guest --> UC4
+    Guest --> UC2
+
+    Admin --> UC5
+    SystemWorker --> UC6
+
+    UC1 -.->|"decrements quota"| QuotaState
+    UC3 -.->|"decrements quota"| QuotaState
+    UC4 -.->|"guards against depletion"| QuotaState
+
+    UC2 -.->|"restores quota"| QuotaState
+    UC5 -.->|"admin cancellation restores"| QuotaState
+    UC6 -.->|"expired release restores"| QuotaState
+
+    UC1 --> OrderState
+    UC3 --> OrderState
+    UC2 --> OrderState
+    UC5 --> OrderState
+    UC6 --> OrderState
+```
+
+---
+
+## 3. Use Case 1: Customer Single Ticket Purchase via Storefront (UC1)
 * **Author / Owner:** Sohaib (`24i-3108`)
 * **Primary Actor:** Customer (Unauthenticated Guest Buyer)
+* **Derived Requirements:** FR1 (Idempotent Order Placement), FR2 (Quota Depletion Enforcement), BR1 (Boundary Capacity Evaluation)
 * **Pre-Conditions:**
   1. Event `sqe2026` is live and within active ticket sale dates.
   2. Item `Conference Admission Ticket` (ID: 1) is active with available quota $A > 0$.
@@ -37,6 +90,30 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
   2. 1 `OrderPosition` created linking attendee details to Item 1.
   3. Shared quota availability decremented by exactly 1 ($A \to A - 1$).
   4. Customer redirected to order confirmation page with payment instructions.
+
+### Detailed Flow Architecture (UC1)
+```mermaid
+flowchart TD
+    Start([Customer visits Storefront]) --> Step1[Select 1 Ticket & Click Add to Cart]
+    Step1 --> CheckQuota{Quota Available?}
+    
+    CheckQuota -- Yes --> Step2[Display Checkout Form]
+    CheckQuota -- No (Timeout) --> E2[EF-2: Alert 'Session Expired / Sold Out']
+    
+    Step2 --> Alt1{Language?}
+    Alt1 -- German --> A1[AF-1: Render UI & Order in German] --> FormFill[Enter Email & Attendee Name]
+    Alt1 -- Default --> FormFill
+    
+    FormFill --> Alt2{Company Billing?}
+    Alt2 -- Yes --> A2[AF-2: Enter Company VAT & Billing Address] --> ValidateEmail{Email Present?}
+    Alt2 -- No --> ValidateEmail
+    
+    ValidateEmail -- Empty --> E1[EF-1: Halt & Show 'Email is required']
+    ValidateEmail -- Valid --> SubmitOrder[Click 'Place binding order']
+    
+    SubmitOrder --> Commit[Atomic Database Commit: Order Pending, Quota A = A - 1]
+    Commit --> Finish([Order Confirmation Page Rendered])
+```
 
 ### Flows of Events
 * **Normal Flow (Happy Path):**
@@ -68,9 +145,10 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
 
 ---
 
-## 3. Use Case 2: Customer Self-Service Order Cancellation (UC2)
+## 4. Use Case 2: Customer Self-Service Order Cancellation (UC2)
 * **Author / Owner:** Sohaib (`24i-3108`)
 * **Primary Actor:** Customer (Ticket Buyer)
+* **Derived Requirements:** FR3 (Order Cancellation & Quota Release), BR3 (State Machine Transition Integrity)
 * **Pre-Conditions:**
   1. An existing order exists in `Pending` state (`status='n'`).
   2. Item configuration has `allow_cancel=True`.
@@ -79,6 +157,29 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
   1. Order status mutates to `Canceled` (`status='c'`).
   2. Associated `OrderPosition` marked canceled.
   3. Consumed quota is released back to available pool ($A \to A + 1$).
+
+### Detailed Flow Architecture (UC2)
+```mermaid
+flowchart TD
+    Start([Customer opens Order URL]) --> CheckSecret{Valid Secret Token?}
+    CheckSecret -- No --> E1[EF-1: HTTP 404 / Permission Denied]
+    CheckSecret -- Yes --> CheckStatus{Order Status?}
+    
+    CheckStatus -- Already Canceled --> E2[EF-2: Display Canceled Badge, Omit Button]
+    CheckStatus -- Pending --> Step1[Render Order Panel & 'Cancel Order' Button]
+    
+    Step1 --> Step2[Click 'Cancel Order']
+    Step2 --> Modal[Display Confirmation Modal]
+    
+    Modal --> Choice{Confirm Cancellation?}
+    Choice -- No --> A1[AF-1: Close Modal, Order remains Pending]
+    Choice -- Yes --> CheckInvoice{Invoice Exists?}
+    
+    CheckInvoice -- Yes --> A2[AF-2: Issue Credit Note & Cancellation Invoice] --> CommitCancel[Update Status to 'c', Quota A = A + 1]
+    CheckInvoice -- No --> CommitCancel
+    
+    CommitCancel --> Success([Success Banner Rendered, Quota Restored])
+```
 
 ### Flows of Events
 * **Normal Flow (Happy Path):**
@@ -102,12 +203,13 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
 
 ---
 
-## 4. Use Case 3: Multi-Ticket Group Reservation (UC3)
+## 5. Use Case 3: Multi-Ticket Group Reservation (UC3)
 * **Author / Owner:** M. Hasaam (`24i-3107`)
 * **Primary Actor:** Group Organizer / Corporate Buyer
+* **Derived Requirements:** FR1 (Order Placement), FR8 (Atomic Multi-Position Checkout), PR4 (Transaction Integrity)
 * **Pre-Conditions:**
   1. Available quota $A \ge 3$.
-  2. Item is active and purchasable.
+  2. Item `Conference Admission Ticket` is active and purchasable.
 * **Post-Conditions:**
   1. Order created containing 3 distinct `OrderPosition` records.
   2. Total order price calculated as $3 \times €50.00 = €150.00$.
@@ -137,9 +239,10 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
 
 ---
 
-## 5. Use Case 4: Quota Depletion & Out-of-Stock Handling (UC4)
+## 6. Use Case 4: Quota Depletion & Out-of-Stock Handling (UC4)
 * **Author / Owner:** M. Hasaam (`24i-3107`)
 * **Primary Actor:** Customer (Prospective Buyer)
+* **Derived Requirements:** FR2 (Quota Depletion Enforcement), BR1 (Boundary Capacity Evaluation), BR2 (Multi-Condition Purchasability)
 * **Pre-Conditions:**
   1. Event `sqe2026` is live.
   2. Quota availability is completely exhausted ($A = 0$).
@@ -167,14 +270,15 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
   2. Backend service `OrderChangeManager._check_quotas` detects $A = 0$.
   3. Backend rejects request with HTTP 400 Bad Request: "The requested item is sold out."
 * **Exception Flow E2 (Invalid Voucher Submission):**
-  1. At Alternative Flow A2, Customer enters invalid or expired voucher code.
+  1. During voucher redemption (from A2), Customer enters invalid or expired voucher code.
   2. System flashes error: "This voucher code is not valid or expired."
 
 ---
 
-## 6. Use Case 5: Organizer Order Administration & Status Mutation (UC5)
+## 7. Use Case 5: Organizer Order Administration & Status Mutation (UC5)
 * **Author / Owner:** Shaiman (`24i-3074`)
 * **Primary Actor:** Organizer Administrator
+* **Derived Requirements:** FR4 (Order Payment & Quota Finalization), FR7 (Role-Based Access Enforcement), BR3 (State Machine Transition Integrity)
 * **Pre-Conditions:**
   1. Admin user is authenticated with privileged team credentials (`admin@localhost`).
   2. At least one order exists in `Pending` state.
@@ -206,11 +310,13 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
 
 ---
 
-## 7. Use Case 6: Pending Order Expiration & Capacity Reclamation (UC6)
+## 8. Use Case 6: Pending Order Expiration & Capacity Reclamation (UC6)
 * **Author / Owner:** Shaiman (`24i-3074`)
 * **Primary Actor:** System Background Worker / Organizer Admin
+* **Derived Requirements:** FR5 (Expiration Quota Release), BR4 (Payment Expiration Multi-Condition)
 * **Pre-Conditions:**
   1. Order exists in `Pending` state with expiration timestamp in the past ($\text{now}() > \text{expires}$).
+  2. Pretix background task scheduler (`runperiodic` or Celery worker) is active and connected to PostgreSQL database.
 * **Post-Conditions:**
   1. Order status mutates to `Expired` (`status='e'`).
   2. Held quota units returned to the available quota pool ($A \to A + Q$).
