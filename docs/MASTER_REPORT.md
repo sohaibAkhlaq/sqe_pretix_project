@@ -407,7 +407,7 @@ In accordance with SQE standards, **3-Point Boundary Value Analysis** was perfor
 | **Point 1** | $\min - 1$ | **0** | Underflow Boundary | Rejected: Empty order payload (HTTP 400 Bad Request) | **VERIFIED** |
 | **Point 2** | $\min$ | **1** | Minimum Valid Boundary | Accepted: Single ticket purchase (HTTP 201 Created) | **VERIFIED** |
 | **Point 3** | $\min + 1$ | **2** | Above Minimum Boundary | Accepted: Standard pair ticket order (HTTP 201 Created) | **VERIFIED** |
-| **Point 4** | $\text{nominal}$ | **5** | Nominal Operating Value | Accepted: Medium family/group order (HTTP 201 Created) | **VERIFIED** |
+| **Point 4** | Nominal (Midpoint) | **5** | **7** | Recalculated as $\lfloor S/2 \rfloor$: $\lfloor 10/2 \rfloor = 5 \to \lfloor 15/2 \rfloor = 7$ |
 | **Point 5** | $\max - 1$ | **9** | Below Maximum Boundary | Accepted: Large group order below limit (HTTP 201 Created) | **VERIFIED** |
 | **Point 6** | $\max$ | **10** | Maximum Capacity Boundary | Accepted: Exact full exhaustion of quota pool (HTTP 201 Created) | **VERIFIED** |
 | **Point 7** | $\max + 1$ | **11** | Overflow Boundary | **Rejected:** Over-demanded capacity (HTTP 400 `quota_sold_out`) | **VERIFIED** |
@@ -693,7 +693,7 @@ flowchart LR
 | **Point 1** | $\min - 1$ (Underflow) | **0** | **0** | Constant lower underflow bound |
 | **Point 2** | $\min$ (Valid Minimum) | **1** | **1** | Single ticket transaction floor |
 | **Point 3** | $\min + 1$ (Above Min) | **2** | **2** | Minimal multi-ticket transaction |
-| **Point 4** | $	ext{nominal}$ (Midpoint) | **5** | **7** | Recalculated as $\lfloor S/2 floor$: $\lfloor 10/2 floor = 5 	o \lfloor 15/2 floor = 7$ |
+| **Point 4** | Nominal (Midpoint) | **5** | **7** | Recalculated as $\lfloor S/2 \rfloor$: $\lfloor 10/2 \rfloor = 5 \to \lfloor 15/2 \rfloor = 7$ |
 | **Point 5** | $\max - 1$ (Penultimate) | **9** | **14** | Recalculated as $S - 1$: $10-1=9 	o 15-1=14$ |
 | **Point 6** | $\max$ (Capacity Limit) | **10** | **15** | Recalculated as $S$: $10 	o 15$ |
 | **Point 7** | $\max + 1$ (Overflow) | **11** | **16** | Recalculated as $S + 1$: $10+1=11 	o 15+1=16$ |
@@ -745,7 +745,7 @@ When specification updates occur, the test suite dynamically loads the recalcula
 
 ## 8. Use Cases & Playwright E2E Automation (Rubric Components 8 & 9 — 9 Marks, CLO2 & CLO3)
 
-### 6.1 Use Case Specifications
+### 8.1 Use Case Specifications
 Authored 6 detailed Use Cases (`UC-01` to `UC-06`) covering exactly 30 execution flows (6 normal, 12 alternate, 12 exceptional):
 * `UC-01`: Public Ticket Purchase (Normal, 2 Alternate, 2 Exceptional)
 * `UC-02`: Order Placement with Voucher (Normal, 2 Alternate, 2 Exceptional)
@@ -754,7 +754,7 @@ Authored 6 detailed Use Cases (`UC-01` to `UC-06`) covering exactly 30 execution
 * `UC-05`: Concurrent Cart Checkout at Quota Limit (Normal, 2 Alternate, 2 Exceptional)
 * `UC-06`: Order Expiry & Automatic Quota Release (Normal, 2 Alternate, 2 Exceptional)
 
-### 6.2 Browser Automation Execution
+### 8.2 Browser Automation Execution
 Executed headless Chromium tests in `tests/team/e2e/` passing 100% in 9.20s with 5 verified full-page screenshots in `reports/e2e/screenshots/`:
 1. `01_storefront_ticket_selection.png`: Ticket selection and pricing display.
 2. `02_order_placed_confirmation.png`: Order confirmation page with secret code.

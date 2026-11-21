@@ -9,14 +9,20 @@ import os
 import sys
 import json
 import argparse
-import yaml
 from tools.datagen.generator import DataGenerator, DEFAULT_CONSTRAINTS
 
 def load_config(config_path: str = None) -> dict:
     if config_path and os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
-            return data.get("constraints", DEFAULT_CONSTRAINTS)
+        try:
+            import yaml
+            with open(config_path, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+                return data.get("constraints", DEFAULT_CONSTRAINTS)
+        except ImportError:
+            print("[WARNING] 'pyyaml' is not installed in the active Python environment.")
+            print("[INFO] Run with project virtualenv: .\\.venv\\Scripts\\python.exe -m tools.datagen.cli")
+            print("[INFO] Defaulting to standard constraints.")
+            return DEFAULT_CONSTRAINTS.copy()
     return DEFAULT_CONSTRAINTS.copy()
 
 def main():
