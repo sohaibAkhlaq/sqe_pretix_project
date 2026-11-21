@@ -1,9 +1,9 @@
 {
   "suite": "SE3002 pretix Playwright E2E Suite",
   "phase": "Phase 5 (Gate 5)",
-  "duration_seconds": 11.18,
+  "duration_seconds": 18.71,
   "status": "PASS",
-  "timestamp": "2026-11-20T16:08:15Z",
+  "timestamp": "2026-11-21T11:52:45Z",
   "screenshots_captured": [
     "01_cart_checkout_step.png",
     "02_order_placed_confirmation.png",

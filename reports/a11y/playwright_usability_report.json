@@ -1,13 +1,18 @@
 {
   "workflow_a": {
-    "task": "Storefront Ticket Checkout",
-    "rejected_value": "invalid-email-format",
-    "rejection_error_message": "Please include an '@' in the email address. 'invalid-email-format' is missing an '@'.",
-    "error_explained_correction": true,
-    "corrected_value": "usability_buyer_1795197173@sqe.local",
-    "keyboard_navigation_verified": true,
-    "keyboard_submission_verified": true,
-    "confirmation_url": "http://localhost:8345/sqe/sqe2026/checkout/payment/",
+    "task": "Storefront Ticket Purchase with Rejection & Recovery",
+    "business_rule_violated": "Invalid email format rejection",
+    "validation_message_observed": "Please include an '@' in the email address. 'invalid-email-format' is missing an '@'.",
+    "corrected_value_submitted": "usability_buyer_1795263628@sqe.local",
+    "keyboard_operable": true,
+    "focus_after_tab": {
+      "tag": "SUMMARY",
+      "id": "",
+      "name": null,
+      "type": null
+    },
+    "confirmation_displayed": true,
+    "final_url": "http://localhost:8345/sqe/sqe2026/checkout/payment/",
     "status": "PASSED"
   },
   "workflow_b": {

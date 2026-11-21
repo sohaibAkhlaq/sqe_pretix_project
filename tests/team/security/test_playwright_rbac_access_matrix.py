@@ -37,7 +37,7 @@ class TestPlaywrightRBACAccessMatrix:
             # Log in as Admin
             page_admin.goto(f"{BASE_URL}/control/login/")
             page_admin.fill('input[name="email"]', "admin@localhost")
-            page_admin.fill('input[name="password"]', "admin")
+            page_admin.fill('input[name="password"]', "admin_secure_password_2026")
             page_admin.click('button[type="submit"]')
             page_admin.wait_for_load_state("networkidle")
 
@@ -72,7 +72,7 @@ class TestPlaywrightRBACAccessMatrix:
             page_admin2 = context_admin2.new_page()
             page_admin2.goto(f"{BASE_URL}/control/login/")
             page_admin2.fill('input[name="email"]', "admin@localhost")
-            page_admin2.fill('input[name="password"]', "admin")
+            page_admin2.fill('input[name="password"]', "admin_secure_password_2026")
             page_admin2.click('button[type="submit"]')
             page_admin2.wait_for_load_state("networkidle")
 

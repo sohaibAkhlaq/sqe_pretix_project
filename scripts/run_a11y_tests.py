@@ -48,7 +48,8 @@ def main():
         "test_modules": [
             "tests/team/a11y/test_axe_accessibility.py",
             "tests/team/a11y/test_keyboard_navigation.py",
-            "tests/team/a11y/test_a11y_remediation.py"
+            "tests/team/a11y/test_a11y_remediation.py",
+            "tests/team/a11y/test_usability_workflow_tasks.py"
         ]
     }
     with open(report_json_path, "w", encoding="utf-8") as f:

@@ -1,20 +1,24 @@
 {
   "suite": "SE3002 pretix Usability & Accessibility Suite",
   "phase": "Phase 6 (Gate 6)",
-  "duration_seconds": 7.13,
+  "duration_seconds": 13.21,
   "status": "PASS",
-  "timestamp": "2026-11-20T16:08:22Z",
+  "timestamp": "2026-11-21T12:16:58Z",
   "screenshots_captured": [
     "01_keyboard_tab_focus.png",
     "02_login_remediation_before.png",
     "02_remediation_before.png",
     "03_login_remediation_after.png",
     "03_remediation_after.png",
-    "04_storefront_high_contrast.png"
+    "04_storefront_high_contrast.png",
+    "workflow_a_01_validation_rejected.png",
+    "workflow_a_02_checkout_progressed.png",
+    "workflow_b_01_orders_ledger_confirmed.png"
   ],
   "test_modules": [
     "tests/team/a11y/test_axe_accessibility.py",
     "tests/team/a11y/test_keyboard_navigation.py",
-    "tests/team/a11y/test_a11y_remediation.py"
+    "tests/team/a11y/test_a11y_remediation.py",
+    "tests/team/a11y/test_usability_workflow_tasks.py"
   ]
 }

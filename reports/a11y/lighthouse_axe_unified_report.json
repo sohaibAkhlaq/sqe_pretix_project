@@ -1,6 +1,6 @@
 {
   "report_title": "Unified Google Lighthouse & axe-core Accessibility & Usability Evaluation",
-  "timestamp": "2026-11-20T17:54:06Z",
+  "timestamp": "2026-11-21T12:16:07Z",
   "total_unique_issues": 3,
   "deduplication_rule": "Issues flagged by both Lighthouse and axe-core counted strictly once",
   "issue_register": [
