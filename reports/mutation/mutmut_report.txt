@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 mutmut 3.8.1 - Python 3 Mutation Testing Engine Report
 Target Paths: upstream/pretix/base/services/quotas.py, orders.py
-Execution Timestamp: 2026-11-21 17:07:19
+Execution Timestamp: 2026-11-21 17:51:07
 --------------------------------------------------------------------------------
 
 [KILLED] mutant-01 (COR) - Line 30 in QuotaAvailability._compute_early_outs
