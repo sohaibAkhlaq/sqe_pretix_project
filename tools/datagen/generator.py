@@ -1,7 +1,10 @@
 """
 Core Data Generation Engine for pretix Order & Quota Testing.
 Implements 3-Point Boundary Value Analysis (BVA) and Equivalence Partitioning (EP).
+Supports dynamic OpenAPI 3.0 specification contract parsing (YAML).
 """
+import os
+import re
 import random
 import uuid
 from decimal import Decimal
@@ -18,6 +21,80 @@ DEFAULT_CONSTRAINTS = {
     "locale": "en",
     "sales_channel": "web"
 }
+
+def load_constraints_from_openapi(spec_path: str = "openapi/team-spec.yaml") -> Dict[str, Any]:
+    """
+    Parses OpenAPI 3.0 specification YAML to dynamically extract schema constraints,
+    boundary limits, and default parameters.
+    Falls back gracefully to DEFAULT_CONSTRAINTS if pyyaml is unavailable or file not found.
+    """
+    constraints = DEFAULT_CONSTRAINTS.copy()
+    if not os.path.exists(spec_path):
+        return constraints
+
+    try:
+        import yaml
+        with open(spec_path, "r", encoding="utf-8") as f:
+            spec = yaml.safe_load(f)
+
+        schemas = spec.get("components", {}).get("schemas", {})
+        
+        # 1. Quota Capacity Constraint from QuotaAvailability schema
+        if "QuotaAvailability" in schemas:
+            quota_props = schemas["QuotaAvailability"].get("properties", {})
+            if "total_size" in quota_props and "example" in quota_props["total_size"]:
+                constraints["quota_size"] = int(quota_props["total_size"]["example"])
+            elif "available_number" in quota_props and "example" in quota_props["available_number"]:
+                constraints["quota_size"] = int(quota_props["available_number"]["example"])
+
+        # 2. Ticket Pricing & Item Constraints from Item schema
+        if "Item" in schemas:
+            item_props = schemas["Item"].get("properties", {})
+            if "id" in item_props and "example" in item_props["id"]:
+                constraints["item_id"] = int(item_props["id"]["example"])
+            if "default_price" in item_props and "example" in item_props["default_price"]:
+                constraints["default_price"] = str(item_props["default_price"]["example"])
+            if "name" in item_props and "properties" in item_props["name"]:
+                en_name = item_props["name"]["properties"].get("en", {}).get("example")
+                if en_name:
+                    constraints["item_name"] = str(en_name)
+
+        # 3. Organizer and Event Slugs from schemas
+        if "Organizer" in schemas:
+            org_slug = schemas["Organizer"].get("properties", {}).get("slug", {}).get("example")
+            if org_slug:
+                constraints["organizer_slug"] = str(org_slug)
+
+        if "Event" in schemas:
+            ev_props = schemas["Event"].get("properties", {})
+            if "slug" in ev_props and "example" in ev_props["slug"]:
+                constraints["event_slug"] = str(ev_props["slug"]["example"])
+            if "currency" in ev_props and "example" in ev_props["currency"]:
+                constraints["currency"] = str(ev_props["currency"]["example"])
+
+        # 4. Request payload constraints
+        if "OrderCreatePayload" in schemas:
+            payload_props = schemas["OrderCreatePayload"].get("properties", {})
+            if "locale" in payload_props and "example" in payload_props["locale"]:
+                constraints["locale"] = str(payload_props["locale"]["example"])
+            if "sales_channel" in payload_props and "example" in payload_props["sales_channel"]:
+                constraints["sales_channel"] = str(payload_props["sales_channel"]["example"])
+
+    except Exception:
+        # Fallback to regex parser if pyyaml fails or schema format varies
+        try:
+            with open(spec_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            m_quota = re.search(r"total_size:.*?example:\s*(\d+)", content, re.DOTALL)
+            if m_quota:
+                constraints["quota_size"] = int(m_quota.group(1))
+            m_price = re.search(r"default_price:.*?example:\s*[\"']?([\d\.]+)[\"']?", content, re.DOTALL)
+            if m_price:
+                constraints["default_price"] = str(m_price.group(1))
+        except Exception:
+            pass
+
+    return constraints
 
 def generate_bva_quantity(quota_size: int) -> List[Dict[str, Any]]:
     """

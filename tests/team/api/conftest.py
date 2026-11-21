@@ -2,6 +2,12 @@
 Pytest configuration for REST API Integration Test Suite.
 Retrieves auth tokens, defines API clients, and manages test state.
 """
+import sys
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
 import pytest
 import requests
 from scripts.get_tokens import get_tokens
