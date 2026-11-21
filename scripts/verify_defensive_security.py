@@ -69,9 +69,11 @@ def audit_defensive_security():
     assert os.path.exists(pip_audit_json), f"Missing {pip_audit_json}"
     with open(pip_audit_json, "r", encoding="utf-8") as f:
         pip_data = json.load(f)
-    print(f"  pip-audit Inspected Packages: {pip_data['dependencies_scanned']}")
-    print(f"  pip-audit Vulnerabilities Detected: {pip_data['vulnerabilities_found']} CVEs")
-    assert pip_data["vulnerabilities_found"] == 0, "Unexpected vulnerabilities found in pip-audit"
+    deps_scanned = pip_data.get("dependencies_scanned", len(pip_data.get("dependencies", [])))
+    vulns_found = pip_data.get("vulnerabilities_found", sum(len(d.get("vulns", [])) for d in pip_data.get("dependencies", [])))
+    print(f"  pip-audit Inspected Packages: {deps_scanned}")
+    print(f"  pip-audit Vulnerabilities Detected: {vulns_found} CVEs")
+    assert vulns_found == 0, "Unexpected vulnerabilities found in pip-audit"
 
     zap_audit_json = os.path.join(PROJECT_ROOT, "reports", "security", "zap_passive_audit_report.json")
     assert os.path.exists(zap_audit_json), f"Missing {zap_audit_json}"
