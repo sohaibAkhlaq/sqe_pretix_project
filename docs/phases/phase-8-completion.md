@@ -2,7 +2,7 @@
 
 **Milestone Tag:** `gate-8`  
 **Git Branch:** `feature/mutation-testing-ci` (merged into `main` via `--no-ff`)  
-**Lead Author:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibakhlaq@users.noreply.github.com>`)  
+**Lead Author:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibikhlaq5@gmail.com>`)  
 **Target Services:** `upstream/pretix/base/services/quotas.py`, `orders.py`  
 **Verification Date:** November 20, 2026  
 **Execution Status:** **100% VERIFIED — ALL PASSING (100% MUTATION SCORE, 0 SURVIVED)**

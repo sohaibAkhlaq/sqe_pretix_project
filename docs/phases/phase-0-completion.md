@@ -124,7 +124,7 @@ To ensure 100% compliance with course submission and viva rules while working lo
 Every commit is recorded locally under the respective member's name and GitHub email:
 ```bash
 # Member 1 Commits (Sohaib)
-git commit --author="sohaibAkhlaq <sohaibakhlaq@users.noreply.github.com>" -m "type(area): summary"
+git commit --author="sohaibAkhlaq <sohaibikhlaq5@gmail.com>" -m "type(area): summary"
 
 # Member 2 Commits (M. Hasaam)
 git commit --author="M. Hasaam <hasaam_github_email>" -m "type(area): summary"

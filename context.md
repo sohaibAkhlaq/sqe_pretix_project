@@ -368,7 +368,7 @@ sqe_project/
 ### 7.1. Confirmed Project Settings
 1. **Team Composition (3 Members):**
    - **Sohaib (24i-3108):** Member 1 (Area A: Static Analysis, White-box, Mutation, CI)
-     - GitHub: `sohaibAkhlaq` (`sohaibakhlaq@users.noreply.github.com`)
+     - GitHub: `sohaibAkhlaq` (`sohaibikhlaq5@gmail.com`)
    - **M. Hasaam (24i-3107):** Member 2 (Area B: API Testing, Data Generation, Performance)
      - GitHub: `M-Hasaam` (`m.hasaam.official@gmail.com`)
    - **Shaiman (24i-3074):** Member 3 (Area C: Use Cases, E2E Playwright, Usability, A11y, Security)

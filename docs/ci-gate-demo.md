@@ -1,7 +1,7 @@
 # Continuous Integration PR Quality Gate Demonstration
 
 **Project:** SE3002 Software Quality Engineering Final Project  
-**Author:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibakhlaq@users.noreply.github.com>`)  
+**Author:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibikhlaq5@gmail.com>`)  
 **CI Configuration:** [`.github/workflows/pr-gate.yml`](file:///c:/Users/USER/Desktop/sqe_project/.github/workflows/pr-gate.yml)  
 **Quality Standards:** Branch Coverage $\ge 80\%$, Mutation Kill Score $\ge 70\%$, Zero Known CVEs.
 

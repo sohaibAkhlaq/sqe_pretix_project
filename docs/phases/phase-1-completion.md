@@ -117,7 +117,7 @@ All contributions to Phase 1 were developed on feature branch `feature/scope-tes
 | :--- | :--- | :--- | :--- |
 | `e4198eb` | Shaiman (`24i-3074`) | `shaiman.qasir.official@gmail.com` | `docs(test-basis): specify 8 FRs, 4 BRs, user roles, and shared quota state` |
 | `e0ca6ea` | M. Hasaam (`24i-3107`) | `m.hasaam.official@gmail.com` | `docs(baseline): specify upstream commit, docker stack, ER schema, and seed inventory` |
-| `560dc83` | Sohaib (`24i-3108`) | `sohaibakhlaq@users.noreply.github.com` | `feat(scripts): implement deterministic database state reset with dual idempotency verification` |
+| `560dc83` | Sohaib (`24i-3108`) | `sohaibikhlaq5@gmail.com` | `feat(scripts): implement deterministic database state reset with dual idempotency verification` |
 | `0bb80cf` | Shaiman (`24i-3074`) | `shaiman.qasir.official@gmail.com` | `docs(context): record confirmed team identities and baseline execution settings` |
 | `644220e` | Team Merge PR #1 | — | `Merge pull request #1 from feature/scope-test-basis (Gate 1: Scope & Test Basis)` |
 

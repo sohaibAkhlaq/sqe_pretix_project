@@ -1,7 +1,7 @@
 # Root Cause Analysis (RCA-02): Protected Foreign Key Cascading Failure on Order Deletion
 
 **Incident ID:** `RCA-02` (Related Defect: `DEF-01`, `PR-2`, `scripts/reset_internal.py`)  
-**Lead Investigator:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibakhlaq@users.noreply.github.com>`)  
+**Lead Investigator:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibikhlaq5@gmail.com>`)  
 **Affected Component:** `pretix.base.models.orders.Order` / Automated Test State Reset Engine  
 **Severity:** Critical (Blocked Automated Testing / Database Corruption Risk)  
 **Methodology:** 5 Whys Analysis + Ishikawa (Fishbone) Diagram + CAPA Framework

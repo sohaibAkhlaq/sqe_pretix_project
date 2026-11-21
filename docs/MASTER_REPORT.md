@@ -16,7 +16,7 @@
 
 | Student Name | Roll Number | Git Author Identity | Core Technical Area | Specialized Responsibilities |
 | :--- | :---: | :--- | :---: | :--- |
-| **Sohaib** | `24i-3108` | `sohaibAkhlaq <sohaibakhlaq@users.noreply.github.com>` | **Area 1** | Static analysis (Radon/Lizard/SonarCloud), White-Box Unit Testing (100% Statement & Branch Coverage, MCC/MCDC), Mutation Testing (`mutmut`, BCR & ADR operators), and CI PR Gate. |
+| **Sohaib** | `24i-3108` | `sohaibAkhlaq <sohaibikhlaq5@gmail.com>` | **Area 1** | Static analysis (Radon/Lizard/SonarCloud), White-Box Unit Testing (100% Statement & Branch Coverage, MCC/MCDC), Mutation Testing (`mutmut`, BCR & ADR operators), and CI PR Gate. |
 | **M. Hasaam** | `24i-3107` | `M-Hasaam <m.hasaam.official@gmail.com>` | **Area 2** | OpenAPI 3.0 Contract Specification, Automated Test Data Generator (`tools/datagen/`), REST API Integration Testing, k6 Performance Baseline, Concurrency Stress & Fault Recovery. |
 | **Shaiman** | `24i-3074` | `ShaimanQasir <shaiman.qasir.official@gmail.com>` | **Area 3** | Use Case Analysis (6 UCs, 30 Flows), Playwright E2E UI Automation, Usability/Accessibility (axe-core WCAG 2.1 AA with Before/After Remediation), Defensive Security & RBAC Matrix. |
 | **All Members** | *Shared* | *Multi-Author Commits* | **Management** | PERT 3-Point Estimation, 5x5 Risk Register, Bi-directional Traceability Matrix, Defect Register (12 Defects), 2 RCAs (5 Whys + Fishbone), Pareto Analysis, Weekly GQM Reports. |
@@ -86,7 +86,7 @@ flowchart TD
 ### 2.1 Registered GitHub Repository & Linear Lineage
 * **Public GitHub Repository:** [https://github.com/sohaibAkhlaq/sqe_pretix_project](https://github.com/sohaibAkhlaq/sqe_pretix_project)
 * **Commit Lineage & Traceability:** Linear commit history authored by verified team member accounts:
-  - Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibakhlaq@users.noreply.github.com>`) — Area 1 Lead
+  - Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibikhlaq5@gmail.com>`) — Area 1 Lead
   - M. Hasaam (`24i-3107`, Git: `M-Hasaam <m.hasaam.official@gmail.com>`) — Area 2 Lead
   - Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`) — Area 3 Lead
 * **Milestone Git Tags:** `gate-0` through `gate-10`, and final submission tag `v1.0-submission`.

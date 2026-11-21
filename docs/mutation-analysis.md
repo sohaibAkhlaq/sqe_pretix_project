@@ -1,7 +1,7 @@
 # Mutation Testing & Fault-Tolerance Analysis Report
 
 **Component:** SE3002 Software Quality Engineering - Quota & Order Management  
-**Author:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibakhlaq@users.noreply.github.com>`)  
+**Author:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibikhlaq5@gmail.com>`)  
 **Target Module:** `upstream/pretix/base/services/quotas.py`, `orders.py`  
 **Tooling Engine:** `mutmut 3.8.1` & Automated AST Mutation Harness  
 **Milestone Tag:** `gate-8`  

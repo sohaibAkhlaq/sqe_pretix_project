@@ -140,8 +140,8 @@ All Phase 3 deliverables were developed on `feature/white-box-testing` and commi
 
 | Commit SHA | Author | Email | Message / Deliverable |
 | :--- | :--- | :--- | :--- |
-| `12dc4ba` | Sohaib (`24i-3108`) | `sohaibakhlaq@users.noreply.github.com` | `docs(cfg): document CFG, 3-formula CCN calculation, MCC truth table, and MC/DC proofs` |
-| `a5b5817` | Sohaib (`24i-3108`) | `sohaibakhlaq@users.noreply.github.com` | `test(unit): implement 49 white-box unit tests achieving 100% statement and branch coverage` |
+| `12dc4ba` | Sohaib (`24i-3108`) | `sohaibikhlaq5@gmail.com` | `docs(cfg): document CFG, 3-formula CCN calculation, MCC truth table, and MC/DC proofs` |
+| `a5b5817` | Sohaib (`24i-3108`) | `sohaibikhlaq5@gmail.com` | `test(unit): implement 49 white-box unit tests achieving 100% statement and branch coverage` |
 | `Merge` | Team Merge PR #3 | — | `Merge pull request #3 from feature/white-box-testing (Gate 3: Static Analysis & White-Box Unit Testing)` |
 
 ---
