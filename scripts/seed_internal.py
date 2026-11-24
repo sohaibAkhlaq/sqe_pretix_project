@@ -18,9 +18,14 @@ from pretix.base.models import User, Organizer, Event, Item, Quota, Team, TeamAP
 
 print("Starting pretix internal database seed...")
 
+admin_password = os.environ.get('SQE_ADMIN_PASSWORD')
+auditor_password = os.environ.get('SQE_AUDITOR_PASSWORD')
+if not admin_password or not auditor_password:
+    raise SystemExit('SQE_ADMIN_PASSWORD and SQE_AUDITOR_PASSWORD must be provided via local .env.')
+
 # 1. Superuser / Admin
 user, created = User.objects.get_or_create(email='admin@localhost', defaults={'is_staff': True})
-user.set_password('admin_secure_password_2026')
+user.set_password(admin_password)
 user.is_staff = True
 user.save()
 
@@ -43,7 +48,7 @@ token, _ = TeamAPIToken.objects.get_or_create(team=admin_team, name='SQE Test AP
 
 # 4. Read-Only Team & Auditor User (Role 2)
 auditor_user, _ = User.objects.get_or_create(email='auditor@localhost', defaults={'is_staff': False})
-auditor_user.set_password('auditor_pass_2026')
+auditor_user.set_password(auditor_password)
 auditor_user.is_staff = False
 auditor_user.save()
 
@@ -75,6 +80,10 @@ with scope(organizer=org):
         }
     )
     event.live = True
+    event.settings.locales = ['en', 'de']
+    event.settings.payment_banktransfer__enabled = True
+    event.settings.payment_banktransfer_bank_details = 'IBAN DE89370400440532013000'
+    event.settings.waiting_list_enabled = True
     event.save()
 
     # 6. Item (Product)

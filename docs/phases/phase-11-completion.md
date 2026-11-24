@@ -1,3 +1,5 @@
+> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
+
 # Phase 11 Completion & Compliance Report: Final Packaging, Master Report & Clean Rerun
 
 **Milestone Tag:** `v1.0-submission`  

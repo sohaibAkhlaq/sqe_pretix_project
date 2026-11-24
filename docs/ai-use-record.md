@@ -1,4 +1,4 @@
-# AI-Use & Academic Transparency Record (Section 7 Compliance)
+> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# AI-Use & Academic Transparency Record (Section 7 Compliance)
 
 **Project Title:** SE3002 Software Quality Engineering — pretix Test Automation  
 **Target Application:** pretix v2026.9.3 (commit `db000dc2986ff595eb3fe4703c4a46c5fe180abe`)  

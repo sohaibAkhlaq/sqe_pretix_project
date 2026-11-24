@@ -11,11 +11,11 @@ services:
       - PRETIX_URL=http://localhost:8345
       - PRETIX_TRUST_X_FORWARDED_FOR=on
       - PRETIX_TRUST_X_FORWARDED_PROTO=on
-      - PRETIX_DJANGO_SECRET=se3002-gold-medalist-secret-key-pretix-testing-2026
+      - PRETIX_DJANGO_SECRET=${PRETIX_DJANGO_SECRET:?Copy .env.example to .env and set local secrets}
       - PRETIX_DATABASE_BACKEND=postgresql
       - PRETIX_DATABASE_NAME=pretix
       - PRETIX_DATABASE_USER=pretix
-      - PRETIX_DATABASE_PASSWORD=pretix_secure_pass_2026
+      - PRETIX_DATABASE_PASSWORD=${PRETIX_DATABASE_PASSWORD:?Set PRETIX_DATABASE_PASSWORD in .env}
       - PRETIX_DATABASE_HOST=postgres
       - PRETIX_DATABASE_PORT=5432
       - PRETIX_REDIS_LOCATION=redis://redis:6379/0
@@ -28,6 +28,8 @@ services:
       - PRETIX_MAIL_TLS=off
       - NUM_WORKERS=2
       - CELERY_WORKER_CONCURRENCY=1
+      - SQE_ADMIN_PASSWORD=${SQE_ADMIN_PASSWORD:?Set SQE_ADMIN_PASSWORD in .env}
+      - SQE_AUDITOR_PASSWORD=${SQE_AUDITOR_PASSWORD:?Set SQE_AUDITOR_PASSWORD in .env}
       - AUTOMIGRATE=skip
     volumes:
       - pretix_data:/data
@@ -46,7 +48,7 @@ services:
     environment:
       POSTGRES_DB: pretix
       POSTGRES_USER: pretix
-      POSTGRES_PASSWORD: pretix_secure_pass_2026
+      POSTGRES_PASSWORD: ${PRETIX_DATABASE_PASSWORD:?Set PRETIX_DATABASE_PASSWORD in .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:

@@ -47,3 +47,12 @@ flowchart TD
 ## 3. Engineering Discoveries & Corrective Decisions
 * **McCabe Cyclomatic Complexity:** Hand calculations confirmed exact 3-formula equality ($V(G) = E - N + 2P = P_R + 1 = R$) for `_compute_early_outs` ($V=6$) and `_check_quotas` ($V=8$).
 * **SonarCloud Integration:** Identified radon maintainability index ($A, >85$) across all unit test modules.
+## Common GQM metric definitions and audit status
+
+These definitions apply consistently to every weekly report:
+
+- **Defect density** = count of distinct confirmed defects first detected in the reporting period divided by the declared size unit (use KLOC only when the counted source-code scope and line-count tool are recorded). Record numerator, denominator, severity mix, and period; do not mix test failures with confirmed defects.
+- **Requirements coverage** = count of canonical FR/BR IDs with at least one executed, passing test and linked raw result divided by the total canonical FR/BR IDs in `docs/test-basis.md`. Planned or merely named test cases do not count as covered.
+- **Defect reopen rate** = defects reopened during the period divided by defects closed during the same period; report `N/A` when the denominator is zero and disclose the time window.
+
+Previously printed weekly PASS values were not recalculated against these definitions and remain provisional. Actual values require a reconciled defect log, canonical requirements inventory, and run-level test evidence; see `docs/completion-report.md`.

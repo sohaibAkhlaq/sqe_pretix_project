@@ -34,7 +34,7 @@ docker exec pretix_web python3 /data/seed_internal.py
 * **Item:** `Conference Admission Ticket` (ID: `1`, default price: `50.00 EUR`, active: `True`)
 * **Quota:** `General Admission Quota` (ID: `1`, capacity: `10`, assigned to Item 1)
 * **Privileged Role:** `admin@localhost` (Admin Team with `all_event_permissions=True`, `all_organizer_permissions=True`)
-  - API Token: `2jt4001j30876dpaccansttyaob6srb2j2b2a5yeyuvvx5usl9syzkk5zinarqfq`
+  - API Token: obtained at runtime from the seeded local test account; value intentionally not persisted in documentation.
 * **Read-Only Auditor Role:** `auditor@localhost` (Auditor Read-Only Team with `limit_event_permissions={'can_view_orders': True, 'event.orders:read': True}`)
   - API Token: `xioftc84crrxlf3t3ps0xckcxg7ji5xnregc663dtmbpqf0dzvsxowmy94g1np5z`
 

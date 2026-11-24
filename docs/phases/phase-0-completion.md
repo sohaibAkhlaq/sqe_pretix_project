@@ -1,3 +1,5 @@
+> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
+
 # Phase 0 (Gate 0) Official Completion & Compliance Audit Report
 **Course:** SE3002 Software Quality Engineering  
 **Project:** Automated Testing of an Open-Source Management Information System (`pretix`)  

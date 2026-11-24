@@ -36,4 +36,4 @@ def get_tokens():
 
 if __name__ == "__main__":
     t = get_tokens()
-    print("Fetched tokens:", t)
+    print("Fetched token names:", ", ".join(sorted(t)))

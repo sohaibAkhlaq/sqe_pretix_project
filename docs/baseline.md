@@ -195,9 +195,9 @@ Deterministic seeding ensures that all test runs commence from a known, pristine
 | **Event** | `sqe2026` | — | `currency: EUR`, `live: True`, 30-day future window | Scoped to `sqe` |
 | **Item** | `Conference Admission Ticket` | `1` | `default_price: 50.00`, `active: True`, `allow_cancel: True` | Linked to Quota `1` |
 | **Quota** | `General Admission Quota` | `1` | `size: 10`, `items: [1]`, Available: `10` | Finite Pool |
-| **User (Admin)** | `admin@localhost` | — | `is_staff: True`, Password: `admin_secure_password_2026` | Full Admin |
+| **User (Admin)** | `admin@localhost` | — | `is_staff: True`, password loaded from ignored local `.env` as `SQE_ADMIN_PASSWORD` | Full Admin |
 | **API Token (Admin)** | Dynamic Token | — | Full read/write across organizer `sqe` | Role 1 (Privileged) |
-| **User (Auditor)** | `auditor@localhost` | — | `is_staff: False`, Password: `auditor_pass_2026` | Role 2 (Read-Only) |
+| **User (Auditor)** | `auditor@localhost` | — | `is_staff: False`, password loaded from ignored local `.env` as `SQE_AUDITOR_PASSWORD` | Role 2 (Read-Only) |
 | **API Token (Auditor)** | Dynamic Token | — | `can_view_orders: True`, `mutate: 403 Forbidden` | Role 2 (Restricted) |
 
 ### 4.1. Core API Endpoints Under Test

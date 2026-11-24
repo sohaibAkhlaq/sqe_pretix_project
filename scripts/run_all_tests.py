@@ -31,37 +31,37 @@ SUITES = [
     {
         "name": "White-Box Unit Testing (Gate 3)",
         "script": BASE_DIR / "scripts" / "run_unit_tests.py",
-        "description": "49 tests, 100% Statement & Branch Coverage, MCC/MCDC"
+        "description": "Unit tests; inspect generated coverage scope and totals"
     },
     {
         "name": "REST API Integration Testing (Gate 4)",
         "script": BASE_DIR / "scripts" / "run_api_tests.py",
-        "description": "16 API tests, OpenAPI contract, Idempotency replay, Data Generator"
+        "description": "API tests; inspect per-operation results and persisted-state assertions"
     },
     {
         "name": "Playwright E2E UI Automation (Gate 5)",
         "script": BASE_DIR / "scripts" / "run_e2e_tests.py",
-        "description": "30 Use Case flows, 5 full-page visual screenshots"
+        "description": "Playwright flows currently implemented in the test suite"
     },
     {
         "name": "Usability & Accessibility Audit (Gate 6)",
         "script": BASE_DIR / "scripts" / "run_a11y_tests.py",
-        "description": "6 axe-core WCAG 2.1 AA tests, Before/After Defect Remediation"
+        "description": "axe-core and keyboard checks; remediation evidence needs separate review"
     },
     {
         "name": "Defensive Security & Threat Audit (Gate 7)",
         "script": BASE_DIR / "scripts" / "run_security_tests.py",
-        "description": "25 security tests, 8-endpoint RBAC, XSS/SQLi, pip-audit, ZAP scan"
+        "description": "Security tests and scanners configured by their suite runner"
     },
     {
         "name": "Mutation Testing Quality Gate (Gate 8)",
         "script": BASE_DIR / "scripts" / "run_mutation_tests.py",
-        "description": "24 mutants (BCR & ADR custom operators), 100% Kill Score"
+        "description": "Configured mutation harness; confirm production-source mutation scope"
     },
     {
         "name": "Performance, Concurrency & Chaos (Gate 9)",
         "script": BASE_DIR / "scripts" / "run_perf_tests.py",
-        "description": "k6 baseline p95 < 500ms, 5 VU concurrency (0 oversold), RTO < 15s"
+        "description": "Four 60-second k6 runs and controlled recovery check"
     }
 ]
 
@@ -69,7 +69,7 @@ def main():
     print("=" * 80)
     print("SE3002 SQE FINAL PROJECT - MASTER END-TO-END TEST EXECUTION HARNESS")
     print("Target: pretix v2026.9.3 | Group: 24i-3108, 24i-3107, 24i-3074")
-    print("Standard: 100% Pass Rate, Zero Flakiness, Full Traceability")
+    print("Standard: execute configured suites and inspect each report against the rubric")
     print("=" * 80)
 
     grand_start = time.time()
@@ -104,7 +104,7 @@ def main():
     grand_duration = time.time() - grand_start
 
     print("\n" + "=" * 80)
-    print("MASTER EXECUTION SUMMARY: ALL TEST SUITES VERIFIED")
+    print("MASTER EXECUTION SUMMARY: CONFIGURED SCRIPTS COMPLETED")
     print("=" * 80)
     print(f"{'Suite Name':<45} | {'Status':<10} | {'Duration'}")
     print("-" * 80)
@@ -112,7 +112,7 @@ def main():
         print(f"{r['name']:<45} | {r['status']:<10} | {r['duration']}s")
     print("-" * 80)
     print(f"Total Master Execution Time: {grand_duration:.2f} seconds")
-    print("Overall System Quality Status: 100% GREEN (GOLD MEDAL BENCHMARK)")
+    print("Suite completion is not a grading guarantee; confirm scope, thresholds, and evidence.")
     print("=" * 80)
 
 if __name__ == "__main__":

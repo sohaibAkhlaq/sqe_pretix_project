@@ -61,3 +61,8 @@ scratch_probe.py
 
 # Large raw tool dump caches (keep summarized reports in git)
 .scannerwork/
+
+# Course Assignment Prompts & Final Submission Archives
+SQE_*.pdf
+*.zip
+

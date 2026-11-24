@@ -1,4 +1,4 @@
-# Pareto Defect Distribution Analysis (80/20 Rule)
+> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# Pareto Defect Distribution Analysis (80/20 Rule)
 
 **Component:** SE3002 Software Quality Engineering Final Project  
 **Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`)  
