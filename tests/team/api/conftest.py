@@ -54,3 +54,19 @@ def event_endpoints():
         "quotas": f"{BASE_URL}/organizers/{ORGANIZER}/events/{EVENT}/quotas/1/availability/",
         "orders": f"{BASE_URL}/organizers/{ORGANIZER}/events/{EVENT}/orders/",
     }
+
+@pytest.fixture(scope="session")
+def generated_data():
+    """Loads authoritative generated test vectors from tools/datagen output."""
+    import json
+    gen_file = BASE_DIR / "reports" / "api" / "generated_data.json"
+    if not gen_file.exists():
+        from tools.datagen.generator import generate_full_dataset
+        data = generate_full_dataset()
+        gen_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(gen_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        return data
+    with open(gen_file, "r", encoding="utf-8") as f:
+        return json.load(f)
+
