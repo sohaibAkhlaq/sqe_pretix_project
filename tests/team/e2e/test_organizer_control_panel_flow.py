@@ -8,7 +8,7 @@ import pytest
 class TestOrganizerControlPanelE2E:
     """Verifies UC5 Organizer administration in the backend control panel."""
 
-    def test_admin_login_and_orders_view(self, page, base_url, screenshot_dir):
+    def test_admin_login_and_orders_view(self, page, base_url, screenshot_dir, admin_password):
         # 1. Navigate to control login
         login_url = f"{base_url}/control/login"
         page.goto(login_url)
@@ -16,7 +16,7 @@ class TestOrganizerControlPanelE2E:
 
         # 2. Enter admin credentials
         page.fill('input[name="email"]', "admin@localhost")
-        page.fill('input[name="password"]', "admin_secure_password_2026")
+        page.fill('input[name="password"]', admin_password)
         page.click('button[type="submit"]')
         page.wait_for_load_state("networkidle")
 

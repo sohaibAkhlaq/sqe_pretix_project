@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "SE3002 Defensive Security & Vulnerability Analysis",
-    "date": "2026-11-22T14:46:59.696205",
+    "date": "2026-11-24T16:38:19.109272",
     "target": "pretix v2026.9.3",
     "author": "Shaiman (24i-3074)",
     "gate": "gate-7"
@@ -10,7 +10,7 @@
     "total": 26,
     "passed": 26,
     "failed": 0,
-    "duration_seconds": 13.93,
+    "duration_seconds": 12.0,
     "status": "PASSED"
   },
   "dependency_vulnerability_scan": {

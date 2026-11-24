@@ -1,3 +1,5 @@
+> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
+
 # Phase 8 Completion & Compliance Report: Mutation Testing & CI PR Quality Gate
 
 **Milestone Tag:** `gate-8`  

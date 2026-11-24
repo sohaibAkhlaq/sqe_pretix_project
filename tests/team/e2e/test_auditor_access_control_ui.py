@@ -8,14 +8,14 @@ import pytest
 class TestAuditorAccessControlE2E:
     """Verifies auditor login and restricted administrative privileges."""
 
-    def test_auditor_login_and_inspection(self, page, base_url, screenshot_dir):
+    def test_auditor_login_and_inspection(self, page, base_url, screenshot_dir, auditor_password):
         login_url = f"{base_url}/control/login"
         page.goto(login_url)
         page.wait_for_load_state("networkidle")
 
         # Login as auditor
         page.fill('input[name="email"]', "auditor@localhost")
-        page.fill('input[name="password"]', "auditor_pass_2026")
+        page.fill('input[name="password"]', auditor_password)
         page.click('button[type="submit"]')
         page.wait_for_load_state("networkidle")
 

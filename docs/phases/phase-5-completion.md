@@ -1,3 +1,5 @@
+> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
+
 # Phase 5 Completion and Gate 5 Audit Report
 
 **Document Reference:** `docs/phases/phase-5-completion.md`  

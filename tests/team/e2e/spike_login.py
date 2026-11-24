@@ -5,6 +5,11 @@ Captures screen evidence and verifies successful session establishment.
 """
 import os
 import sys
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from scripts.test_secrets import get_test_secret
 from playwright.sync_api import sync_playwright
 
 def run_login_spike():
@@ -26,7 +31,7 @@ def run_login_spike():
         
         # Fill credentials
         page.fill('input[name="email"]', "admin@localhost")
-        page.fill('input[name="password"]', "admin_secure_password_2026")
+        page.fill('input[name="password"]', get_test_secret("SQE_ADMIN_PASSWORD"))
         
         # Submit form
         print("Submitting login form...")

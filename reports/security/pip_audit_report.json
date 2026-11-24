@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-22T14:46:56.176162",
+  "timestamp": "2026-11-24T16:38:15.320833",
   "tool": "pip-audit 2.10.1",
   "target": "requirements-test.txt",
   "dependencies_scanned": 48,
@@ -29,7 +29,7 @@
       },
       {
         "name": "charset-normalizer",
-        "version": "3.5.2",
+        "version": "3.5.3",
         "vulns": []
       },
       {
@@ -149,12 +149,12 @@
       },
       {
         "name": "coverage",
-        "version": "7.17.4",
+        "version": "7.17.5",
         "vulns": []
       },
       {
         "name": "filelock",
-        "version": "4.3.0",
+        "version": "4.3.1",
         "vulns": []
       },
       {

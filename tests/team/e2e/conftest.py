@@ -11,6 +11,7 @@ if str(BASE_DIR) not in sys.path:
 
 import pytest
 from playwright.sync_api import sync_playwright
+from scripts.test_secrets import get_test_secret
 
 BASE_URL = "http://localhost:8345"
 SCREENSHOT_DIR = os.path.join("reports", "e2e", "screenshots")
@@ -40,3 +41,11 @@ def base_url():
 @pytest.fixture(scope="session")
 def screenshot_dir():
     return SCREENSHOT_DIR
+
+@pytest.fixture(scope="session")
+def admin_password():
+    return get_test_secret("SQE_ADMIN_PASSWORD")
+
+@pytest.fixture(scope="session")
+def auditor_password():
+    return get_test_secret("SQE_AUDITOR_PASSWORD")

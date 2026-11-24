@@ -11,13 +11,13 @@ import pytest
 class TestUC5AdminOrderManagementE2E:
     """Verifies UC5 backend control panel administration workflows."""
 
-    def test_uc5_nf_admin_order_management_dashboard(self, page, base_url, screenshot_dir):
+    def test_uc5_nf_admin_order_management_dashboard(self, page, base_url, screenshot_dir, admin_password):
         # 1. Login as Admin
         page.goto(f"{base_url}/control/login")
         page.wait_for_load_state("networkidle")
 
         page.fill('input[name="email"]', "admin@localhost")
-        page.fill('input[name="password"]', "admin_secure_password_2026")
+        page.fill('input[name="password"]', admin_password)
         page.click('button[type="submit"]')
         page.wait_for_load_state("networkidle")
 
@@ -32,7 +32,7 @@ class TestUC5AdminOrderManagementE2E:
         page.screenshot(path=screenshot_path)
         print(f"UC5 NF verified. Screenshot: {screenshot_path}")
 
-    def test_uc5_af1_filter_orders_by_status(self, page, base_url, screenshot_dir):
+    def test_uc5_af1_filter_orders_by_status(self, page, base_url, screenshot_dir, admin_password):
         """
         Flow UC5 AF-1: Administrator filters orders by status (e.g. status=p or status=n).
         Postcondition: Orders view updates with filtered results query parameter.
@@ -41,7 +41,7 @@ class TestUC5AdminOrderManagementE2E:
         page.wait_for_load_state("networkidle")
         if page.locator('input[name="email"]').count() > 0:
             page.fill('input[name="email"]', "admin@localhost")
-            page.fill('input[name="password"]', "admin_secure_password_2026")
+            page.fill('input[name="password"]', admin_password)
             page.click('button[type="submit"]')
             page.wait_for_load_state("networkidle")
 
