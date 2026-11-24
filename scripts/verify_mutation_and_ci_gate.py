@@ -15,6 +15,8 @@ import json
 import subprocess
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+venv_py = os.path.join(PROJECT_ROOT, ".venv", "Scripts", "python.exe")
+PYTHON_BIN = venv_py if os.path.exists(venv_py) else sys.executable
 
 def audit_mutation_and_ci_gate():
     print("======================================================================")
@@ -24,7 +26,7 @@ def audit_mutation_and_ci_gate():
     # 1. Run Live Mutation Testing Engine
     print("\n--- [CHECK 1] Executing Live Mutation Testing Engine (Phase 8) ---")
     mut_script = os.path.join(PROJECT_ROOT, "scripts", "run_mutation_tests.py")
-    res = subprocess.run([sys.executable, mut_script], capture_output=True, text=True)
+    res = subprocess.run([PYTHON_BIN, mut_script], capture_output=True, text=True)
     print(res.stdout[-600:] if len(res.stdout) > 600 else res.stdout)
     assert res.returncode == 0, f"Mutation engine failed with code {res.returncode}"
 
@@ -96,7 +98,7 @@ def audit_mutation_and_ci_gate():
     print("\n--- [CHECK 5] Simulating CI Quality Gate Blocking Behavior (Red Gate) ---")
     # Simulate a failing check: pytest with strict fail-under exceeding current threshold
     cov_fail_sim = subprocess.run(
-        [sys.executable, "-m", "pytest", "tests/team/unit/test_quota_early_outs.py", "--cov=tests/team/unit/test_quota_early_outs.py", "--cov-fail-under=101"],
+        [PYTHON_BIN, "-m", "pytest", "tests/team/unit/test_quota_early_outs.py", "--cov=tests/team/unit/test_quota_early_outs.py", "--cov-fail-under=101"],
         capture_output=True, text=True
     )
     print("  Simulating gate failure (--cov-fail-under > achievable):")

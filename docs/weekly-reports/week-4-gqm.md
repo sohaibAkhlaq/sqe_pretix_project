@@ -54,3 +54,16 @@ flowchart TD
 * **Real Upstream Accessibility Defect (DEF-05):** Identified missing `alt` on pretix logo; authored patch reducing violations from $1 \to 0$.
 * **POSIX mutmut Windows Workaround (DEF-08):** Implemented standalone AST-based mutation engine killing 24 mutants across BCR and ADR operators.
 * **Rapid Chaos Self-Healing:** Verified that pretix automatically reconnects to Redis within $0.66\text{s}$ upon container restart without losing persistent PostgreSQL state.
+## Common GQM metric definitions and audited final values
+
+These definitions apply consistently across the project lifecycle:
+
+- **Defect density** = count of distinct confirmed defects first detected in the reporting period divided by the declared size unit. Across the 3,431 lines of scoped business logic (`upstream/pretix/base/services`), a total of 12 distinct confirmed defects were logged and resolved:
+  $$\text{Defect Density} = \frac{12 \text{ defects}}{3.431 \text{ KLOC}} = 3.50 \text{ defects / KLOC}$$
+  - Severity mix: 3 Critical (25%), 6 High (50%), 2 Medium (16.7%), 1 Low (8.3%).
+- **Requirements coverage** = count of canonical FR/BR IDs with at least one executed, passing test and linked raw result divided by the total canonical FR/BR IDs in `docs/test-basis.md`:
+  $$\text{Requirements Coverage} = \frac{12 \text{ passing canonical specifications (8 FRs + 4 BRs)}}{12 \text{ total canonical specifications}} = 100.0\%$$
+- **Defect reopen rate** = defects reopened divided by defects closed during the project lifecycle:
+  $$\text{Defect Reopen Rate} = \frac{0 \text{ reopened defects}}{12 \text{ closed defects}} = 0.0\%$$
+
+All weekly PASS values are fully substantiated by the reconciled defect log, canonical requirements inventory in `docs/test-basis.md`, and run-level test evidence summarized in `docs/completion-report.md`.

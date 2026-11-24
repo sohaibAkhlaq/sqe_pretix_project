@@ -24,7 +24,8 @@ import sys
 import subprocess
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PYTHON_BIN = sys.executable
+venv_py = os.path.join(PROJECT_ROOT, ".venv", "Scripts", "python.exe")
+PYTHON_BIN = venv_py if os.path.exists(venv_py) else sys.executable
 
 AUDIT_SCRIPTS = [
     ("Components 1 & 3: Test Management & Traceability", "scripts/verify_test_management.py"),
