@@ -3,6 +3,9 @@ White-Box Unit Tests for OrderChangeManager._check_quotas (CCN = 8).
 Verifies 100% Statement and 100% Branch Coverage across all 8 basis paths.
 """
 import pytest
+from types import MethodType
+
+from production_source import load_upstream_method
 
 # Constants aligned with pretix.base.models.Quota
 AVAILABILITY_OK = 100
@@ -34,25 +37,23 @@ class MockQuotaAvailabilityService:
         pass
 
 class MockOrderChangeManager:
-    """Mock harness replicating OrderChangeManager._check_quotas logic exactly."""
+    """Harness that executes _check_quotas from the pinned upstream source."""
     def __init__(self, quotadiff, qa_service):
         self._quotadiff = quotadiff
-        self._qa_service = qa_service
         self.error_messages = {
             'quota': "There is not enough capacity left for quota '{name}'."
         }
-
-    def _check_quotas(self):
-        """Exact logic from pretix.base.services.orders.OrderChangeManager._check_quotas"""
-        qa = self._qa_service
-        qa.queue(*[k for k, v in self._quotadiff.items() if v > 0])
-        qa.compute()
-        for quota, diff in self._quotadiff.items():
-            if diff <= 0:
-                continue
-            avail = qa.results[quota]
-            if avail[0] != AVAILABILITY_OK or (avail[1] is not None and avail[1] < diff):
-                raise OrderError(self.error_messages['quota'].format(name=quota.name))
+        method = load_upstream_method(
+            "base/services/orders.py",
+            "OrderChangeManager",
+            "_check_quotas",
+            {
+                "QuotaAvailability": lambda: qa_service,
+                "Quota": type("QuotaConstants", (), {"AVAILABILITY_OK": AVAILABILITY_OK}),
+                "OrderError": OrderError,
+            },
+        )
+        self._check_quotas = MethodType(method, self)
 
 
 class TestOrderChangeQuotasWhiteBox:

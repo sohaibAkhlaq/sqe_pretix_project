@@ -3,6 +3,9 @@ White-Box Unit Tests for QuotaAvailability._compute_early_outs (CCN = 6).
 Verifies 100% Statement and 100% Branch Coverage across all 6 basis paths.
 """
 import pytest
+from types import MethodType
+
+from production_source import load_upstream_method
 
 # Constants aligned with pretix.base.models.Quota
 AVAILABILITY_OK = 100
@@ -23,16 +26,17 @@ class MockQuotaAvailability:
     def __init__(self, ignore_closed=False):
         self.results = {}
         self._ignore_closed = ignore_closed
-
-    def _compute_early_outs(self, quotas):
-        """Exact logic extracted from pretix.base.services.quotas.QuotaAvailability"""
-        for q in quotas:
-            if q.closed and not self._ignore_closed:
-                self.results[q] = AVAILABILITY_ORDERED, 0
-            elif q.size is None:
-                self.results[q] = AVAILABILITY_OK, None
-            elif q.size == 0:
-                self.results[q] = AVAILABILITY_GONE, 0
+        method = load_upstream_method(
+            "base/services/quotas.py",
+            "QuotaAvailability",
+            "_compute_early_outs",
+            {"Quota": type("QuotaConstants", (), {
+                "AVAILABILITY_OK": AVAILABILITY_OK,
+                "AVAILABILITY_GONE": AVAILABILITY_GONE,
+                "AVAILABILITY_ORDERED": AVAILABILITY_ORDERED,
+            })},
+        )
+        self._compute_early_outs = MethodType(method, self)
 
 
 class TestQuotaEarlyOutsWhiteBox:

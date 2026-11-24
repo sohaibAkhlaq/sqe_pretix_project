@@ -1,4 +1,4 @@
-# SonarQube & Static Code Analysis Report
+> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# SonarQube & Static Code Analysis Report
 
 **Document Reference:** `docs/cfg/sonarcloud_static_analysis.md`  
 **Course:** SE3002 Software Quality Engineering  

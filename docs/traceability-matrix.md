@@ -1,5 +1,18 @@
 # Requirements Traceability Matrix (RTM)
 
+> **Audit correction (2026-11-24):** The historical matrix below contains mismatched FR IDs, targets, test IDs, and unverified coverage assertions. Do not grade it as current verified traceability. The canonical rule text is in `test-basis.md`; the current evidence gaps and release hold are in `completion-report.md`. In particular, the earlier BR2 rows claiming a 16-row `Item.is_purchasable()` test are invalid: the actual checked-in production decision is the two-condition closed-quota decision described in `cfg/mcc_mcdc.md`.
+
+## Current source-to-test evidence (supersedes historical claims)
+
+| Rule / scope | Production target | Checked-in executable evidence | What it establishes | Status |
+|---|---|---|---|---|
+| BR1 quota differential validation | `upstream/pretix/base/services/orders.py`, `OrderChangeManager._check_quotas` | `tests/team/unit/test_order_change_quotas.py` | Executes extracted upstream method body with stubbed collaborators; exercises positive-diff capacity branches | Implemented; rerun and reconcile coverage |
+| BR2 closed-quota early-out | `upstream/pretix/base/services/quotas.py`, `QuotaAvailability._compute_early_outs` | `tests/team/unit/test_mcc_mcdc_quota_policy.py` | Four MCC vectors and two unique MC/DC pairs on the extracted production method body | Implemented; rerun and reconcile coverage |
+| BR3 state transitions | No production method exercised by current unit module | `tests/team/unit/test_order_state_transitions.py` | Tests a locally defined `MockOrder` model only | Does not prove pretix behavior |
+| BR4 expired-order late payment | No production payment method exercised by current unit module | `tests/team/unit/test_order_state_transitions.py` | Tests a local pending-order expiry predicate, not expired-order payment acceptance | Not covered |
+
+Do not infer API/E2E implementation from a test ID in the legacy matrix. Those levels require observed response and persisted-state evidence linked to the exact run.
+
 **Document Reference:** `docs/traceability-matrix.md`  
 **Course:** SE3002 Software Quality Engineering  
 **Application Under Test:** pretix  

@@ -1,3 +1,5 @@
+# Audit correction (2026-11-24): prior coverage totals and four-condition MCC claims are historical and unverified. The corrected evidence scope is below; see docs/completion-report.md.
+
 # White-Box Coverage & Uncovered Code Defense
 
 **Document Reference:** `docs/cfg/branch_coverage_defense.md`  
@@ -92,36 +94,12 @@ All 8 linearly independent basis paths are mapped 1-to-1:
 
 ---
 
-## 5. Multiple Condition Coverage (MCC) and MC/DC Independence
+## 5. MCC and MC/DC — corrected decision
 
-Target Rule: **Business Rule 2 (Multi-condition Purchasability)**
-$$\text{Decision } D = C_1 \land C_2 \land C_3 \land C_4$$
-Where:
-* $C_1 = \text{event.live}$ (Event is public and live)
-* $C_2 = \text{item.active}$ (Ticket tier active)
-* $C_3 = (\text{quota\_avail} > 0)$ (Sufficient quota headroom)
-* $C_4 = \text{date\_valid}$ (Within presale timeframe)
+The previous four-condition purchasability discussion is withdrawn. It tested a local helper and did not establish production-code coverage. Current BR2 scope is only the condition `q.closed and not self._ignore_closed` in `upstream/pretix/base/services/quotas.py`, method `QuotaAvailability._compute_early_outs`.
 
-### 5.1 Multiple Condition Coverage (MCC)
-Full $2^4 = 16$ truth table rows verified via `TestPurchasabilityMCC::test_mcc_row`:
-* Row 1 (`TTTT`): $D = \text{True}$ (Oracle: HTTP 200/201 Order proceeds).
-* Rows 2â€“16: $D = \text{False}$ (Oracle: HTTP 400/409 Order rejected).
+The complete 2-condition MCC table, expected result, and MC/DC independence pairs are documented in `docs/cfg/mcc_mcdc.md`; the executable test is `tests/team/unit/test_mcc_mcdc_quota_policy.py`. The method body is extracted from the checked-in upstream source by `tests/team/unit/production_source.py`. This isolated method harness does not establish full service integration.
 
-### 5.2 Modified Condition / Decision Coverage (MC/DC)
-Minimal 5-test suite ($n + 1 = 5$) verifying 4 orthogonal independence pairs:
-1. **$C_1$ Independence:** `TC-MCC-01` (`TTTT` $\to$ True) vs `TC-MCC-09` (`FTTT` $\to$ False). Fixed: $C_2=T, C_3=T, C_4=T$. Toggling $C_1$ independently toggles $D$.
-2. **$C_2$ Independence:** `TC-MCC-01` (`TTTT` $\to$ True) vs `TC-MCC-05` (`TFTT` $\to$ False). Fixed: $C_1=T, C_3=T, C_4=T$. Toggling $C_2$ independently toggles $D$.
-3. **$C_3$ Independence:** `TC-MCC-01` (`TTTT` $\to$ True) vs `TC-MCC-03` (`TTFT` $\to$ False). Fixed: $C_1=T, C_2=T, C_4=T$. Toggling $C_3$ independently toggles $D$.
-4. **$C_4$ Independence:** `TC-MCC-01` (`TTTT` $\to$ True) vs `TC-MCC-02` (`TTTF` $\to$ False). Fixed: $C_1=T, C_2=T, C_3=T$. Toggling $C_4$ independently toggles $D$.
+## 6. Coverage status and evidence requirements
 
-All 4 conditions proven mathematically and empirically orthogonal.
-
----
-
-## 6. Sign-off and Gate 3 Approval
-
-| Role | Name | Student ID | Status | Signature |
-| :--- | :--- | :---: | :---: | :--- |
-| **Area A Lead (Unit & White-Box)** | Sohaib | `24i-3108` | **APPROVED** | *Sohaib Akhlaq* |
-| **Area B Lead (API & Performance)** | M. Hasaam | `24i-3107` | **APPROVED** | *M. Hasaam* |
-| **Area C Lead (UI & Security)** | Shaiman | `24i-3074` | **APPROVED** | *Shaiman* |
+Historical totals shown in this file are not accepted as final evidence because the coverage XML and older report totals use inconsistent scopes. The current XML has 299/300 statements and 16/16 branches; a 100% target has therefore not been demonstrated. A fresh run must declare the exact production source/function scope and produce XML and HTML from the same execution. Any missed source statement needs an exact line, reachability analysis, and a justified exclusion only if the rubric permits it. See `docs/completion-report.md`; release remains HOLD.

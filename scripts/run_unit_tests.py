@@ -34,7 +34,8 @@ def run_tests():
         print(f"\n[FAIL] Unit tests failed with exit code {res.returncode}")
         sys.exit(res.returncode)
 
-    print("\n[SUCCESS] All 49 white-box unit tests passed with 100% target coverage.")
+    print("\n[SUCCESS] White-box unit test process completed successfully.")
+    print("Coverage currently measures the test helper package; it is not proof of upstream production-source coverage.")
     print(f"Coverage HTML: {os.path.join(PROJECT_ROOT, 'reports', 'coverage', 'html', 'index.html')}")
     print(f"Coverage XML:  {os.path.join(PROJECT_ROOT, 'reports', 'coverage', 'coverage.xml')}")
 

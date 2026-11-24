@@ -1,4 +1,4 @@
-# Master Test Basis & Functional Scope Specification
+> **Verification scope note (2026-11-24):** BR2 MCC/MC/DC now targets the closed-quota early-out in checked-in upstream code. BR3 and BR4 behavioral descriptions remain specification hypotheses until matched to actual production methods and tests; see `docs/completion-report.md`.`r`n`r`n# Master Test Basis & Functional Scope Specification
 **Course:** SE3002 Software Quality Engineering  
 **Standard:** Gold Medalist Academic & Professional Benchmark (120/120 Marks)  
 **Lead Author:** Shaiman (24i-3074 — Area C Lead)  
@@ -142,7 +142,7 @@ Four explicit business rules are modeled from `pretix.base.services.quotas` and 
 classDiagram
     class BusinessRules {
         +BR1_BoundaryLimit(total_reserved, total_sold, quota_size)
-        +BR2_PurchasabilityDecision(active, date_valid, quota_available)
+        +BR2_ClosedQuotaPolicy(quota_closed, ignore_closed)
         +BR3_StateTransition(current_state, target_state)
         +BR4_ExpiredPaymentDecision(is_expired, payment_valid, quota_capacity)
     }
@@ -159,16 +159,15 @@ classDiagram
 
 ---
 
-### 5.2. BR2 — Multi-Condition Decision Rule (Item Purchasability)
-* **Code Reference:** `pretix.base.models.Item.is_available()`
+### 5.2. BR2 — Multi-Condition Decision Rule (Closed-Quota Fast Path)
+* **Code Reference:** `upstream/pretix/base/services/quotas.py`, `QuotaAvailability._compute_early_outs`.
 * **Boolean Conditions:**
-  * $C_1$: $\text{Item Active} == \text{True}$
-  * $C_2$: $\text{Now} \ge \text{available\_from}$ (or $\text{available\_from}$ is Null)
-  * $C_3$: $\text{Now} \le \text{available\_until}$ (or $\text{available\_until}$ is Null)
-  * $C_4$: $\forall q \in \text{Quotas}, \text{Available}(q) \ge \text{Requested Quantity}$
+  * $C_1$: the quota is marked closed (`q.closed`).
+  * $C_2$: closed quotas are not being ignored (`not self._ignore_closed`).
 * **Decision Formula:**
-  $$\text{Purchasable} = C_1 \land C_2 \land C_3 \land C_4$$
-* **Testing Technique:** Multiple Condition Coverage (MCC, $2^4 = 16$ truth combinations) and Modified Condition/Decision Coverage (MC/DC) independent condition toggle pairs.
+  $$\text{Return Closed/Ordered Early-Out} = C_1 \land C_2$$
+  When true, the method stores `(Quota.AVAILABILITY_ORDERED, 0)`. Otherwise it proceeds to the unlimited/zero-size checks or leaves a positive-size quota for full computation.
+* **Testing Technique:** Complete MCC over all $2^2=4$ combinations and MC/DC with three cases that independently toggle each condition. The tests execute the method body from the pinned upstream source; only quota state and constants are stubbed.
 
 ---
 
