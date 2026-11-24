@@ -21,7 +21,7 @@ SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
 class TestPlaywrightRBACAccessMatrix:
     """Automates browser verification of role-based access decisions across both workflows."""
 
-    def test_verify_playwright_access_matrix(self):
+    def test_verify_playwright_access_matrix(self, admin_password):
         access_results = []
 
         with sync_playwright() as p:
@@ -37,7 +37,7 @@ class TestPlaywrightRBACAccessMatrix:
             # Log in as Admin
             page_admin.goto(f"{BASE_URL}/control/login/")
             page_admin.fill('input[name="email"]', "admin@localhost")
-            page_admin.fill('input[name="password"]', "admin_secure_password_2026")
+            page_admin.fill('input[name="password"]', admin_password)
             page_admin.click('button[type="submit"]')
             page_admin.wait_for_load_state("networkidle")
 
@@ -72,7 +72,7 @@ class TestPlaywrightRBACAccessMatrix:
             page_admin2 = context_admin2.new_page()
             page_admin2.goto(f"{BASE_URL}/control/login/")
             page_admin2.fill('input[name="email"]', "admin@localhost")
-            page_admin2.fill('input[name="password"]', "admin_secure_password_2026")
+            page_admin2.fill('input[name="password"]', admin_password)
             page_admin2.click('button[type="submit"]')
             page_admin2.wait_for_load_state("networkidle")
 

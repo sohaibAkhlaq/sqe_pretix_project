@@ -1,4 +1,4 @@
-# Pretix Defensive Security & Threat Model
+> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# Pretix Defensive Security & Threat Model
 
 **Component:** SE3002 Software Quality Engineering - Order & Quota Module  
 **Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`)  
@@ -182,3 +182,47 @@ The running application enforces strict HTTP security headers:
 5. Cookie Security Attributes:
    - `HttpOnly`: Enforced on session cookies to block JavaScript access via `document.cookie` (mitigating XSS session theft).
    - `SameSite=Lax`: Prevents cross-site request cookie inclusion during cross-origin requests.
+
+---
+
+## 7. Verified Route/Action Access Decision Matrix (Playwright RBAC Evidence)
+
+Automated end-to-end browser tests in [`tests/team/security/test_playwright_rbac_access_matrix.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/security/test_playwright_rbac_access_matrix.py) empirically verify access control decisions across authenticated administrative staff, auditors, and unauthenticated public users. Each decision is accompanied by visual evidence captured during the live test run:
+
+| Decision ID | User Role | Route / Action Evaluated | Decision Type | Expected Result | Observed Result | Verdict | Evidence Screenshot |
+| :---: | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
+| **`DEC-01`** | Organizer Admin | View event order ledger and financial breakdown (`/control/event/sqe/sqe2026/orders/`) | **ALLOWED** | HTTP 200 OK; Ledger displayed | Rendered order management table and metrics | **PASS** | [`reports/security/screenshots/decision1_admin_orders_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision1_admin_orders_allowed.png) |
+| **`DEC-02`** | Organizer Admin | Inspect & configure item inventory capacity (`/control/event/sqe/sqe2026/items/`) | **ALLOWED** | HTTP 200 OK; Items displayed | Rendered item tier settings and pricing | **PASS** | [`reports/security/screenshots/decision2_admin_quota_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision2_admin_quota_allowed.png) |
+| **`DEC-03`** | Unauthenticated / Auditor | Direct deep-link attempt to access order ledger without administrative login | **DENIED** | HTTP 302 Redirect to `/control/login` | Redirected to administrative login gate | **PASS** | [`reports/security/screenshots/decision3_anon_control_panel_denied.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision3_anon_control_panel_denied.png) |
+| **`DEC-04`** | Unauthenticated User | Direct API mutation attempting to alter quota limit (`POST /api/v1/.../quotas/1/`) | **DENIED** | HTTP 401 Unauthorized | Rejected with `401 Unauthorized`; quota untouched | **PASS** | [`reports/security/screenshots/decision4_anon_quota_edit_denied.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision4_anon_quota_edit_denied.png) |
+| **`DEC-05`** | Customer / Public Attendee | Access public event landing page and ticket catalog (`/sqe/sqe2026/`) | **ALLOWED** | HTTP 200 OK; Catalog rendered | Displayed public event info and ticket options | **PASS** | [`reports/security/screenshots/decision5_public_storefront_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision5_public_storefront_allowed.png) |
+
+Machine-readable audit trail recorded in [`reports/security/playwright_rbac_matrix.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/playwright_rbac_matrix.json).
+
+---
+
+## 8. Corroborated Security Controls & Supply Chain Audit
+
+### 8.1. OWASP ZAP Passive Scan & Corroborated Controls
+A passive vulnerability assessment was executed across 5 core application endpoints (Storefront, Control Panel, API, Checkout, and Login), recorded in [`reports/security/zap_passive_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/zap_passive_audit_report.json). Four critical security controls were corroborated directly against the pretix production codebase:
+
+1. **Session Cookie Isolation (`SESSION_COOKIE_HTTPONLY`):**
+   - *Status:* **VERIFIED_SECURE**
+   - *Configuration Corroboration:* Enforced in `pretix/settings.py` via `SESSION_COOKIE_HTTPONLY = True`. Ensures session identifiers cannot be read or exfiltrated via injected client-side JavaScript.
+2. **Cross-Site Request Forgery Defense (`SESSION_COOKIE_SAMESITE & CSRF`):**
+   - *Status:* **VERIFIED_SECURE**
+   - *Configuration Corroboration:* Enforced in `pretix/settings.py` via `SESSION_COOKIE_SAMESITE = 'Lax'` and `django.middleware.csrf.CsrfViewMiddleware`. All state-altering POST requests require valid CSRF tokens.
+3. **Anti-Clickjacking Frame Defense (`X_FRAME_OPTIONS`):**
+   - *Status:* **VERIFIED_SECURE**
+   - *Configuration Corroboration:* Enforced in `pretix/settings.py` via `X_FRAME_OPTIONS = 'DENY'` and active `django.middleware.clickjacking.XFrameOptionsMiddleware`. Prevents unauthorized embedding in iframes.
+4. **MIME-Type Sniffing Protection (`SECURE_CONTENT_TYPE_NOSNIFF`):**
+   - *Status:* **VERIFIED_SECURE**
+   - *Configuration Corroboration:* Enforced in `pretix/settings.py` via `SECURE_CONTENT_TYPE_NOSNIFF = True` and enforced by `django.middleware.security.SecurityMiddleware`.
+
+### 8.2. Software Supply Chain Audit (pip-audit)
+Dependency vulnerabilities were audited using **`pip-audit 2.10.1`** against the official PyPI vulnerability database:
+* **Target Environment:** `requirements-test.txt` (test harness and runtime integration dependencies).
+* **Total Packages Inspected:** **48 dependencies** (including `pytest 9.2.0`, `requests 2.34.2`, `urllib3 2.8.0`, `pyyaml 6.0.4`, `radon 6.0.1`, `playwright 1.57.0`, `axe-core-python`).
+* **Vulnerabilities Detected:** **0 Known CVEs (Clean Bill of Health)**.
+* **Audit Record:** [`reports/security/pip_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/pip_audit_report.json). Zero security defects or outdated vulnerable packages identified.
+

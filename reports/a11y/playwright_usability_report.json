@@ -3,7 +3,7 @@
     "task": "Storefront Ticket Purchase with Rejection & Recovery",
     "business_rule_violated": "Invalid email format rejection",
     "validation_message_observed": "Please include an '@' in the email address. 'invalid-email-format' is missing an '@'.",
-    "corrected_value_submitted": "usability_buyer_1795263628@sqe.local",
+    "corrected_value_submitted": "usability_buyer_1795518240@sqe.local",
     "keyboard_operable": true,
     "focus_after_tab": {
       "tag": "SUMMARY",

@@ -61,7 +61,7 @@ class TestAxeAccessibility:
                 "violations": violations
             }, f, indent=2)
 
-        # Empirically verify that axe-core identifies genuine upstream defect (missing alt on pretix logo)
+        # Assert that image-alt violation is resolved by durable template remediation
         image_alt_violations = [v for v in violations if v["id"] == "image-alt"]
-        assert len(image_alt_violations) >= 1, "Expected axe-core to detect missing alt on logo image"
-        print(f"Login view audit detected genuine upstream defect: {image_alt_violations[0]['id']} - {image_alt_violations[0]['description']}")
+        assert len(image_alt_violations) == 0, f"Expected 0 image-alt violations after durable remediation, found {len(image_alt_violations)}"
+        print(f"Login view audit passed: 0 critical image-alt violations on remediated interface.")

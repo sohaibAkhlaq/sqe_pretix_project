@@ -168,7 +168,7 @@ flowchart TD
 
 
 
-## 2. System and Scope (Rubric Component 1 �" 5 Marks, CLO3)
+## 2. System and Scope (Rubric Component 1 — 5 Marks, CLO3)
 
 
 
@@ -244,7 +244,7 @@ The testing scope isolates the **Order & Quota Management Module**, focusing on 
 ### 2.5 Canonical Functional Requirements
 
 The authoritative FR1-FR8 descriptions are maintained in `docs/test-basis.md`. Earlier FR lists in this report used a different numbering and are withdrawn. Cross-level coverage is not implied by a row in a plan or matrix; consult the current source-to-test map and open gaps in `docs/traceability-matrix.md` and `docs/completion-report.md`.
-## 3. Test Plan, Estimation and Traceability (Rubric Component 3 �" 7 Marks, CLO3)
+## 3. Test Plan, Estimation and Traceability (Rubric Component 3 — 7 Marks, CLO3)
 
 
 
@@ -408,7 +408,7 @@ To ensure objective, evidence-based quality verification, three measurable exit 
 
 
 
-## 4. Static Analysis and Metrics (Rubric Component 2 �" 5 Marks, CLO3)
+## 4. Static Analysis and Metrics (Rubric Component 2 — 5 Marks, CLO3)
 
 
 
@@ -564,7 +564,7 @@ Two critical domain functions were hand-calculated from Control Flow Graphs (CFG
 
 
 
-## 5. White-Box Unit Testing (Rubric Component 5 -- 16 Marks, CLO2)
+## 5. White-Box Unit Testing (Rubric Component 5 — 16 Marks, CLO2)
 
 ### 5.1 Verified source scope
 
@@ -617,7 +617,7 @@ Both independence pairs and the full 4-row MCC table are verified in `tests/team
 * **`QuotaAvailability._compute_early_outs` (6 Basis Paths):** Tested across empty list, closed not ignored, closed ignored, unlimited quota (`size is None`), depleted quota (`size == 0`), and standard positive quota fallthrough (`tests/team/unit/test_quota_early_outs.py`).
 * **`OrderChangeManager._check_quotas` (8 Basis Paths):** Tested across empty diff, non-positive diffs, unlimited quota, finite quota sufficient headroom, boundary exact headroom, gone quota, ordered quota, and insufficient capacity (`tests/team/unit/test_order_change_quotas.py`).
 * **State Machine & Expiration (BR3/BR4):** Tested across all allowed lifecycle transitions and prohibited transitions in `tests/team/unit/test_order_state_transitions.py`.
-## 6. API and Integration Testing (Rubric Component 6 �" 10 Marks, CLO2)
+## 6. API and Integration Testing (Rubric Component 6 — 10 Marks, CLO2)
 
 
 
@@ -1013,7 +1013,7 @@ The following authentic screenshots were captured directly from VS Code using Th
 
 
 
-## 7. Automated Test Data Generation (Rubric Component 7 �" 7 Marks, CLO2)
+## 7. Automated Test Data Generation (Rubric Component 7 — 7 Marks, CLO2)
 
 
 
@@ -1379,7 +1379,7 @@ When specification updates occur, the test suite dynamically loads the recalcula
 
 
 
-## 8. Use Case Specification (Rubric Component 8 �" 3 Marks, CLO3)
+## 8. Use Case Specification (Rubric Component 8 — 3 Marks, CLO3)
 
 
 
@@ -2217,7 +2217,7 @@ The Playwright execution pipeline dynamically captures high-resolution full-page
 
 ---
 
-## 10. Usability & Accessibility Testing (Rubric Component 11 �" 5 Marks, CLO3)
+## 10. Usability & Accessibility Testing (Rubric Component 11 — 5 Marks, CLO3)
 
 
 
@@ -2461,7 +2461,7 @@ Automated in `tests/team/a11y/test_keyboard_navigation.py`:
 
 
 
-## 11. Defensive Security & Threat Modeling (Rubric Component 12 �" 6 Marks, CLO2)
+## 11. Defensive Security & Threat Modeling (Rubric Component 12 — 6 Marks, CLO2)
 
 
 
@@ -2645,7 +2645,7 @@ Executed using `pip-audit 2.10.1` (`reports/security/pip_audit_report.json`) che
 
 
 
-## 12. Mutation Testing & CI PR Quality Gate (Rubric Component 10 �" 8 Marks, CLO3)
+## 12. Mutation Testing & CI PR Quality Gate (Rubric Component 10 — 8 Marks, CLO3)
 
 
 
@@ -3281,7 +3281,7 @@ sequenceDiagram
 
 
 
-## 14. Defect Tracking, Root Cause Analysis & Structured Findings (Rubric Component 14 �" 7 Marks, CLO3)
+## 14. Defect Tracking, Root Cause Analysis & Structured Findings (Rubric Component 14 — 7 Marks, CLO3)
 
 
 
@@ -3699,7 +3699,7 @@ In accordance with rubric requirements (*"for each API, accessibility, security 
 
 
 
-## 15. Goal-Question-Metric (GQM) Framework Tracking (Rubric Component 15 �" 5 Marks, CLO3)
+## 15. Goal-Question-Metric (GQM) Framework Tracking (Rubric Component 15 — 5 Marks, CLO3)
 
 
 

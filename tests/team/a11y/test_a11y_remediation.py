@@ -1,7 +1,7 @@
 """
 Automated Accessibility Remediation Verification (Before vs After).
-Identifies concrete accessibility defects (e.g., missing image-alt and contrast),
-applies a DOM/CSS remediation patch, and verifies violation resolution to 0.
+Verifies durable server-side template remediation of WCAG 1.1.1 (image-alt)
+and stylesheet contrast remediation of WCAG 1.4.3 (color-contrast).
 """
 import os
 import pytest
@@ -11,42 +11,42 @@ class TestAccessibilityRemediation:
 
     def test_login_image_alt_remediation(self, page, base_url, axe_path, screenshot_dir):
         """
-        Audits and remediates WCAG 1.1.1 Non-Text Content violation on the Login screen:
-        Before: <img src=".../pretix-logo.svg" class="logo"> has no alt attribute.
-        After:  Applied alt="pretix logo" and role="img". axe-core violations drop to 0.
+        Audits and verifies durable remediation of WCAG 1.1.1 Non-Text Content on the Login screen:
+        Before: <img src=".../pretix-logo.svg" class="logo"> lacked an alt attribute (1 critical axe-core violation).
+        Durable Fix: Applied to /pretix/src/pretix/control/templates/pretixcontrol/auth/base.html (alt="pretix official logo", role="img").
+        After: Served page naturally contains the alt attribute, resolving violations from 1 to 0.
         """
         login_url = f"{base_url}/control/login"
         page.goto(login_url)
         page.wait_for_load_state("networkidle")
 
-        # 1. BEFORE REMEDIATION: Capture initial state
-        before_screenshot = os.path.join(screenshot_dir, "02_login_remediation_before.png")
-        page.screenshot(path=before_screenshot)
+        # 1. VERIFY DURABLE SERVER-SIDE ATTRIBUTE
+        logo = page.locator("img.logo")
+        alt_attr = logo.get_attribute("alt")
+        assert alt_attr == "pretix official logo", f"Expected durable server-rendered alt attribute, got: {alt_attr}"
 
-        # Run axe-core targeting image-alt rule
-        page.add_script_tag(path=axe_path)
-        before_results = page.evaluate("axe.run({runOnly: ['image-alt']})")
-        before_violations = len(before_results.get("violations", []))
-        assert before_violations == 1, f"Expected 1 image-alt violation before remediation, got {before_violations}"
-        print(f"[A11Y BEFORE] Initial scan confirmed image-alt defect: {before_results['violations'][0]['description']}")
-
-        # 2. APPLY REMEDIATION: Patch DOM with accessible text alternative
-        page.evaluate("""() => {
-            const logo = document.querySelector('img.logo');
-            if (logo) {
-                logo.setAttribute('alt', 'pretix official logo');
-                logo.setAttribute('role', 'img');
-            }
-        }""")
-
-        # 3. AFTER REMEDIATION: Capture patched state & assert 0 violations
+        # 2. RUN AXE-CORE AGAINST DURABLE SCREEN (AFTER STATE: 0 VIOLATIONS)
         after_screenshot = os.path.join(screenshot_dir, "03_login_remediation_after.png")
         page.screenshot(path=after_screenshot)
 
+        page.add_script_tag(path=axe_path)
         after_results = page.evaluate("axe.run({runOnly: ['image-alt']})")
         after_violations = len(after_results.get("violations", []))
-        assert after_violations == 0, f"Expected 0 image-alt violations after remediation, found {after_violations}"
-        print("[A11Y AFTER] Remediation verified: image-alt violation resolved from 1 to 0!")
+        assert after_violations == 0, f"Expected 0 image-alt violations on durable screen, found {after_violations}"
+        print(f"[A11Y AFTER] Durable fix verified: 0 image-alt violations on server-rendered page (alt='{alt_attr}')")
+
+        # 3. VERIFY BEFORE STATE (DEMONSTRATE DETECTION WHEN ALT IS REMOVED)
+        page.evaluate("""() => {
+            const l = document.querySelector('img.logo');
+            if (l) l.removeAttribute('alt');
+        }""")
+        before_screenshot = os.path.join(screenshot_dir, "02_login_remediation_before.png")
+        page.screenshot(path=before_screenshot)
+
+        before_results = page.evaluate("axe.run({runOnly: ['image-alt']})")
+        before_violations = len(before_results.get("violations", []))
+        assert before_violations == 1, f"Expected 1 violation when alt attribute is absent, got {before_violations}"
+        print(f"[A11Y BEFORE] Baseline violation confirmed when alt is absent: {before_results['violations'][0]['description']}")
 
     def test_storefront_contrast_remediation(self, page, base_url, axe_path, screenshot_dir):
         """Audits contrast and focus remediation on the event storefront."""
@@ -76,4 +76,4 @@ class TestAccessibilityRemediation:
         results = page.evaluate("axe.run({runOnly: ['color-contrast', 'aria-roles']})")
         violations = len(results.get("violations", []))
         assert violations == 0, f"Expected 0 violations on storefront, got {violations}"
-        print("Storefront contrast and focus remediation verified.")
+        print("[A11Y STOREFRONT] Storefront contrast and focus remediation verified (0 violations).")

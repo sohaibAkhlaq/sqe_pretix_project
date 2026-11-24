@@ -5,6 +5,7 @@ Provides axe-core injection fixtures and screenshot directories.
 import os
 import pytest
 from playwright.sync_api import sync_playwright
+from scripts.test_secrets import get_test_secret
 
 BASE_URL = "http://localhost:8345"
 AXE_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), "axe.min.js")
@@ -45,3 +46,7 @@ def reports_dir():
 @pytest.fixture(scope="session")
 def screenshot_dir():
     return SCREENSHOT_DIR
+
+@pytest.fixture(scope="session")
+def admin_password():
+    return get_test_secret("SQE_ADMIN_PASSWORD")

@@ -120,7 +120,7 @@ class TestUsabilityWorkflows:
         with open(report_path, "w", encoding="utf-8") as f:
             json.dump(results, f, indent=2)
 
-    def test_workflow_b_control_panel_order_management(self, page):
+    def test_workflow_b_control_panel_order_management(self, page, admin_password):
         """
         Workflow B (Order Management & Cancellation in Control Panel):
         - Open task screen (/control/login).
@@ -132,7 +132,7 @@ class TestUsabilityWorkflows:
         page.goto(f"{BASE_URL}/control/login")
         page.wait_for_load_state("networkidle")
         page.fill('input[name="email"]', "admin@localhost")
-        page.fill('input[name="password"]', "admin_secure_password_2026")
+        page.fill('input[name="password"]', admin_password)
         page.click('button[type="submit"]')
         page.wait_for_load_state("networkidle")
 

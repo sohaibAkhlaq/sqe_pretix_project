@@ -4,6 +4,7 @@ Provides API tokens, authentication headers for Admin, Auditor, and Anonymous cl
 and endpoint mappings for security verification.
 """
 import sys
+import os
 from pathlib import Path
 
 # Add project root to sys.path so 'scripts' and other packages are importable
@@ -14,6 +15,7 @@ if str(BASE_DIR) not in sys.path:
 import pytest
 import requests
 from scripts.get_tokens import get_tokens
+from scripts.test_secrets import get_test_secret
 
 BASE_URL = "http://localhost:8345/api/v1"
 ORGANIZER = "sqe"
@@ -74,3 +76,7 @@ def event_endpoints():
         "quota_avail": f"{BASE_URL}/organizers/{ORGANIZER}/events/{EVENT}/quotas/1/availability/",
         "orders": f"{BASE_URL}/organizers/{ORGANIZER}/events/{EVENT}/orders/",
     }
+
+@pytest.fixture(scope="session")
+def admin_password():
+    return get_test_secret("SQE_ADMIN_PASSWORD")
