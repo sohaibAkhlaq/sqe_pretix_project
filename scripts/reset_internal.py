@@ -14,7 +14,7 @@ django.setup()
 from django_scopes import scope
 from pretix.base.models import (
     Organizer, Event, Item, Quota, Order, OrderPosition, CartPosition,
-    OrderFee, OrderPayment, OrderRefund, Invoice
+    OrderFee, OrderPayment, OrderRefund, Invoice, WaitingListEntry
 )
 from pretix.base.models.orders import Transaction
 from pretix.base.models.giftcards import GiftCardTransaction
@@ -43,6 +43,7 @@ with scope(organizer=org):
     fee_del, _ = OrderFee.objects.filter(order__event=event).delete()
     pos_del, _ = OrderPosition.objects.filter(order__event=event).delete()
     cart_del, _ = CartPosition.objects.filter(event=event).delete()
+    wl_del, _ = WaitingListEntry.objects.filter(event=event).delete()
     
     # 2. Purge orders
     orders_deleted, _ = Order.objects.filter(event=event).delete()

@@ -56,6 +56,8 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+scratch/
+scratch_probe.py
 
 # Large raw tool dump caches (keep summarized reports in git)
 .scannerwork/
