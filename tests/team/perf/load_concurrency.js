@@ -17,7 +17,8 @@ export const options = {
 };
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8345';
-const TOKEN = __ENV.API_TOKEN || '2jt4001j30876dpaccansttyaob6srb2j2b2a5yeyuvvx5usl9syzkk5zinarqfq';
+const TOKEN = __ENV.API_TOKEN;
+if (!TOKEN) throw new Error('Set API_TOKEN in the environment; credentials are never embedded in the script.');
 
 export default function () {
   const vuId = __VU;

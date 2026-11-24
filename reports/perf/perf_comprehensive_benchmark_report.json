@@ -1,6 +1,18 @@
 {
   "operation_tested": "Quota Availability Check (GET) & Order Creation (POST)",
   "workflow": "Workflow A (Order Placement)",
+  "environment": {
+    "os": "Windows-10-10.0.26300-SP0",
+    "python": "3.11.9",
+    "build_commit": "919ad1dfde439ce402201a3ba58751eaee1130fe",
+    "starting_data": "reset.py before each run; expected quota=10 and orders=0",
+    "steady_state_seconds": 60,
+    "ramp_up_seconds": {
+      "1_vu": 5,
+      "5_vu": 10
+    },
+    "http_400": "Expected quota-exhaustion rejection; excluded from unexpected failures."
+  },
   "sla_limits": {
     "p95_limit_ms": 500,
     "max_unexpected_failure_percent": 1.0,
@@ -8,64 +20,67 @@
   },
   "benchmarks": {
     "1_vu_run1": {
-      "p95_ms": 87.71,
-      "avg_ms": 58.77,
-      "med_ms": 31.54,
-      "p90_ms": 62.49,
-      "rps": 2.78,
-      "total_requests": 167,
+      "p95_ms": 56.68,
+      "avg_ms": 35.05,
+      "med_ms": 31.25,
+      "p90_ms": 44.67,
+      "rps": 2.76,
+      "total_requests": 194,
       "unexpected_failure_rate": 0,
       "unexpected_failure_percent": 0
     },
     "1_vu_run2": {
-      "p95_ms": 110.34,
-      "avg_ms": 57.41,
-      "med_ms": 35.45,
-      "p90_ms": 87.55,
-      "rps": 2.79,
-      "total_requests": 168,
+      "p95_ms": 48.78,
+      "avg_ms": 31.29,
+      "med_ms": 28.62,
+      "p90_ms": 36.9,
+      "rps": 2.8,
+      "total_requests": 196,
       "unexpected_failure_rate": 0,
       "unexpected_failure_percent": 0
     },
     "5_vu_run1": {
-      "p95_ms": 147.32,
-      "avg_ms": 70.95,
-      "med_ms": 47.45,
-      "p90_ms": 110.64,
-      "rps": 15.5,
-      "total_requests": 936,
+      "p95_ms": 60.26,
+      "avg_ms": 39.04,
+      "med_ms": 30.46,
+      "p90_ms": 47.56,
+      "rps": 15.14,
+      "total_requests": 1212,
       "unexpected_failure_rate": 0,
       "unexpected_failure_percent": 0
     },
     "5_vu_run2": {
-      "p95_ms": 214.7,
-      "avg_ms": 84.75,
-      "med_ms": 65.68,
-      "p90_ms": 151.99,
-      "rps": 14.82,
-      "total_requests": 900,
+      "p95_ms": 61.16,
+      "avg_ms": 48.43,
+      "med_ms": 31.09,
+      "p90_ms": 47.75,
+      "rps": 14.64,
+      "total_requests": 1176,
       "unexpected_failure_rate": 0,
       "unexpected_failure_percent": 0
     }
   },
   "state_changing_recovery": {
     "test_id": "TC-STATE-RECOVERY-01",
+    "risk_id": "RSK-04",
     "operation": "POST /api/v1/organizers/sqe/events/sqe2026/orders/",
-    "state_changing": true,
-    "simulated_failure": "pretix_redis container stopped mid-flight",
-    "pre_failure_quota": 10,
-    "post_failure_unrestored_orders": 0,
-    "recovery_time_seconds": 0.48,
+    "fault": "pretix_redis stopped before the state-changing request",
+    "outage_response_status": null,
+    "outage_error_type": "ReadTimeout",
+    "matching_orders_after_failure": 0,
+    "quota_after_failure": 10,
+    "recovery_time_seconds": 0.03,
     "retry_status_code": 201,
-    "order_code": "UTCMD",
-    "post_recovery_quota": 9,
-    "idempotent_replay_code": "UTCMD",
+    "replay_order_code_matches": true,
+    "matching_orders_after_retry_and_replay": 1,
+    "quota_after_retry_and_replay": 9,
     "total_duplicate_records": 0,
     "status": "PASSED"
   },
   "compliance_verdict": {
     "all_runs_within_p95_limit": true,
-    "zero_unexpected_5xx_failures": true,
-    "recovery_without_duplicates": true
+    "all_runs_unexpected_failure_under_1_percent": true,
+    "recovery_without_duplicates": true,
+    "all_required_criteria_pass": true
   }
 }

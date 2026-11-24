@@ -1,17 +1,31 @@
 import http from 'k6/http';
+import { Rate } from 'k6/metrics';
 import { check, sleep } from 'k6';
 
+const unexpectedFailures = new Rate('unexpected_failures');
+
 export const options = {
-  vus: 1,
-  duration: '60s',
+  scenarios: {
+    steady_state: {
+      executor: 'ramping-vus',
+      startVUs: 0,
+      stages: [
+        { duration: '5s', target: 1 },
+        { duration: '60s', target: 1 },
+        { duration: '5s', target: 0 },
+      ],
+      gracefulRampDown: '5s',
+    },
+  },
   thresholds: {
-    http_req_failed: ['rate<0.01'],       // Unexpected failures must be under 1%
+    unexpected_failures: ['rate<0.01'],
     http_req_duration: ['p(95)<500'],    // p95 latency must be under 500ms
   },
 };
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8345';
-const TOKEN = __ENV.API_TOKEN || '2jt4001j30876dpaccansttyaob6srb2j2b2a5yeyuvvx5usl9syzkk5zinarqfq';
+const TOKEN = __ENV.API_TOKEN;
+if (!TOKEN) throw new Error('Set API_TOKEN in the environment; credentials are never embedded in the script.');
 
 export default function () {
   const params = {
@@ -25,6 +39,7 @@ export default function () {
   // Target Operation: Quota Availability Check (Workflow A)
   const quotaUrl = `${BASE_URL}/api/v1/organizers/sqe/events/sqe2026/quotas/1/availability/`;
   const res = http.get(quotaUrl, params);
+  unexpectedFailures.add(res.status !== 200);
 
   check(res, {
     'status is 200': (r) => r.status === 200,

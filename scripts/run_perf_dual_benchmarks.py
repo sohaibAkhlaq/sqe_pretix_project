@@ -12,6 +12,7 @@ import os
 import subprocess
 import json
 import time
+import platform
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +24,17 @@ if not VENV_PYTHON.exists():
     VENV_PYTHON = Path(sys.executable)
 
 K6_BIN = "k6"
+sys.path.insert(0, str(BASE_DIR))
+from scripts.get_tokens import get_tokens
+
+def runtime_env():
+    """Pass the local API token to k6 without storing it in source or reports."""
+    env = os.environ.copy()
+    token = env.get("API_TOKEN") or get_tokens().get("SQE Test API Token")
+    if not token:
+        raise RuntimeError("No API token available. Set API_TOKEN or seed the local test token.")
+    env["API_TOKEN"] = token
+    return env
 
 def reset_state():
     print("   [RESET] Restoring deterministic baseline (Quota=10, Orders=0)...")
@@ -34,15 +46,19 @@ def reset_state():
 
 def run_k6(script_path, output_json, description):
     print(f"\n>> Running {description} (60s duration)...")
+    raw_output = output_json.with_name(output_json.stem + "_raw.json")
     cmd = [
         K6_BIN, "run",
+        "--out", f"json={raw_output}",
         "--summary-export", str(output_json),
         str(script_path)
     ]
     start = time.time()
-    res = subprocess.run(cmd, capture_output=True, text=True)
+    res = subprocess.run(cmd, capture_output=True, text=True, env=runtime_env())
     duration = time.time() - start
     print(f"   k6 finished in {duration:.2f}s. Exit code: {res.returncode}")
+    if res.returncode not in (0, 99):
+        raise RuntimeError(f"{description} failed (exit {res.returncode}): {res.stderr[-2000:]}")
 
     metrics = {}
     if output_json.exists():
@@ -51,7 +67,7 @@ def run_k6(script_path, output_json, description):
             m = raw.get("metrics", {})
             dur = m.get("http_req_duration", {})
             if "values" in dur: dur = dur["values"]
-            failed = m.get("http_req_failed", {})
+            failed = m.get("unexpected_failures", {})
             if "values" in failed: failed = failed["values"]
             reqs = m.get("http_reqs", {})
             if "values" in reqs: reqs = reqs["values"]
@@ -107,17 +123,32 @@ def main():
         "-v", "-s"
     ], capture_output=True, text=True)
     print(res_rec.stdout)
+    if res_rec.returncode != 0:
+        raise RuntimeError(f"Recovery test failed (exit {res_rec.returncode}): {res_rec.stderr[-2000:]}")
 
     recovery_data = {}
     rec_report_path = REPORTS_DIR / "state_changing_recovery_report.json"
     if rec_report_path.exists():
         with open(rec_report_path, "r", encoding="utf-8") as f:
             recovery_data = json.load(f)
+    else:
+        raise RuntimeError("Recovery test returned success but did not produce its required JSON report.")
 
     # 6. Master Summary & SLA Evaluation
     master_report = {
         "operation_tested": "Quota Availability Check (GET) & Order Creation (POST)",
         "workflow": "Workflow A (Order Placement)",
+        "environment": {
+            "os": platform.platform(),
+            "python": platform.python_version(),
+            "build_commit": subprocess.run(
+                ["git", "rev-parse", "HEAD"], cwd=BASE_DIR, capture_output=True, text=True
+            ).stdout.strip(),
+            "starting_data": "reset.py before each run; expected quota=10 and orders=0",
+            "steady_state_seconds": 60,
+            "ramp_up_seconds": {"1_vu": 5, "5_vu": 10},
+            "http_400": "Expected quota-exhaustion rejection; excluded from unexpected failures.",
+        },
         "sla_limits": {
             "p95_limit_ms": 500,
             "max_unexpected_failure_percent": 1.0,
@@ -134,16 +165,21 @@ def main():
             "all_runs_within_p95_limit": (
                 m_1vu_run1.get("p95_ms", 9999) <= 500 and
                 m_1vu_run2.get("p95_ms", 9999) <= 500 and
-                m_5vu_run1.get("p95_ms", 9999) <= 1000 and
-                m_5vu_run2.get("p95_ms", 9999) <= 1000
+                m_5vu_run1.get("p95_ms", 9999) <= 500 and
+                m_5vu_run2.get("p95_ms", 9999) <= 500
             ),
-            "zero_unexpected_5xx_failures": (
+            "all_runs_unexpected_failure_under_1_percent": (
                 m_1vu_run1.get("unexpected_failure_percent", 100) < 1.0 and
-                m_1vu_run2.get("unexpected_failure_percent", 100) < 1.0
+                m_1vu_run2.get("unexpected_failure_percent", 100) < 1.0 and
+                m_5vu_run1.get("unexpected_failure_percent", 100) < 1.0 and
+                m_5vu_run2.get("unexpected_failure_percent", 100) < 1.0
             ),
             "recovery_without_duplicates": recovery_data.get("status") == "PASSED" and recovery_data.get("total_duplicate_records") == 0
         }
     }
+    master_report["compliance_verdict"]["all_required_criteria_pass"] = all(
+        master_report["compliance_verdict"].values()
+    )
 
     master_path = REPORTS_DIR / "perf_comprehensive_benchmark_report.json"
     with open(master_path, "w", encoding="utf-8") as f:

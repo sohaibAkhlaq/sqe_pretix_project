@@ -11,7 +11,8 @@ export const options = {
 };
 
 export default function () {
-  const token = '2jt4001j30876dpaccansttyaob6srb2j2b2a5yeyuvvx5usl9syzkk5zinarqfq';
+  const token = __ENV.API_TOKEN;
+  if (!token) throw new Error('Set API_TOKEN in the environment; credentials are never embedded in the script.');
   const url = 'http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/quotas/1/availability/';
 
   const params = {

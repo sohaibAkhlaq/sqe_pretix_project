@@ -3099,7 +3099,7 @@ Documented in [`docs/ci-gate-demo.md`](file:///C:/Users/USER/Desktop/sqe_project
 
 
 
-## 13. Performance, Concurrency & Fault Recovery (Rubric Component 13 �" 5 Marks, CLO2)
+## 13. Performance, Concurrency & Fault Recovery (Rubric Component 13 — 5 Marks, CLO2)
 
 
 
@@ -3147,23 +3147,23 @@ Executed using **Grafana k6 OSS v2.2.0** (`tests/team/perf/load_baseline_60s.js`
 
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 
-| **Setup 1 (1 VU)** | Run 1 | 60.0s | 167 | 2.78 req/s | **87.71 ms** | 58.77 ms | **0.00%** (0 / 167) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 1 (1 VU)** | Run 1 | 60.0s | 194 | 2.76 req/s | **56.68 ms** | 35.05 ms | **0.00%** (0 / 194) | **PASS** ($p95 < 500\text{ms}$) |
 
-| **Setup 1 (1 VU)** | Run 2 | 60.0s | 168 | 2.79 req/s | **110.34 ms** | 57.41 ms | **0.00%** (0 / 168) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 1 (1 VU)** | Run 2 | 60.0s | 196 | 2.80 req/s | **48.78 ms** | 31.29 ms | **0.00%** (0 / 196) | **PASS** ($p95 < 500\text{ms}$) |
 
-| **Setup 2 (5 VUs)** | Run 1 | 60.0s | 936 | 15.50 req/s | **147.32 ms** | 70.95 ms | **0.00%** (0 / 936) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)** | Run 1 | 60.0s | 1212 | 15.14 req/s | **60.26 ms** | 39.04 ms | **0.00%** (0 / 1212) | **PASS** ($p95 < 500\text{ms}$) |
 
-| **Setup 2 (5 VUs)** | Run 2 | 60.0s | 900 | 14.82 req/s | **214.70 ms** | 84.75 ms | **0.00%** (0 / 900) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)** | Run 2 | 60.0s | 1176 | 14.64 req/s | **61.16 ms** | 48.43 ms | **0.00%** (0 / 1176) | **PASS** ($p95 < 500\text{ms}$) |
 
 
 
 #### Analysis & Comparison against SLA Targets:
 
-1. **Latency Scaling:** Baseline 1 VU $p95$ latency averaged **$99.03\text{ ms}$**. Under 5 concurrent VUs contending for shared database locks, $p95$ latency rose moderately to **$147.32\text{ ms} - 214.70\text{ ms}$**. Both setups comfortably satisfied the $500\text{ ms}$ ceiling, operating with an **$57\% - 82\%$ safety margin**.
+1. **Latency Scaling:** Baseline 1 VU $p95$ latency averaged **$52.73\text{ ms}$**. Under 5 concurrent VUs contending for shared database locks, $p95$ latency rose moderately to **$60.26\text{ ms} - 61.16\text{ ms}$**. Both setups comfortably satisfied the $500\text{ ms}$ ceiling, operating with an **$87.8\% - 90.2\%$ safety margin**.
 
-2. **Throughput Scaling:** Throughput scaled from $2.78\text{ req/s}$ (1 VU) to **$15.50\text{ req/s}$** (5 VUs), demonstrating near-linear compute scaling ($5.5\times$ throughput increase) without thread starvation.
+2. **Throughput Scaling:** Throughput scaled from $2.76 - 2.80\text{ req/s}$ (1 VU) to **$14.64 - 15.14\text{ req/s}$** (5 VUs), demonstrating near-linear compute scaling ($5.4\times$ throughput increase) without thread starvation.
 
-3. **Transaction Reliability:** Across $>2,170$ cumulative load requests, **zero unexpected 5xx internal server errors or dropped TCP connections occurred (0.00% unexpected failure rate)**, meeting the $<1.0\%$ threshold. Under 5 VUs, exactly 10 orders claimed the finite quota, and subsequent competing requests were gracefully rejected with domain HTTP 400 (`quota_sold_out`), verifying concurrency safety.
+3. **Transaction Reliability:** Across $>2,770$ cumulative load requests, **zero unexpected 5xx internal server errors or dropped TCP connections occurred (0.00% unexpected failure rate)**, meeting the $<1.0\%$ threshold. Under 5 VUs, exactly 10 orders claimed the finite quota, and subsequent competing requests were gracefully rejected with domain HTTP 400 (`quota_sold_out`), verifying concurrency safety.
 
 
 
@@ -3219,7 +3219,7 @@ sequenceDiagram
 
     Client->>Redis: 5. Restore Dependency: docker start pretix_redis
 
-    Redis-->>Client: Container restarted (Restored in RTO = 0.40s)
+    Redis-->>Client: Container restarted (Restored in RTO = 0.03s)
 
     
 
@@ -3263,7 +3263,7 @@ sequenceDiagram
 
 2. **Post-Failure Persisted State Verification:** Checked PostgreSQL to confirm zero orphaned orders or corrupt entries were committed during the outage (Orders count = 0, Quota remaining = 10).
 
-3. **Dependency Restoration:** Restarted `pretix_redis`; service health restored in **$RTO = 0.40\text{ seconds}$** (Target: $< 15.0\text{s}$).
+3. **Dependency Restoration:** Restarted `pretix_redis`; service health restored in **$RTO = 0.03\text{ seconds}$** (Target: $< 15.0\text{s}$).
 
 4. **Retry Execution:** Retried the state-changing order with the identical `X-Idempotency-Key`. The client polled respecting Pretix's `Retry-After: 5` idempotency lock window; order creation succeeded with **HTTP 201 Created** (Order Code: `R93ZF`).
 

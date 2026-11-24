@@ -4,24 +4,24 @@
 **Author:** M. Hasaam (`24i-3107`, Git: `M-Hasaam <m.hasaam.official@gmail.com>`)  
 **Target Environment:** pretix v2026.9.3 containerized stack on Docker Desktop Windows  
 **Milestone Tag:** `gate-9`  
-**Load Testing Tool:** `k6 v2.2.0`  
-**Execution Date:** November 20, 2026  
-**Overall Status:** **100% VERIFIED — ALL PERFORMANCE & RECOVERY SLAS MET**
+**Load Testing Tool:** `k6 v2.2.0` (commit `00a9a1b7f5`, go1.26.5)  
+**Execution Date:** November 24, 2026  
+**Overall Status:** **100% VERIFIED — ALL DUAL 60-SECOND BENCHMARKS & FAULT RECOVERY SLAS MET**
 
 ---
 
 ## 1. Executive Summary
 
-In high-concurrency event ticketing systems, performance bottlenecks and concurrency race conditions pose critical financial and operational risks:
-1. **Response Time Degradation:** High latencies on read paths (e.g. checking ticket availability) degrade customer satisfaction and increase cart abandonment.
-2. **Quota Race Conditions (Overselling):** If multiple buyers concurrently attempt to purchase the final available ticket, non-atomic database read-then-write cycles can allow multiple orders to succeed, selling more tickets than the physical venue capacity.
-3. **Infrastructure Faults:** In a microservices architecture, loss of secondary cache/locking components (such as Redis) must not corrupt persistent records or crash primary relational databases.
+In high-concurrency event ticketing systems, performance bottlenecks, race conditions, and infrastructure failures present severe operational and financial risks:
+1. **Response Time Degradation:** High latencies on read paths (e.g. checking ticket availability) degrade customer conversion and cause cart abandonment.
+2. **Quota Race Conditions (Overselling):** If multiple buyers concurrently attempt to purchase the final available ticket, non-atomic database read-then-write cycles can allow multiple orders to succeed, selling more tickets than physical venue capacity.
+3. **Infrastructure Faults during State-Changing Writes:** In a distributed architecture, sudden loss of secondary cache/locking dependencies (such as Redis) during an in-flight order write must not corrupt persistent records, leave orphaned partial transactions, or produce duplicate orders upon retry.
 
-Phase 9 establishes the empirical performance baseline, concurrency stress envelope, and self-healing fault recovery characteristics of the pretix Order and Quota sub-systems.
+Phase 9 establishes the empirical performance baseline, concurrency stress envelope, and self-healing fault recovery characteristics of the pretix Order and Quota sub-systems across dual 60-second steady-state runs and automated failure-recovery tests.
 
 ---
 
-## 2. Test Architectures & SLA Thresholds
+## 2. System Architecture & Benchmark Environment
 
 ```mermaid
 flowchart LR
@@ -37,8 +37,8 @@ flowchart LR
     end
 
     subgraph DataTier["Infrastructure & Storage Tier"]
-        Redis["Redis 7 (Port 6379)\n- Quota Locks\n- Celery Tasks"]
-        Postgres["PostgreSQL 16 (Port 5433)\n- ACID Transactions\n- Serializable / Row Locks"]
+        Redis["Redis 7 (Port 6379)\n- Distributed Locks\n- Celery Broker"]
+        Postgres["PostgreSQL 15 (Port 5433)\n- ACID Transactions\n- Serializable / Row Locks"]
     end
 
     VU1 --> Nginx
@@ -49,91 +49,111 @@ flowchart LR
     Gunicorn <-->|"ACID DB Operations"| Postgres
 ```
 
-### SLA Targets:
-* **Baseline Latency SLA:** $p95 \le 500.0\text{ ms}$ on read endpoints.
-* **Baseline Error Rate SLA:** $\text{Error Rate} \le 1.0\%$.
-* **Concurrency SLA:** 0 internal server errors (500), 0 negative inventory balances (overselling).
+### Execution Environment Details:
+| Dimension | Specification |
+| :--- | :--- |
+| **Operating System** | Windows 11 Enterprise (AMD64 build, 10.0.26300) |
+| **CPU / RAM** | Intel Core i7 / 16 GB Physical RAM |
+| **Load Generator** | Grafana k6 OSS v2.2.0 (`commit/00a9a1b7f5`, go1.26.5, windows/amd64) |
+| **Target Application** | pretix v2026.9.3 (commit `db000dc2986f`) in Docker Desktop |
+| **Relational Database** | PostgreSQL 15 (`pretix_db`, Port 5433) |
+| **Cache & Lock Broker**| Redis 7 (`pretix_redis`, Port 6379) |
+| **Network Interface** | Local loopback (`http://localhost:8345`), zero external network jitter |
+| **Deterministic Seed State** | Quota 1 Total = 10, Available = 10, Orders = 0 (Restored via `scripts/reset.py --verify-idempotency` before each run) |
+
+### 429 Rate Limiting & 400 Error Handling Rules:
+* **429 Handling Rule:** Pretix API specifies `Retry-After: 5` on HTTP 429 / 409 lock conflicts. In steady-state runs, the client sleep interval (0.3s for 1 VU, 0.5s for 5 VU) keeps traffic within container processing capacity, resulting in 0 rate-limit rejections (0.00%).
+* **400 Handling Rule:** HTTP 400 (`quota_sold_out`) represents an expected, valid business domain rejection when the finite pool of 10 tickets is exhausted under 5-VU load. These are counted as normal domain rejections and explicitly excluded from the unexpected failure metric ($< 1.0\%$).
+
+---
+
+## 3. SLA Targets & Pre-Set Thresholds
+
+* **$p95$ Response Time SLA:** $p95 \le 500.0\text{ ms}$ on read endpoints.
+* **Unexpected Failure Rate SLA:** $\text{Unexpected Failure Rate} < 1.0\%$ (excluding expected 400 quota exhaustions).
+* **Concurrency SLA:** 0 internal server errors (500), 0 negative inventory balances (zero overselling: $Q_{\text{final}} \ge 0$).
 * **Recovery Time Objective (RTO):** $\text{RTO} \le 15.0\text{ seconds}$ following container termination.
+* **State-Changing Zero-Duplication SLA:** Zero partial records committed during outage; exactly 1 persisted order after retry/replay ($0$ duplicates).
 
 ---
 
-## 3. Baseline Load Profile (1 VU, Steady State)
+## 4. Dual 60-Second Grafana k6 OSS Benchmark Runs
 
-The baseline profile evaluates steady-state operational latency across Workflow A read paths:
-* **Target Endpoints:**
-  1. `GET /api/v1/organizers/sqe/events/sqe2026/quotas/1/availability/` (Availability Calculation)
-  2. `GET /api/v1/organizers/sqe/events/sqe2026/items/` (Catalog Retrieval)
-* **Configuration:** 1 Virtual User (VU), 30-second duration, 0.5s inter-iteration sleep.
+In accordance with the assignment specification, both the baseline (1 VU) and concurrent (5 VUs) workloads were executed **twice** with **at least 60 seconds of steady state**, resetting starting data before every run.
 
-### Empirical Baseline Results:
-| Metric | SLA Target | Measured Value | Compliance Status |
+### Summary of Four Benchmark Runs:
+| Workload Setup | Run # | Steady-State Duration | Total Requests | Completed RPS | $p95$ Latency | Avg Latency | Unexpected Failures | SLA Verdict |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Setup 1 (1 VU)** | Run 1 | 60.0s | 194 | 2.76 req/s | **56.68 ms** | 35.05 ms | **0.00%** (0 / 194) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 1 (1 VU)** | Run 2 | 60.0s | 196 | 2.80 req/s | **48.78 ms** | 31.29 ms | **0.00%** (0 / 196) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)**| Run 1 | 60.0s | 1212 | 15.14 req/s | **60.26 ms** | 39.04 ms | **0.00%** (0 / 1212) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)**| Run 2 | 60.0s | 1176 | 14.64 req/s | **61.16 ms** | 48.43 ms | **0.00%** (0 / 1176) | **PASS** ($p95 < 500\text{ms}$) |
+
+### Metric Analysis & Scaling:
+1. **Latency Scaling:** Across all 4 runs, $p95$ latency ranged between **48.78 ms and 61.16 ms**, operating with an **87.8% - 90.2% safety margin** below the 500 ms ceiling. Even under 5-VU concurrent write contention, pretix's row-level locking introduced negligible queueing delay.
+2. **Throughput Scaling:** Throughput scaled from $2.76 - 2.80\text{ req/s}$ (1 VU) to **$14.64 - 15.14\text{ req/s}$** (5 VUs), representing a $5.4\times$ increase that demonstrates near-linear scaling without worker exhaustion.
+3. **Zero Unexpected Failures:** Across all 2,778 cumulative requests in the 4 benchmark runs, **0 unexpected 5xx crashes or network drops occurred (0.00%)**, comfortably satisfying the $< 1.0\%$ SLA.
+
+---
+
+## 5. Controlled Fault Injection & State-Changing Recovery
+
+### 5.1 Test Design & Failure Scenario (`TC-STATE-RECOVERY-01`)
+* **Linked Risk ID:** **`RSK-04`** (Data corruption or duplicate order creation during infrastructure/network disruption during state-changing order creation).
+* **Target Operation:** State-changing `POST /api/v1/organizers/sqe/events/sqe2026/orders/` with `X-Idempotency-Key`.
+* **Controlled Fault:** The Redis distributed lock/cache dependency (`pretix_redis`) was terminated via Docker command immediately before the order write completed.
+* **Test Implementation:** [`tests/team/perf/test_state_changing_recovery.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/test_state_changing_recovery.py).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Test Client
+    participant Web as Pretix Web (8345)
+    participant Redis as pretix_redis
+    participant DB as PostgreSQL (pretix_db)
+
+    Note over DB: Baseline: Quota Available = 10, Total Orders = 0
+    Client->>Redis: 1. Injected Fault: docker stop pretix_redis
+    Redis-->>Client: Container Stopped (Dependency Down)
+
+    Client->>Web: 2. Attempt State-Changing Order POST (Key: recovery-{id})
+    Web--xRedis: Connection Timeout / Socket Drop
+    Web-->>Client: 3. Outage Interruption (ReadTimeout / 5xx)
+
+    Note over DB: 4. Database-Level Persisted State Check
+    Client->>DB: Query Order count for buyer & Quota availability
+    DB-->>Client: Matching Orders = 0, Quota = 10 (Zero partial writes)
+
+    Client->>Redis: 5. Dependency Restoral: docker start pretix_redis
+    Redis-->>Client: Container Restored (RTO = 0.03s)
+
+    Note over Client,Web: 6. Reclaim In-flight Lock & Retry with SAME Idempotency Key
+    Client->>Web: Retry POST /orders/ (Key: recovery-{id})
+    Web->>DB: Atomically commit order & decrement quota (10 -> 9)
+    Web-->>Client: HTTP 201 Created (Order Code: returned)
+
+    Note over Client,DB: 7. Idempotency Replay & Duplicate Assertion
+    Client->>Web: Replay POST /orders/ (Key: recovery-{id})
+    Web-->>Client: HTTP 201 Created (Exact Matching Order Code)
+    Client->>DB: Query PostgreSQL for buyer email
+    DB-->>Client: Exactly 1 record found (TOTAL DUPLICATES = 0)
+```
+
+### 5.2 Empirical State-Changing Recovery Results:
+| Metric | SLA Target | Measured Reality | Status |
 | :--- | :---: | :---: | :---: |
-| **$p95$ Latency** | $< 500.0\text{ ms}$ | **$92.30\text{ ms}$** | **PASS** (81.5% margin) |
-| **$p90$ Latency** | $< 400.0\text{ ms}$ | **$35.31\text{ ms}$** | **PASS** |
-| **Median ($p50$) Latency** | — | **$18.42\text{ ms}$** | **PASS** |
-| **Average Latency** | — | **$38.44\text{ ms}$** | **PASS** |
-| **Error Rate** | $< 1.0\%$ | **$0.00\%$** | **PASS** |
-| **Throughput (RPS)** | — | **$3.46\text{ req/sec}$** | **PASS** |
-| **Total Requests** | — | **104 requests** | **PASS** |
+| **Test Identifier** | — | `TC-STATE-RECOVERY-01` | Evaluated |
+| **Linked Risk ID** | — | `RSK-04` | Evaluated |
+| **Persisted Orders After Failure** | Exactly 0 | **0 matching orders** | **PASS** |
+| **Quota After Failure** | Exactly 10 | **10 available** | **PASS** |
+| **Recovery Time Objective (RTO)**| $< 15.0\text{ seconds}$ | **$0.03\text{ seconds}$** | **PASS** (99.8% buffer) |
+| **Retry Status Code** | HTTP 200 or 201 | **HTTP 201 Created** | **PASS** |
+| **Replay Order Code Match** | Identical code | **True (Identical Code)** | **PASS** |
+| **Persisted Orders After Retry/Replay** | Exactly 1 | **1 order in PostgreSQL** | **PASS** |
+| **Total Duplicate Records** | 0 Duplicates | **0 Duplicates** | **PASS** |
+| **Final Quota Available** | Exactly 9 | **9 available** | **PASS** |
 
----
-
-## 4. Concurrency & Quota Race-Condition Analysis
-
-### 4.1 The Race Condition Threat
-Consider a scenario with initial capacity $Q = 10$. If 5 concurrent virtual users issue simultaneous order requests when capacity reaches $Q = 1$:
-* **Unprotected Flow (Defective):** All 5 requests read $Q = 1 > 0$, approve purchases in parallel, and commit 5 orders, reducing capacity to $Q = -4$ (4 tickets oversold).
-* **Protected Flow (Pretix Architecture):** Pretix implements distributed locking via Redis (`redis.lock(f"quota_{quota_id}")`) coupled with PostgreSQL transaction row-level locking (`SELECT ... FOR UPDATE`). Each order placement acquires an exclusive lock before recalculating available positions and committing deductions.
-
-### 4.2 Empirical Verification
-We subjected the system to 5 concurrent VUs repeatedly placing orders until quota depletion:
-* **Initial Quota:** $Q_{\text{initial}} = 10$
-* **Concurrent VUs:** 5
-* **Execution Duration:** 30 seconds
-* **Total Transactions Attempted:** 280
-
-### Empirical Concurrency Results:
-| Metric | Measured Value | Analysis & Integrity Verification |
-| :--- | :---: | :--- |
-| **Successful Orders Created (201)** | **10** | Exactly matches maximum quota capacity ($10 = 10$) |
-| **Rejected Orders (400 Full)** | **130** | Requests received HTTP 400 (`"The quota is full"`) |
-| **Unhandled Server Errors (500)** | **0** | Zero application crashes or unhandled lock contention |
-| **$p95$ Write Latency** | **$111.12\text{ ms}$** | Well below 1500ms write budget under lock contention |
-| **Average Write Latency** | **$50.30\text{ ms}$** | Consistent sub-100ms response time |
-| **Throughput** | **$9.04\text{ req/sec}$** | Sustained transaction rate |
-| **Post-Run Available Quota** | **0** | $Q_{\text{final}} = 0$ (Zero overselling; $Q \ge 0$ invariant strictly maintained) |
-
-### Mathematical Invariant Verification:
-$$\sum_{i=1}^{N_{\text{placed}}} \text{positions}_i = 10 \le Q_{\text{capacity}}$$
-$$Q_{\text{final}} = Q_{\text{capacity}} - \sum \text{positions}_i = 10 - 10 = 0$$
-
-The empirical evidence confirms that the race-condition protection is 100% sound.
-
----
-
-## 5. Fault Injection & Self-Healing Recovery
-
-### 5.1 Fault Scenario & Chaos Injection
-In production, microservice worker tiers or cache clusters can experience unannounced termination (e.g. OOM killer, node failure, network partition). To test resilience, we engineered an automated chaos test in [`tests/team/perf/test_fault_recovery.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/test_fault_recovery.py):
-1. **Pre-Fault Baseline:** Verified `pretix_redis`, `pretix_db`, and `pretix_web` are fully operational (HTTP 200).
-2. **Chaos Fault Injection:** Terminated `pretix_redis` container via `docker stop pretix_redis` (simulating sudden node drop).
-3. **Fault Containment Check:**
-   - PostgreSQL (`pretix_db`) remained running and untouched.
-   - Django web container (`pretix_web`) remained running, containing the failure without crashing.
-4. **Service Restoral & RTO Timing:**
-   - Initiated container recovery via `docker start pretix_redis`.
-   - Sampled endpoint availability every 0.5 seconds with high-precision timestamps until HTTP 200 was restored.
-
-### 5.2 Empirical Recovery Results:
-| Metric | Course Target | Measured Reality | Status |
-| :--- | :---: | :---: | :---: |
-| **Target Service** | Redis Cache/Lock | `pretix_redis` | Evaluated |
-| **Recovery Time Objective (RTO)** | $< 15.0\text{ seconds}$ | **$0.66\text{ seconds}$** | **PASS** (95.6% margin) |
-| **Recovery Attempts Needed** | $< 30$ | **2 attempts** | **PASS** |
-| **Post-Recovery Quota Integrity** | $100\%$ Consistency | **$100\%$ Identical (Size=10, Available=10)** | **PASS** |
-| **Order Record Integrity** | 0 Loss | **0 Records Lost** | **PASS** |
-
-The system fully restored operational capacity in **0.66 seconds**, far exceeding the 15-second RTO requirement.
+Raw JSON evidence recorded in [`reports/perf/state_changing_recovery_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/state_changing_recovery_report.json).
 
 ---
 
@@ -141,30 +161,23 @@ The system fully restored operational capacity in **0.66 seconds**, far exceedin
 
 | Artifact | File Path | Description |
 | :--- | :--- | :--- |
-| Baseline k6 Script | [`tests/team/perf/load_baseline.js`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/load_baseline.js) | 1 VU, 30s steady state read load profile |
-| Concurrency k6 Script | [`tests/team/perf/load_concurrency.js`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/load_concurrency.js) | 5 VUs concurrent order placement and race condition profile |
-| Fault Recovery Test | [`tests/team/perf/test_fault_recovery.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/test_fault_recovery.py) | Automated Redis termination and RTO measurement suite |
-| Performance Runner | [`scripts/run_perf_tests.py`](file:///c:/Users/USER/Desktop/sqe_project/scripts/run_perf_tests.py) | Automated 3-stage performance, load, and chaos recovery runner |
-| Baseline k6 JSON | [`reports/perf/k6_baseline.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/k6_baseline.json) | Raw k6 metric summary for baseline run |
-| Concurrency k6 JSON | [`reports/perf/k6_concurrency.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/k6_concurrency.json) | Raw k6 metric summary for concurrency run |
-| Fault Recovery JSON | [`reports/perf/fault_recovery_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/fault_recovery_report.json) | Empirical chaos RTO measurement log |
-| Master Perf Report | [`reports/perf/perf_master_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/perf_master_report.json) | Aggregated SLA compliance summary |
+| Baseline k6 60s Script | [`tests/team/perf/load_baseline_60s.js`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/load_baseline_60s.js) | 1 VU, 60s steady-state read load profile |
+| Concurrency k6 60s Script | [`tests/team/perf/load_concurrency_60s.js`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/load_concurrency_60s.js) | 5 VUs, 60s steady-state concurrent order placement profile |
+| State-Changing Recovery Test | [`tests/team/perf/test_state_changing_recovery.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/test_state_changing_recovery.py) | Controlled Redis outage, DB persisted checks, zero-duplicate retry test |
+| Availability Recovery Test | [`tests/team/perf/test_fault_recovery.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/test_fault_recovery.py) | Redis termination and RTO measurement suite |
+| Comprehensive Benchmark Runner | [`scripts/run_perf_dual_benchmarks.py`](file:///c:/Users/USER/Desktop/sqe_project/scripts/run_perf_dual_benchmarks.py) | Master runner executing all 4 60s runs and state-changing recovery |
+| Setup 1 Run 1 JSON | [`reports/perf/k6_1vu_run1.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/k6_1vu_run1.json) | Raw k6 metric summary for 1 VU Run 1 |
+| Setup 1 Run 2 JSON | [`reports/perf/k6_1vu_run2.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/k6_1vu_run2.json) | Raw k6 metric summary for 1 VU Run 2 |
+| Setup 2 Run 1 JSON | [`reports/perf/k6_5vu_run1.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/k6_5vu_run1.json) | Raw k6 metric summary for 5 VUs Run 1 |
+| Setup 2 Run 2 JSON | [`reports/perf/k6_5vu_run2.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/k6_5vu_run2.json) | Raw k6 metric summary for 5 VUs Run 2 |
+| State Recovery JSON | [`reports/perf/state_changing_recovery_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/state_changing_recovery_report.json) | Empirical state-changing failure & zero-duplicate report |
+| Master Comprehensive Report | [`reports/perf/perf_comprehensive_benchmark_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/perf/perf_comprehensive_benchmark_report.json) | Aggregated SLA compliance summary across all 4 runs and recovery |
 
 ---
 
-## 7. Reproduction Commands
+## 7. Reproduction Command
 
 ```powershell
-# 1. Ensure Docker Desktop PATH is set
-$env:Path = "C:\Users\USER\AppData\Local\Programs\DockerDesktop\resources\bin;" + $env:Path
-
-# 2. Run master performance and recovery pipeline
-.\.venv\Scripts\python.exe scripts/run_perf_tests.py
-
-# 3. View individual k6 outputs
-k6 run --summary-export reports/perf/k6_baseline.json tests/team/perf/load_baseline.js
-k6 run --summary-export reports/perf/k6_concurrency.json tests/team/perf/load_concurrency.js
-
-# 4. View fault recovery test
-.\.venv\Scripts\python.exe -m pytest tests/team/perf/test_fault_recovery.py -v -s
+# Execute the complete dual 60s benchmark suite and state-changing recovery test:
+.\.venv\Scripts\python.exe scripts/run_perf_dual_benchmarks.py
 ```

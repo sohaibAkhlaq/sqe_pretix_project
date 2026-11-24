@@ -1,23 +1,31 @@
 import http from 'k6/http';
+import { Rate } from 'k6/metrics';
 import { check, sleep } from 'k6';
+
+const unexpectedFailures = new Rate('unexpected_failures');
 
 export const options = {
   scenarios: {
     concurrent_workload: {
-      executor: 'constant-vus',
-      vus: 5,
-      duration: '60s',
+      executor: 'ramping-vus',
+      startVUs: 0,
+      stages: [
+        { duration: '10s', target: 5 },
+        { duration: '60s', target: 5 },
+        { duration: '10s', target: 0 },
+      ],
+      gracefulRampDown: '5s',
     },
   },
   thresholds: {
-    // Unexpected failures (5xx server crashes / connection aborts) must be under 1%
-    'http_req_failed{status_5xx:true}': ['rate<0.01'],
-    'http_req_duration': ['p(95)<1000'],
+    unexpected_failures: ['rate<0.01'],
+    http_req_duration: ['p(95)<500'],
   },
 };
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8345';
-const TOKEN = __ENV.API_TOKEN || '2jt4001j30876dpaccansttyaob6srb2j2b2a5yeyuvvx5usl9syzkk5zinarqfq';
+const TOKEN = __ENV.API_TOKEN;
+if (!TOKEN) throw new Error('Set API_TOKEN in the environment; credentials are never embedded in the script.');
 
 export default function () {
   const vuId = __VU;
@@ -33,6 +41,7 @@ export default function () {
   // 1. Quota Availability read
   const quotaUrl = `${BASE_URL}/api/v1/organizers/sqe/events/sqe2026/quotas/1/availability/`;
   const quotaRes = http.get(quotaUrl, { headers: headers, tags: { type: 'read' } });
+  unexpectedFailures.add(quotaRes.status !== 200);
 
   check(quotaRes, {
     'read status is 200': (r) => r.status === 200,
@@ -58,6 +67,7 @@ export default function () {
   });
 
   const orderRes = http.post(ordersUrl, payload, { headers: orderHeaders, tags: { type: 'write' } });
+  unexpectedFailures.add(orderRes.status !== 201 && orderRes.status !== 400);
 
   // Status must be 201 (Created) or 400 (Quota Full). 500 is an unexpected failure.
   check(orderRes, {
