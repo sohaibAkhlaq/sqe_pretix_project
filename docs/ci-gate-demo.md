@@ -39,7 +39,7 @@ flowchart TD
     G7 -. Fail .-> Block
 ```
 
-> **Publication Scope Note:** `.github/workflows/pr-gate.yml` is committed locally and verified via local execution + Red-Gate failure simulation (`scripts/verify_mutation_and_ci_gate.py`). Remote GitHub Actions PR run URLs (`github.com/sohaibAkhlaq/sqe_pretix_project/actions/...`) require pushing the repository and opening live blocking/passing PRs against GitHub after authentication.
+> **Live GitHub Actions & Branch Protection Verification:** `.github/workflows/pr-gate.yml` is live and enforced via Branch Protection on `main` (`strict: true`, `enforce_admins: true`, requiring both `Offline Quality Gates` and `Live Container Integration Gates`). Baseline `main` verified green in Run [`45657663612`](https://github.com/sohaibAkhlaq/sqe_pretix_project/actions/runs/45657663612); Live Pull Request [#13](https://github.com/sohaibAkhlaq/sqe_pretix_project/pull/13) proved end-to-end PR blocking when commit `86aa398` triggered Red-Gate failure [`45663263380`](https://github.com/sohaibAkhlaq/sqe_pretix_project/actions/runs/45663263380) (`94.12%` scoped coverage `< 100%` on Gate 2, `mergeable_state=blocked`), followed by remediation commit restoring `100.00%` parity.
 
 ---
 
