@@ -21,7 +21,7 @@ SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
 class TestPlaywrightRBACAccessMatrix:
     """Automates browser verification of role-based access decisions across both workflows."""
 
-    def test_verify_playwright_access_matrix(self, admin_password):
+    def test_verify_playwright_access_matrix(self, admin_password, auditor_password):
         access_results = []
 
         with sync_playwright() as p:
@@ -174,6 +174,63 @@ class TestPlaywrightRBACAccessMatrix:
                 "evidence": f"reports/security/screenshots/{screenshot_path_5.name}"
             })
             context_anon.close()
+
+            # =================================================================
+            # CHECK 6 & 7: Authenticated Low-Privilege Auditor Role (ALLOWED read vs DENIED admin mutation)
+            # =================================================================
+            context_auditor = browser.new_context()
+            page_auditor = context_auditor.new_page()
+
+            page_auditor.goto(f"{BASE_URL}/control/login/")
+            page_auditor.fill('input[name="email"]', "auditor@localhost")
+            page_auditor.fill('input[name="password"]', auditor_password)
+            page_auditor.click('button[type="submit"]')
+            page_auditor.wait_for_load_state("networkidle")
+
+            resp_aud_orders = page_auditor.goto(f"{BASE_URL}/control/event/sqe/sqe2026/orders/")
+            page_auditor.wait_for_load_state("networkidle")
+            aud_orders_allowed = resp_aud_orders is not None and resp_aud_orders.status == 200 and "/orders/" in page_auditor.url
+            screenshot_path_6 = SCREENSHOTS_DIR / "decision6_auditor_orders_allowed.png"
+            page_auditor.screenshot(path=str(screenshot_path_6))
+
+            access_results.append({
+                "decision_id": "DEC-06",
+                "role": "Auditor (Authenticated Read-Only)",
+                "workflow": "Workflow B (Audit Ledger Review)",
+                "route": "/control/event/sqe/sqe2026/orders/",
+                "action": "Log in as auditor@localhost and inspect read-only event orders ledger",
+                "decision_type": "ALLOWED",
+                "expected_result": "HTTP 200 OK; Orders ledger rendered in read-only audit mode",
+                "observed_result": f"Access granted (HTTP {resp_aud_orders.status if resp_aud_orders else 'N/A'}); authenticated as auditor@localhost",
+                "verdict": "PASS" if aud_orders_allowed else "FAIL",
+                "evidence": f"reports/security/screenshots/{screenshot_path_6.name}"
+            })
+
+            resp_aud_settings = page_auditor.goto(f"{BASE_URL}/control/event/sqe/sqe2026/settings/")
+            page_auditor.wait_for_load_state("networkidle")
+            page_text = page_auditor.content()
+            aud_settings_denied = (
+                resp_aud_settings is not None
+                and resp_aud_settings.status == 403
+                and "Permission denied" in page_text
+            )
+            screenshot_path_7 = SCREENSHOTS_DIR / "decision7_auditor_settings_denied.png"
+            page_auditor.screenshot(path=str(screenshot_path_7))
+
+            access_results.append({
+                "decision_id": "DEC-07",
+                "role": "Auditor (Authenticated Read-Only)",
+                "workflow": "Workflow B (Privileged Event Settings)",
+                "route": "/control/event/sqe/sqe2026/settings/",
+                "action": "Attempt privileged event configuration mutation as authenticated auditor@localhost",
+                "decision_type": "DENIED",
+                "expected_result": "HTTP 403 Forbidden; 'Permission denied' enforcement page displayed",
+                "observed_result": f"Access denied (HTTP {resp_aud_settings.status if resp_aud_settings else 'N/A'}); Permission denied rendered",
+                "verdict": "PASS" if aud_settings_denied else "FAIL",
+                "evidence": f"reports/security/screenshots/{screenshot_path_7.name}"
+            })
+
+            context_auditor.close()
             browser.close()
 
         # Save Playwright Access Matrix Report

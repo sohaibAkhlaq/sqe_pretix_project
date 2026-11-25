@@ -1,0 +1,611 @@
+[
+  {
+    "name": "aiohappyeyeballs",
+    "version": "2.7.1"
+  },
+  {
+    "name": "aiohttp",
+    "version": "3.14.5"
+  },
+  {
+    "name": "aiosignal",
+    "version": "1.4.0"
+  },
+  {
+    "name": "amqp",
+    "version": "5.4.2"
+  },
+  {
+    "name": "arabic-reshaper",
+    "version": "3.0.1"
+  },
+  {
+    "name": "argon2-cffi",
+    "version": "25.1.0"
+  },
+  {
+    "name": "argon2-cffi-bindings",
+    "version": "26.2.0"
+  },
+  {
+    "name": "asgiref",
+    "version": "3.13.0"
+  },
+  {
+    "name": "asttokens",
+    "version": "3.0.2"
+  },
+  {
+    "name": "attrs",
+    "version": "26.1.0"
+  },
+  {
+    "name": "babel",
+    "version": "2.18.0"
+  },
+  {
+    "name": "beautifulsoup4",
+    "version": "4.15.0"
+  },
+  {
+    "name": "billiard",
+    "version": "4.3.2"
+  },
+  {
+    "name": "bleach",
+    "version": "6.4.0"
+  },
+  {
+    "name": "cbor2",
+    "version": "6.3.0"
+  },
+  {
+    "name": "celery",
+    "version": "5.6.3"
+  },
+  {
+    "name": "certifi",
+    "version": "2026.10.23"
+  },
+  {
+    "name": "cffi",
+    "version": "2.1.1"
+  },
+  {
+    "name": "chardet",
+    "version": "5.2.0"
+  },
+  {
+    "name": "charset-normalizer",
+    "version": "3.5.2"
+  },
+  {
+    "name": "click",
+    "version": "8.5.1"
+  },
+  {
+    "name": "click-didyoumean",
+    "version": "0.3.1"
+  },
+  {
+    "name": "click-plugins",
+    "version": "1.1.1.2"
+  },
+  {
+    "name": "click-repl",
+    "version": "0.4.1"
+  },
+  {
+    "name": "cryptography",
+    "version": "50.0.2"
+  },
+  {
+    "name": "css-inline",
+    "version": "0.22.1"
+  },
+  {
+    "name": "defusedcsv",
+    "version": "3.0.0"
+  },
+  {
+    "name": "Django",
+    "version": "5.2.19"
+  },
+  {
+    "name": "django-appconf",
+    "version": "1.2.0"
+  },
+  {
+    "name": "django-bootstrap3",
+    "version": "26.3"
+  },
+  {
+    "name": "django_compressor",
+    "version": "4.6.0"
+  },
+  {
+    "name": "django-countries",
+    "version": "9.1.0"
+  },
+  {
+    "name": "django-extensions",
+    "version": "4.1"
+  },
+  {
+    "name": "django-filter",
+    "version": "26.2"
+  },
+  {
+    "name": "django-formset-js-improved",
+    "version": "0.5.0.5"
+  },
+  {
+    "name": "django-formtools",
+    "version": "2.7"
+  },
+  {
+    "name": "django-hierarkey",
+    "version": "2.0.2"
+  },
+  {
+    "name": "django-hijack",
+    "version": "3.7.9"
+  },
+  {
+    "name": "django-i18nfield",
+    "version": "1.11.0"
+  },
+  {
+    "name": "django-jquery-js",
+    "version": "3.1.1"
+  },
+  {
+    "name": "django-libsass",
+    "version": "0.9"
+  },
+  {
+    "name": "django-localflavor",
+    "version": "5.1"
+  },
+  {
+    "name": "django-markup",
+    "version": "1.10"
+  },
+  {
+    "name": "django-oauth-toolkit",
+    "version": "2.3.0"
+  },
+  {
+    "name": "django-otp",
+    "version": "1.7.5"
+  },
+  {
+    "name": "django-phonenumber-field",
+    "version": "8.5.0"
+  },
+  {
+    "name": "django-querytagger",
+    "version": "0.0.3"
+  },
+  {
+    "name": "django-redis",
+    "version": "7.0.0"
+  },
+  {
+    "name": "django-scopes",
+    "version": "2.1.0"
+  },
+  {
+    "name": "django-statici18n",
+    "version": "2.8.0"
+  },
+  {
+    "name": "djangorestframework",
+    "version": "3.18.3"
+  },
+  {
+    "name": "dnspython",
+    "version": "2.8.0"
+  },
+  {
+    "name": "drf-ujson2",
+    "version": "1.7.2"
+  },
+  {
+    "name": "elementpath",
+    "version": "5.1.4"
+  },
+  {
+    "name": "et_xmlfile",
+    "version": "2.0.0"
+  },
+  {
+    "name": "executing",
+    "version": "2.3.0"
+  },
+  {
+    "name": "frozenlist",
+    "version": "1.8.0"
+  },
+  {
+    "name": "geoip2",
+    "version": "5.4.0"
+  },
+  {
+    "name": "gunicorn",
+    "version": "27.0.1"
+  },
+  {
+    "name": "idna",
+    "version": "3.20"
+  },
+  {
+    "name": "importlib_metadata",
+    "version": "9.1.0"
+  },
+  {
+    "name": "ipython",
+    "version": "9.18.1"
+  },
+  {
+    "name": "ipython_pygments_lexers",
+    "version": "1.1.1"
+  },
+  {
+    "name": "isodate",
+    "version": "0.7.2"
+  },
+  {
+    "name": "isoweek",
+    "version": "1.3.3"
+  },
+  {
+    "name": "jedi",
+    "version": "0.20.1"
+  },
+  {
+    "name": "jsonschema",
+    "version": "4.26.0"
+  },
+  {
+    "name": "jsonschema-specifications",
+    "version": "2025.9.1"
+  },
+  {
+    "name": "jwcrypto",
+    "version": "1.6.1"
+  },
+  {
+    "name": "kombu",
+    "version": "5.6.2"
+  },
+  {
+    "name": "libsass",
+    "version": "0.23.0"
+  },
+  {
+    "name": "lxml",
+    "version": "6.1.3"
+  },
+  {
+    "name": "Markdown",
+    "version": "3.11.2"
+  },
+  {
+    "name": "matplotlib-inline",
+    "version": "0.2.2"
+  },
+  {
+    "name": "maxminddb",
+    "version": "3.3.0"
+  },
+  {
+    "name": "mt-940",
+    "version": "4.30.0"
+  },
+  {
+    "name": "multidict",
+    "version": "7.2.1"
+  },
+  {
+    "name": "oauthlib",
+    "version": "3.3.1"
+  },
+  {
+    "name": "openpyxl",
+    "version": "3.1.5"
+  },
+  {
+    "name": "packaging",
+    "version": "26.3"
+  },
+  {
+    "name": "parso",
+    "version": "0.8.7"
+  },
+  {
+    "name": "paypal-checkout-serversdk",
+    "version": "1.0.3"
+  },
+  {
+    "name": "paypalhttp",
+    "version": "1.0.1"
+  },
+  {
+    "name": "paypalrestsdk",
+    "version": "1.13.3"
+  },
+  {
+    "name": "pexpect",
+    "version": "4.9.0"
+  },
+  {
+    "name": "phonenumberslite",
+    "version": "9.0.43"
+  },
+  {
+    "name": "pillow",
+    "version": "13.0.0"
+  },
+  {
+    "name": "pip",
+    "version": "26.3"
+  },
+  {
+    "name": "platformdirs",
+    "version": "4.14.8"
+  },
+  {
+    "name": "pretix",
+    "version": "2026.9.3",
+    "editable_project_location": "/pretix"
+  },
+  {
+    "name": "pretix-plugin-build",
+    "version": "1.0.2"
+  },
+  {
+    "name": "prompt_toolkit",
+    "version": "3.0.53"
+  },
+  {
+    "name": "propcache",
+    "version": "0.5.4"
+  },
+  {
+    "name": "protobuf",
+    "version": "7.36.2"
+  },
+  {
+    "name": "psutil",
+    "version": "7.2.2"
+  },
+  {
+    "name": "psycopg2-binary",
+    "version": "2.9.13"
+  },
+  {
+    "name": "ptyprocess",
+    "version": "0.7.0"
+  },
+  {
+    "name": "pure_eval",
+    "version": "0.2.4"
+  },
+  {
+    "name": "pyasn1",
+    "version": "0.6.5"
+  },
+  {
+    "name": "pyasn1_modules",
+    "version": "0.4.2"
+  },
+  {
+    "name": "pycountry",
+    "version": "26.2.16"
+  },
+  {
+    "name": "pycparser",
+    "version": "3.11"
+  },
+  {
+    "name": "pycryptodome",
+    "version": "3.24.1"
+  },
+  {
+    "name": "Pygments",
+    "version": "2.21.0"
+  },
+  {
+    "name": "PyJWT",
+    "version": "2.15.1"
+  },
+  {
+    "name": "pylibmc",
+    "version": "1.8.0"
+  },
+  {
+    "name": "pyOpenSSL",
+    "version": "26.4.0"
+  },
+  {
+    "name": "pypdf",
+    "version": "6.20.1"
+  },
+  {
+    "name": "python-bidi",
+    "version": "0.6.12"
+  },
+  {
+    "name": "python-dateutil",
+    "version": "3.0.0"
+  },
+  {
+    "name": "python-stdnum",
+    "version": "2.2"
+  },
+  {
+    "name": "pytz",
+    "version": "2026.6"
+  },
+  {
+    "name": "pytz-deprecation-shim",
+    "version": "0.1.0.post0"
+  },
+  {
+    "name": "pyuca",
+    "version": "1.2"
+  },
+  {
+    "name": "qrcode",
+    "version": "8.2"
+  },
+  {
+    "name": "rcssmin",
+    "version": "1.3.0"
+  },
+  {
+    "name": "redis",
+    "version": "7.4.1"
+  },
+  {
+    "name": "referencing",
+    "version": "0.37.0"
+  },
+  {
+    "name": "reportlab",
+    "version": "5.0.1"
+  },
+  {
+    "name": "requests",
+    "version": "2.34.2"
+  },
+  {
+    "name": "requests-file",
+    "version": "3.0.1"
+  },
+  {
+    "name": "requests-toolbelt",
+    "version": "1.0.0"
+  },
+  {
+    "name": "rjsmin",
+    "version": "1.3.0"
+  },
+  {
+    "name": "rpds-py",
+    "version": "2026.9.1"
+  },
+  {
+    "name": "sentry-sdk",
+    "version": "2.71.0"
+  },
+  {
+    "name": "sepaxml",
+    "version": "2.7.0"
+  },
+  {
+    "name": "setuptools",
+    "version": "84.2.1"
+  },
+  {
+    "name": "six",
+    "version": "1.17.0"
+  },
+  {
+    "name": "soupsieve",
+    "version": "4.1.2"
+  },
+  {
+    "name": "sqlparse",
+    "version": "0.6.1"
+  },
+  {
+    "name": "stack-data",
+    "version": "0.6.3"
+  },
+  {
+    "name": "stripe",
+    "version": "7.9.0"
+  },
+  {
+    "name": "text-unidecode",
+    "version": "1.3"
+  },
+  {
+    "name": "tlds",
+    "version": "2026102900"
+  },
+  {
+    "name": "tqdm",
+    "version": "4.70.1"
+  },
+  {
+    "name": "traitlets",
+    "version": "5.16.1"
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.16.0"
+  },
+  {
+    "name": "tzdata",
+    "version": "2026.6"
+  },
+  {
+    "name": "tzlocal",
+    "version": "5.4.5"
+  },
+  {
+    "name": "ua-parser",
+    "version": "1.0.2"
+  },
+  {
+    "name": "ua-parser-builtins",
+    "version": "202610"
+  },
+  {
+    "name": "ujson",
+    "version": "6.1.0"
+  },
+  {
+    "name": "urllib3",
+    "version": "2.8.0"
+  },
+  {
+    "name": "vine",
+    "version": "5.1.0"
+  },
+  {
+    "name": "vobject",
+    "version": "0.9.9"
+  },
+  {
+    "name": "wcwidth",
+    "version": "0.9.4"
+  },
+  {
+    "name": "webauthn",
+    "version": "3.0.1"
+  },
+  {
+    "name": "webencodings",
+    "version": "0.6.1"
+  },
+  {
+    "name": "xmlschema",
+    "version": "4.3.2"
+  },
+  {
+    "name": "yarl",
+    "version": "1.25.1"
+  },
+  {
+    "name": "zeep",
+    "version": "4.3.3"
+  },
+  {
+    "name": "zipp",
+    "version": "4.1.2"
+  }
+]

@@ -50,14 +50,19 @@ def audit_use_case_automation():
         assert size > 10000, f"Screenshot {s} too small ({size} bytes)"
         print(f"  [PASS] Verified screenshot: {s} ({size:,} bytes)")
 
-    # 3. Check JSON Execution Report
+    # 3. Check JSON Execution Report & E2E HTML/JUnit Artifacts
     report_json = os.path.join(PROJECT_ROOT, "reports", "e2e", "e2e_test_results.json")
-    print("\n--- [CHECK 3] Inspecting E2E Test Execution Summary ---")
+    report_html = os.path.join(PROJECT_ROOT, "reports", "e2e", "e2e_report.html")
+    report_junit = os.path.join(PROJECT_ROOT, "reports", "e2e", "e2e_junit.xml")
+    print("\n--- [CHECK 3] Inspecting E2E Test Execution Summary & HTML Report ---")
     assert os.path.exists(report_json), "Missing reports/e2e/e2e_test_results.json"
+    assert os.path.exists(report_html), "Missing reports/e2e/e2e_report.html"
+    assert os.path.exists(report_junit), "Missing reports/e2e/e2e_junit.xml"
     with open(report_json, "r", encoding="utf-8") as f:
         data = json.load(f)
-    print(f"  [PASS] Suite Status: {data.get('status')} | Duration: {data.get('duration_seconds')}s")
+    print(f"  [PASS] Suite Status: {data.get('status')} | Pytest: {data.get('passed_pytest_cases')}/{data.get('total_pytest_cases')} | Duration: {data.get('duration_seconds')}s")
     assert data.get("status") == "PASS", "E2E suite status is not PASS"
+    assert data.get("total_pytest_cases", 0) > 0 and data.get("passed_pytest_cases") == data.get("total_pytest_cases"), "E2E pytest counts mismatch"
 
     # 4. Check Postcondition Validations
     print("\n--- [CHECK 4] Verifying Postcondition Check Logic in Test Suites ---")

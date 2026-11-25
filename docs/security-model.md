@@ -1,4 +1,4 @@
-> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# Pretix Defensive Security & Threat Model
+# Pretix Defensive Security & Threat Model
 
 **Component:** SE3002 Software Quality Engineering - Order & Quota Module  
 **Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`)  
@@ -192,10 +192,12 @@ Automated end-to-end browser tests in [`tests/team/security/test_playwright_rbac
 | Decision ID | User Role | Route / Action Evaluated | Decision Type | Expected Result | Observed Result | Verdict | Evidence Screenshot |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
 | **`DEC-01`** | Organizer Admin | View event order ledger and financial breakdown (`/control/event/sqe/sqe2026/orders/`) | **ALLOWED** | HTTP 200 OK; Ledger displayed | Rendered order management table and metrics | **PASS** | [`reports/security/screenshots/decision1_admin_orders_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision1_admin_orders_allowed.png) |
-| **`DEC-02`** | Organizer Admin | Inspect & configure item inventory capacity (`/control/event/sqe/sqe2026/items/`) | **ALLOWED** | HTTP 200 OK; Items displayed | Rendered item tier settings and pricing | **PASS** | [`reports/security/screenshots/decision2_admin_quota_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision2_admin_quota_allowed.png) |
-| **`DEC-03`** | Unauthenticated / Auditor | Direct deep-link attempt to access order ledger without administrative login | **DENIED** | HTTP 302 Redirect to `/control/login` | Redirected to administrative login gate | **PASS** | [`reports/security/screenshots/decision3_anon_control_panel_denied.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision3_anon_control_panel_denied.png) |
-| **`DEC-04`** | Unauthenticated User | Direct API mutation attempting to alter quota limit (`POST /api/v1/.../quotas/1/`) | **DENIED** | HTTP 401 Unauthorized | Rejected with `401 Unauthorized`; quota untouched | **PASS** | [`reports/security/screenshots/decision4_anon_quota_edit_denied.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision4_anon_quota_edit_denied.png) |
+| **`DEC-02`** | Organizer Admin | Inspect & configure item/quota inventory (`/control/event/sqe/sqe2026/quotas/`) | **ALLOWED** | HTTP 200 OK; Quota pool displayed | Rendered quota list & capacity settings | **PASS** | [`reports/security/screenshots/decision2_admin_quota_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision2_admin_quota_allowed.png) |
+| **`DEC-03`** | Unauthenticated User | Direct deep-link attempt to access order ledger without login | **DENIED** | HTTP 302 Redirect to `/control/login` | Redirected to administrative login gate; zero data disclosed | **PASS** | [`reports/security/screenshots/decision3_anon_control_panel_denied.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision3_anon_control_panel_denied.png) |
+| **`DEC-04`** | Unauthenticated User | Direct access attempt to `/control/event/sqe/sqe2026/quotas/1/` without login | **DENIED** | HTTP 302 Redirect to `/control/login` | Redirected to login authentication gate; mutation blocked | **PASS** | [`reports/security/screenshots/decision4_anon_quota_edit_denied.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision4_anon_quota_edit_denied.png) |
 | **`DEC-05`** | Customer / Public Attendee | Access public event landing page and ticket catalog (`/sqe/sqe2026/`) | **ALLOWED** | HTTP 200 OK; Catalog rendered | Displayed public event info and ticket options | **PASS** | [`reports/security/screenshots/decision5_public_storefront_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision5_public_storefront_allowed.png) |
+| **`DEC-06`** | Auditor (Authenticated Read-Only) | Log in as `auditor@localhost` and open `/control/event/sqe/sqe2026/orders/` | **ALLOWED** | HTTP 200 OK; Read-only ledger | Authenticated audit access granted (`200`) | **PASS** | [`reports/security/screenshots/decision6_auditor_orders_allowed.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision6_auditor_orders_allowed.png) |
+| **`DEC-07`** | Auditor (Authenticated Read-Only) | Navigate as `auditor@localhost` to privileged `/control/event/sqe/sqe2026/settings/` | **DENIED** | HTTP 403 Forbidden | Rejected with `403 Permission denied` error view | **PASS** | [`reports/security/screenshots/decision7_auditor_settings_denied.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/screenshots/decision7_auditor_settings_denied.png) |
 
 Machine-readable audit trail recorded in [`reports/security/playwright_rbac_matrix.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/playwright_rbac_matrix.json).
 
@@ -203,8 +205,8 @@ Machine-readable audit trail recorded in [`reports/security/playwright_rbac_matr
 
 ## 8. Corroborated Security Controls & Supply Chain Audit
 
-### 8.1. OWASP ZAP Passive Scan & Corroborated Controls
-A passive vulnerability assessment was executed across 5 core application endpoints (Storefront, Control Panel, API, Checkout, and Login), recorded in [`reports/security/zap_passive_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/zap_passive_audit_report.json). Four critical security controls were corroborated directly against the pretix production codebase:
+### 8.1. OWASP ZAP-Aligned HTTP Passive Scan & Corroborated Controls
+An OWASP ZAP-aligned HTTP passive header and control assessment (`scripts/run_owasp_zap_audit.py` & `scripts/run_security_tests.py`) was executed across 5 core application endpoints (Storefront, Cart Add / API, Login, Quotas, Orders), recorded in [`reports/security/zap_passive_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/zap_passive_audit_report.json) and [`reports/security/zap_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/zap_report.json). Four critical security controls were corroborated directly against the pretix production codebase:
 
 1. **Session Cookie Isolation (`SESSION_COOKIE_HTTPONLY`):**
    - *Status:* **VERIFIED_SECURE**
@@ -219,10 +221,8 @@ A passive vulnerability assessment was executed across 5 core application endpoi
    - *Status:* **VERIFIED_SECURE**
    - *Configuration Corroboration:* Enforced in `pretix/settings.py` via `SECURE_CONTENT_TYPE_NOSNIFF = True` and enforced by `django.middleware.security.SecurityMiddleware`.
 
-### 8.2. Software Supply Chain Audit (pip-audit)
+### 8.2. Software Supply Chain Audit (`pip-audit`) & Runtime Inventory
 Dependency vulnerabilities were audited using **`pip-audit 2.10.1`** against the official PyPI vulnerability database:
-* **Target Environment:** `requirements-test.txt` (test harness and runtime integration dependencies).
-* **Total Packages Inspected:** **48 dependencies** (including `pytest 9.2.0`, `requests 2.34.2`, `urllib3 2.8.0`, `pyyaml 6.0.4`, `radon 6.0.1`, `playwright 1.57.0`, `axe-core-python`).
-* **Vulnerabilities Detected:** **0 Known CVEs (Clean Bill of Health)**.
-* **Audit Record:** [`reports/security/pip_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/pip_audit_report.json). Zero security defects or outdated vulnerable packages identified.
+* **Total Packages Inspected:** **48 host packages scanned** (`pytest 9.2.0`, `requests 2.34.2`, `PyYAML 6.0.3` in venv / `6.0.4` in `requirements-test.txt` audit, `radon 6.0.1`, `playwright 1.65.2`, `axe-core-python`) — **0 Known CVEs** ([`pip_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/pip_audit_report.json)).
+* **Container Runtime Inventory:** **152 installed runtime packages** exported directly from `pretix_web` ([`container_runtime_packages.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/container_runtime_packages.json)).
 

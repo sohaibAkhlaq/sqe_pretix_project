@@ -20,7 +20,12 @@ class TestAccessibilityRemediation:
         page.goto(login_url)
         page.wait_for_load_state("networkidle")
 
-        # 1. VERIFY DURABLE SERVER-SIDE ATTRIBUTE
+        # 1. VERIFY DURABLE SERVER-SIDE REMEDIATION (lang, main landmark, h1, image alt)
+        html_lang = page.locator("html").get_attribute("lang")
+        assert html_lang == "en", f"Expected durable html lang='en', got: {html_lang}"
+        assert page.locator("main#main-content").count() == 1, "Expected durable <main> landmark"
+        assert page.locator("h1").count() >= 1, "Expected durable <h1> heading"
+
         logo = page.locator("img.logo")
         alt_attr = logo.get_attribute("alt")
         assert alt_attr == "pretix official logo", f"Expected durable server-rendered alt attribute, got: {alt_attr}"
@@ -30,44 +35,36 @@ class TestAccessibilityRemediation:
         page.screenshot(path=after_screenshot)
 
         page.add_script_tag(path=axe_path)
-        after_results = page.evaluate("axe.run({runOnly: ['image-alt']})")
+        after_results = page.evaluate("axe.run()")
         after_violations = len(after_results.get("violations", []))
-        assert after_violations == 0, f"Expected 0 image-alt violations on durable screen, found {after_violations}"
-        print(f"[A11Y AFTER] Durable fix verified: 0 image-alt violations on server-rendered page (alt='{alt_attr}')")
+        assert after_violations == 0, f"Expected 0 total violations on durable screen, found {after_results.get('violations')}"
+        print(f"[A11Y AFTER] Durable fix verified: 0 total axe-core violations on server-rendered page (lang='{html_lang}', alt='{alt_attr}')")
 
-        # 3. VERIFY BEFORE STATE (DEMONSTRATE DETECTION WHEN ALT IS REMOVED)
+        # 3. VERIFY BEFORE STATE (DEMONSTRATE DETECTION WHEN DURABLE ATTRIBUTES REMOVED)
         page.evaluate("""() => {
+            document.documentElement.removeAttribute('lang');
             const l = document.querySelector('img.logo');
             if (l) l.removeAttribute('alt');
         }""")
         before_screenshot = os.path.join(screenshot_dir, "02_login_remediation_before.png")
         page.screenshot(path=before_screenshot)
 
-        before_results = page.evaluate("axe.run({runOnly: ['image-alt']})")
+        before_results = page.evaluate("axe.run({runOnly: ['image-alt', 'html-has-lang']})")
         before_violations = len(before_results.get("violations", []))
-        assert before_violations == 1, f"Expected 1 violation when alt attribute is absent, got {before_violations}"
-        print(f"[A11Y BEFORE] Baseline violation confirmed when alt is absent: {before_results['violations'][0]['description']}")
+        assert before_violations >= 2, f"Expected >=2 violations when alt and lang are removed, got {before_violations}"
+        print(f"[A11Y BEFORE] Baseline violations confirmed when attributes absent: {[v['id'] for v in before_results['violations']]}")
 
     def test_storefront_contrast_remediation(self, page, base_url, axe_path, screenshot_dir):
-        """Audits contrast and focus remediation on the event storefront."""
+        """Verifies durable server-rendered contrast & focus-visible CSS on storefront (no JS style injection)."""
         landing_url = f"{base_url}/sqe/sqe2026/"
         page.goto(landing_url)
         page.wait_for_load_state("networkidle")
 
-        # Inject accessible high-contrast CSS and explicit ARIA descriptors
-        page.evaluate("""() => {
-            const style = document.createElement('style');
-            style.innerHTML = `
-                :focus-visible {
-                    outline: 3px solid #005fcc !important;
-                    outline-offset: 2px !important;
-                }
-                .text-muted {
-                    color: #4a4a4a !important;
-                }
-            `;
-            document.head.appendChild(style);
-        }""")
+        # Assert server HTML natively includes our durable contrast/focus patch
+        server_style = page.locator("style#sqe-a11y-contrast-patch")
+        assert server_style.count() == 1, "Expected durable server-rendered #sqe-a11y-contrast-patch in <head>"
+        style_text = server_style.inner_text()
+        assert "#4a4a4a" in style_text and ":focus-visible" in style_text
 
         screenshot_path = os.path.join(screenshot_dir, "04_storefront_high_contrast.png")
         page.screenshot(path=screenshot_path)
@@ -76,4 +73,4 @@ class TestAccessibilityRemediation:
         results = page.evaluate("axe.run({runOnly: ['color-contrast', 'aria-roles']})")
         violations = len(results.get("violations", []))
         assert violations == 0, f"Expected 0 violations on storefront, got {violations}"
-        print("[A11Y STOREFRONT] Storefront contrast and focus remediation verified (0 violations).")
+        print("[A11Y STOREFRONT] Durable server contrast and focus CSS verified (0 violations).")

@@ -80,3 +80,8 @@ def event_endpoints():
 @pytest.fixture(scope="session")
 def admin_password():
     return get_test_secret("SQE_ADMIN_PASSWORD")
+
+
+@pytest.fixture(scope="session")
+def auditor_password():
+    return get_test_secret("SQE_AUDITOR_PASSWORD")

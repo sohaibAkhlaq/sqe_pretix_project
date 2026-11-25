@@ -185,7 +185,7 @@ def audit_passive_security():
     }
 
     report = {
-        "scanner": "OWASP ZAP Passive Scanner (Integrated Playwright & HTTP Inspection)",
+        "scanner": "OWASP ZAP-Aligned Passive HTTP Header & Django Configuration Inspector",
         "scan_timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_routes_inspected": len(ROUTES_TO_AUDIT),
         "total_passive_alerts": len(unique_findings),

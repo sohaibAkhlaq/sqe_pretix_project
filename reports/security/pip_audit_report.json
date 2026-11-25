@@ -1,8 +1,9 @@
 {
-  "timestamp": "2026-11-24T16:38:15.320833",
+  "timestamp": "2026-11-25T20:41:37.995408",
   "tool": "pip-audit 2.10.1",
-  "target": "requirements-test.txt",
+  "target": "requirements-test.txt (host verification harness) + pretix_web pip inventory",
   "dependencies_scanned": 48,
+  "container_runtime_packages_count": 152,
   "vulnerabilities_found": 0,
   "vulnerabilities": [],
   "raw_audit": {

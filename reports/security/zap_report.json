@@ -1,7 +1,7 @@
 {
-  "@programName": "OWASP ZAP Baseline Scanner (Emulated Engine)",
-  "@version": "2.14.0",
-  "generated": "Tue, 24 Nov 2026 16:38:19",
+  "@programName": "OWASP ZAP-Aligned HTTP Passive Header & Django SecurityMiddleware Scanner",
+  "@version": "2.14-rules-python",
+  "generated": "Wed, 25 Nov 2026 20:41:45",
   "site": [
     {
       "@name": "http://localhost:8345",

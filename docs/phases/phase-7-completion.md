@@ -1,5 +1,3 @@
-> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
-
 # Phase 7 Completion & Compliance Report: Defensive Security & Vulnerability Analysis
 
 **Milestone Tag:** `gate-7`  
@@ -90,10 +88,10 @@ PHASE 7 SECURITY VERIFICATION COMPLETE: ALL GATES PASSING
 
 | Tool / Scanner | Scope / Target | Metric | Result | Compliance Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **`pip-audit` 2.10.1** | Python Dependencies (`requirements-test.txt`) | Known CVEs / Advisories | **0 Found** | **PASS** |
-| **OWASP ZAP 2.14** | Web Gateway & API Endpoints (`localhost:8345`) | High-Severity Vulnerabilities | **0 Found** | **PASS** |
-| **OWASP ZAP 2.14** | Web Gateway & API Endpoints (`localhost:8345`) | Medium Alerts | 3 (API JSON headless headers) | **PASS** (Expected) |
-| **Pytest Security Suite** | RBAC, Injection, Headers (25 tests) | Test Pass Rate | **100% (25/25)** | **PASS** |
+| **`pip-audit` 2.10.1** | Host Test Deps (`requirements-test.txt`) + Container Pip List | 48 host CVEs checked / 152 container pkgs inventoried | **0 CVEs Found** | **PASS** |
+| **HTTP Passive Scan** | Web Gateway & API Endpoints (`localhost:8345`) | High-Severity Vulnerabilities | **0 Found** | **PASS** |
+| **HTTP Passive Scan** | Web Gateway & API Endpoints (`localhost:8345`) | Medium Alerts (API JSON headers) | 3 (API endpoints) | **PASS** (Expected) |
+| **Pytest Security Suite** | RBAC (7 UI + API checks), Injection, Headers (`tests/team/security/`) | Test Pass Rate | **100% (26/26)** | **PASS** |
 
 ---
 
@@ -101,11 +99,11 @@ PHASE 7 SECURITY VERIFICATION COMPLETE: ALL GATES PASSING
 
 | Artifact | File Path | Description |
 | :--- | :--- | :--- |
-| Security Model | [`docs/security-model.md`](file:///c:/Users/USER/Desktop/sqe_project/docs/security-model.md) | STRIDE model, trust zones, RBAC matrix, and defense architecture |
-| Pytest Test Suite | [`tests/team/security/`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/security/) | 25 automated unit and integration security tests |
+| Security Model | [`docs/security-model.md`](file:///c:/Users/USER/Desktop/sqe_project/docs/security-model.md) | STRIDE model, trust zones, 7-decision RBAC matrix, and defense architecture |
+| Pytest Test Suite | [`tests/team/security/`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/security/) | 26 automated integration & Playwright security tests |
 | Test Runner | [`scripts/run_security_tests.py`](file:///c:/Users/USER/Desktop/sqe_project/scripts/run_security_tests.py) | Automated 5-stage reset, test, audit, and reporting pipeline |
-| Dependency Scan | [`reports/security/pip_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/pip_audit_report.json) | pip-audit output across 48 packages |
-| Passive Scan | [`reports/security/zap_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/zap_report.json) | OWASP ZAP 2.14 compatible vulnerability report |
+| Dependency Scan | [`reports/security/pip_audit_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/pip_audit_report.json) | `pip-audit` output across 48 host packages + [`container_runtime_packages.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/container_runtime_packages.json) (152 container packages) |
+| Passive Scan | [`reports/security/zap_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/zap_report.json) | OWASP ZAP-aligned HTTP passive header audit report |
 | Master Security Scan | [`reports/security/security_scan_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/security/security_scan_report.json) | Aggregated compliance summary |
 
 ---

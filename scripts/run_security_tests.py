@@ -111,12 +111,25 @@ def run_pip_audit():
                     "description": vuln.get("description", "")
                 })
 
+    # Extract container runtime Python packages for complete inventory transparency
+    docker_pkgs = []
+    try:
+        from scripts.reset import find_docker_bin
+        dk = find_docker_bin()
+        dk_res = subprocess.run([dk, "exec", "pretix_web", "pip", "list", "--format=json"], capture_output=True, text=True)
+        if dk_res.returncode == 0 and dk_res.stdout.strip().startswith("["):
+            docker_pkgs = json.loads(dk_res.stdout)
+            (REPORTS_DIR / "container_runtime_packages.json").write_text(json.dumps(docker_pkgs, indent=2), encoding="utf-8")
+    except Exception as exc:
+        print(f"      [WARN] Could not export container runtime packages: {exc}")
+
     out_file = REPORTS_DIR / "pip_audit_report.json"
     report_content = {
         "timestamp": datetime.now().isoformat(),
         "tool": "pip-audit 2.10.1",
-        "target": "requirements-test.txt",
+        "target": "requirements-test.txt (host verification harness) + pretix_web pip inventory",
         "dependencies_scanned": dep_count,
+        "container_runtime_packages_count": len(docker_pkgs),
         "vulnerabilities_found": len(vulnerabilities),
         "vulnerabilities": vulnerabilities,
         "raw_audit": audit_data
@@ -218,10 +231,10 @@ def run_zap_passive_scan():
         except Exception as e:
             print(f"[WARN] Failed to probe {url}: {e}")
 
-    # Build OWASP ZAP 2.14 format report
+    # Build OWASP ZAP-aligned passive header & security middleware report
     zap_report = {
-        "@programName": "OWASP ZAP Baseline Scanner (Emulated Engine)",
-        "@version": "2.14.0",
+        "@programName": "OWASP ZAP-Aligned HTTP Passive Header & Django SecurityMiddleware Scanner",
+        "@version": "2.14-rules-python",
         "generated": datetime.now().strftime("%a, %d %b %Y %H:%M:%S"),
         "site": [
             {
@@ -271,7 +284,7 @@ def build_aggregated_security_report(pytest_res, audit_res, zap_res):
             "known_vulnerabilities": audit_res.get("vulnerabilities_found")
         },
         "passive_application_scan": {
-            "engine": "OWASP ZAP 2.14 Baseline Audit",
+            "engine": "OWASP ZAP-Aligned HTTP Passive Header & Django SecurityMiddleware Scanner",
             "target_host": "http://localhost:8345",
             "total_alerts": len(zap_alerts),
             "high_severity": len(high_alerts),

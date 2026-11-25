@@ -1,9 +1,15 @@
 {
   "suite": "SE3002 pretix Playwright E2E Suite (30-Flow Automation)",
   "phase": "Phase 5 (Gate 5) / Remediation Phase 3",
-  "duration_seconds": 477.84,
+  "duration_seconds": 531.7,
   "status": "PASS",
-  "timestamp": "2026-11-24T11:36:39Z",
+  "timestamp": "2026-11-25T15:39:51Z",
+  "total_pytest_cases": 42,
+  "passed_pytest_cases": 42,
+  "failed_pytest_cases": 0,
+  "skipped_pytest_cases": 0,
+  "html_report": "reports/e2e/e2e_report.html",
+  "junit_xml": "reports/e2e/e2e_junit.xml",
   "screenshots_captured": [
     "01_cart_checkout_step.png",
     "02_order_placed_confirmation.png",

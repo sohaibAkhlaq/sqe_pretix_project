@@ -1,135 +1,40 @@
-> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# Accessibility Remediation & Usability Audit Report (Before vs. After)
+# Usability, Accessibility & Heuristic Evaluation (Before vs. After)
 
 **Document Reference:** `docs/a11y-before-after.md`  
-**Course:** SE3002 Software Quality Engineering  
-**Application Under Test:** pretix (`/control/login` and `/sqe/sqe2026/`)  
-**Standard Evaluated:** W3C Web Content Accessibility Guidelines (WCAG) 2.1 Level AA  
-**Lead Contributor / Author:** Shaiman (`24i-3074`, Member 3 — Area C Lead)  
-**Reviewers:** Sohaib (`24i-3108`), M. Hasaam (`24i-3107`)  
-**Status:** Approved & Frozen Baseline (Gate 6 Deliverable)  
-**Date:** November 20, 2026  
+**Owner:** Shaiman (`24i-3074`, Member 3 — Area C)  
+**Test Suite & Patch Script:** [`tests/team/a11y/`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/a11y/), [`scripts/patch_a11y_container.py`](file:///c:/Users/USER/Desktop/sqe_project/scripts/patch_a11y_container.py), [`scripts/run_lighthouse_axe_audit.py`](file:///c:/Users/USER/Desktop/sqe_project/scripts/run_lighthouse_axe_audit.py)  
+**Raw Evidence Artifacts:** [`lighthouse_before.html`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/lighthouse_before.html), [`lighthouse_after.html`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/lighthouse_after.html), [`lighthouse_storefront.html`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/lighthouse_storefront.html), [`lighthouse_axe_unified_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/lighthouse_axe_unified_report.json)
 
 ---
 
-## 1. Accessibility Evaluation Architecture
+## 1. Deduplicated Accessibility Issue Register (Lighthouse + axe-core)
 
-Usability and accessibility testing was conducted using automated scanning and empirical keyboard operability verification:
-1. **axe-core 4.9.1:** Official Deque accessibility rules engine injected into Playwright Chromium sessions to evaluate DOM compliance.
-2. **Keyboard Traversal Engine:** Automated Tab sequence, active element detection, and focus trap verification.
-3. **Google Lighthouse Audit:** Comprehensive performance, accessibility, and best-practices heuristics.
+Findings from headless Chromium Google Lighthouse (`v13.6.0`) and Playwright `@axe-core` are consolidated so issues detected by multiple tools count strictly once:
 
----
-
-## 2. Baseline Audit & Defect Identification
-
-During the baseline scan of the administrative login interface (`http://localhost:8345/control/login`) and event storefront (`http://localhost:8345/sqe/sqe2026/`), two concrete WCAG 2.1 accessibility deficiencies were identified:
-
-### Defect 1: Missing Text Alternative on Administrative Logo (`<img>`)
-* **Screen:** Admin Control Panel Login (`/control/login`)
-* **WCAG Criterion:** 1.1.1 Non-Text Content — Level A (Critical Severity)
-* **Rule ID:** `image-alt`
-* **Requirement:** All non-text content (`<img>`) must possess an accessible text alternative (`alt` attribute) or a role of `none`/`presentation`.
-* **Observed Defect:**
-  ```html
-  <img src="/static/pretixbase/img/pretix-logo.a3ea71cc2c6f.svg" class="logo">
-  ```
-  The logo element lacked an `alt` attribute entirely. Screen readers announced the raw image file path rather than the organization name.
-* **axe-core Diagnostic Output:**
-  ```json
-  {
-    "id": "image-alt",
-    "impact": "critical",
-    "description": "Ensures <img> elements have alternate text or a role of none or presentation",
-    "help": "Images must have alternate text",
-    "nodes": [{"message": "Element does not have an alt attribute"}]
-  }
-  ```
-
-### Defect 2: Sub-Threshold Secondary Text Contrast
-* **Screen:** Event Storefront (`/sqe/sqe2026/`)
-* **WCAG Criterion:** 1.4.3 Contrast (Minimum) — Level AA
-* **Rule ID:** `color-contrast`
-* **Requirement:** Normal text must maintain a contrast ratio of at least $4.5:1$ against its background.
-* **Observed Defect:** Secondary metadata text (`.text-muted`) was styled with `#777777` on a white `#ffffff` background, yielding a contrast ratio of only **$3.2:1$ (Failing)**.
+| ID | Detecting Tools (Deduplicated) | Screen | Element / Defect | WCAG 2.1 AA Criterion | Severity | Status |
+| :--- | :--- | :--- | :--- | :--- | :---: | :--- |
+| **`A11Y-ISSUE-01`** | axe-core (`html-has-lang`, `landmark-one-main`, `page-has-heading-one`, `region`, `image-alt`) + Lighthouse A11y/SEO | `/control/login` | Missing `lang="en"`, `<main>`, `<h1>`, `<meta name="description">`, and logo `alt` | **1.1.1, 1.3.1, 2.4.6, 3.1.1 (Level A/AA)** | **Critical** | **REMEDIATED** (0 axe violations; Lighthouse A11y `69 -> 100`) |
+| **`A11Y-ISSUE-02`** | axe-core (`color-contrast`) + Lighthouse (`color-contrast`, `meta-description`) | `/sqe/sqe2026/` | `.text-muted` / `.help-block` low contrast (`3.2:1`), weak `:focus-visible`, missing meta description | **1.4.3 Contrast Minimum & 2.4.7 Focus Visible (AA)** | **High** | **REMEDIATED** (server-side `<style id="sqe-a11y-contrast-patch">`; 0 axe violations) |
+| **`A11Y-ISSUE-03`** | Google Lighthouse | `/sqe/sqe2026/` (Mobile) | Item stepper buttons `<button class="btn btn-default input-item-count-dec">` (`< 44x44px`) | **2.5.5 Target Size (Best Practice)** | **Minor** | **DOCUMENTED_BEST_PRACTICE** |
 
 ---
 
-## 3. Durable Engineering Remediation
+## 2. Durable Server-Side Engineering Remediation (No Client Style Injection)
 
-Rather than relying on transient DOM changes applied only during a test execution, remediation was implemented directly in the pretix server templates and stylesheets to ensure **permanent and durable** compliance:
-
-### 3.1. Durable Server-Side Patch for Defect 1 (Login Screen Logo Accessible Name):
-* **Target File:** `/pretix/src/pretix/control/templates/pretixcontrol/auth/base.html` (line 30)
-* **Pre-Remediation Source:**
-  ```html
-  <a href="{% url "control:auth.login" %}">
-      <img src="{% static "pretixbase/img/pretix-logo.svg" %}" class="logo"/>
-  </a>
-  ```
-* **Durable Patched Source:**
-  ```html
-  <a href="{% url "control:auth.login" %}">
-      <img src="{% static "pretixbase/img/pretix-logo.svg" %}" class="logo" alt="pretix official logo" role="img"/>
-  </a>
-  ```
-* **Durability Verification:** Tested directly against the Django server response without client-side DOM injection. The server renders `alt="pretix official logo"` and `role="img"` directly in the initial HTML document payload, satisfying WCAG 2.1 AA 1.1.1 permanently across all browser and assistive user agents.
-
-### 3.2. Stylesheet Patch for Defect 2 (Storefront Text Contrast):
-* **Target Stylesheet:** Storefront theme stylesheet (`.text-muted` and `:focus-visible`)
-* **Durable CSS Rules:**
-  ```css
-  /* Remediates WCAG 1.4.3 Color Contrast (Minimum) */
-  .text-muted {
-      /* Contrast ratio elevated from 3.2:1 to 5.8:1 against white background */
-      color: #4a4a4a !important;
-  }
-
-  /* Remediates WCAG 2.4.7 Focus Visible */
-  :focus-visible {
-      /* High-contrast focus outline for keyboard navigation */
-      outline: 3px solid #005fcc !important;
-      outline-offset: 2px !important;
-  }
-  ```
+1. **Control Panel Auth Templates (`/pretix/src/pretix/control/templates/pretixcontrol/auth/base.html` & `login.html`):**
+   - Added `lang="en"` on `<html>`, `<meta name="description">`, semantic `<header role="banner">` around `<img.logo alt="pretix official logo" role="img">`, `<main role="main" id="main-content">` wrapping page content, `<h1 class="sr-only">Log in</h1>`, and `<footer>` landmark.
+2. **Storefront Presale Base Template (`/pretix/src/pretix/presale/templates/pretixpresale/base.html`):**
+   - Embedded durable server-rendered `<style id="sqe-a11y-contrast-patch">` setting `.text-muted, .help-block { color: #4a4a4a !important; }` ($\ge 5.8:1$ contrast) and high-visibility `:focus-visible { outline: 3px solid #ff9900 !important; outline-offset: 2px !important; }`, plus `<meta name="description">`.
+   - Removed all client-side `document.head.appendChild(style)` JS injection from `tests/team/a11y/test_a11y_remediation.py`; tests assert the server HTML delivers the fixes natively.
 
 ---
 
-## 4. Empirical Before vs. After Verification
+## 3. Empirical Before vs. After Verification (Extracted from Raw HTML & JSON)
 
-Automated testing in [`tests/team/a11y/test_a11y_remediation.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/a11y/test_a11y_remediation.py) verified the remediation against live server endpoints:
+| Audited Screen & State | Raw Artifact | Lighthouse Accessibility | Best Practices | SEO | Perf | axe-core Violations | axe-core Passes |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Control Login — BEFORE** | `lighthouse_before.html` | **69 / 100** | 96 / 100 | 50 / 100 | — | **4 active rule groups** (`html-has-lang`, `landmark-one-main`, `page-has-heading-one`, `region`) + `image-alt` | — |
+| **Control Login — AFTER** | `lighthouse_after.html` | **100 / 100 (+31 pts)** | **96 / 100** | **66 / 100 (+16 pts)** | **100 / 100** | **0 violations** (`axe_login_report.json`) | **33 rules passed** |
+| **Event Storefront — AFTER** | `lighthouse_storefront.html` | **100 / 100** | **92 / 100** | **100 / 100** | **50 / 100** (cold throttling) | **0 violations** (`axe_storefront_report.json`) | **43 rules passed** |
 
-| Issue ID | Defective Element | User Impact | WCAG & Severity | Durable Engineering Fix | Before Result (Baseline) | After Result (Remediated) | Verdict |
-| :---: | :--- | :--- | :---: | :--- | :---: | :---: | :---: |
-| **`A11Y-01`** | `<img class="logo">` in `/control/login` | Screen reader users cannot identify logo brand; filename announced | WCAG 1.1.1 (Level A) — **Critical** | Patched template `auth/base.html` with `alt="pretix official logo"` | **1 Violation** (image-alt), Lighthouse A11y: 90 | **0 Violations** (Clean), Lighthouse A11y: **98** | **RESOLVED** |
-| **`A11Y-02`** | `<p class="text-muted">` in `/sqe/sqe2026/` | Low-vision users struggle with low contrast in bright light | WCAG 1.4.3 (Level AA) — **High** | Darkened text color from `#888888` to `#4a4a4a` ($5.8:1$ ratio) | **$3.2:1$ Contrast** (Failing threshold $4.5:1$) | **$5.8:1$ Contrast** (Exceeds $4.5:1$) | **RESOLVED** |
-| **`A11Y-03`** | Focused inputs during Tab navigation | Keyboard-only users lose visual cursor location | WCAG 2.4.7 (Level AA) — **Medium** | Added `:focus-visible` with 3px solid `#005fcc` outline | Subtle $1\text{px}$ grey outline | Prominent **$3\text{px}$ high-contrast outline** | **RESOLVED** |
-
-### Visual Screenshot Artifacts
-* **Login Screen (Before Remediation):** [`reports/a11y/screenshots/02_login_remediation_before.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/screenshots/02_login_remediation_before.png)
-* **Login Screen (After Durable Remediation):** [`reports/a11y/screenshots/03_login_remediation_after.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/screenshots/03_login_remediation_after.png)
-* **Storefront High Contrast:** [`reports/a11y/screenshots/04_storefront_high_contrast.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/screenshots/04_storefront_high_contrast.png)
-* **Keyboard Tab Focus:** [`reports/a11y/screenshots/01_keyboard_tab_focus.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/screenshots/01_keyboard_tab_focus.png)
-
----
-
-## 5. Keyboard Navigation & Usability Audit Summary
-
-The automated keyboard navigation suite ([`tests/team/a11y/test_keyboard_navigation.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/a11y/test_keyboard_navigation.py)) verified:
-1. **Complete Keyboard Operability:** All interactive components (ticket counter increment/decrement, Add to Cart button, navigation links) are reachable via sequential Tab navigation.
-2. **Zero Focus Traps:** Focus traversal cycled cleanly across distinct interactive elements without getting trapped in modal loops.
-3. **Predictable Focus Order:** Logical visual tab order follows top-to-bottom reading sequence.
-
----
-
-## 6. Google Lighthouse Heuristic Audit across Key Screens
-
-Audited using Google Lighthouse across the application's key operational screens:
-
-| Key Screen Evaluated | Target URL | Accessibility | Best Practices | SEO | Performance | Raw Evidence File |
-| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Control Panel Login (Before)** | `/control/login` | 90 / 100 | 92 / 100 | 88 / 100 | 85 / 100 | [`reports/a11y/lighthouse_before.html`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/lighthouse_before.html) |
-| **Control Panel Login (After)** | `/control/login` | **98 / 100** | **96 / 100** | **92 / 100** | **87 / 100** | [`reports/a11y/lighthouse_axe_unified_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/lighthouse_axe_unified_report.json) |
-| **Storefront Landing Page** | `/sqe/sqe2026/` | **94 / 100** | **92 / 100** | **90 / 100** | **88 / 100** | [`reports/a11y/lighthouse_storefront.html`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/lighthouse_storefront.html) |
-| **Order Confirmation / Payment** | `/sqe/sqe2026/checkout/` | **96 / 100** | **94 / 100** | **90 / 100** | **89 / 100** | [`reports/a11y/playwright_usability_report.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/a11y/playwright_usability_report.json) |
-
-All key screens satisfy the rubric targets ($\ge 90$ Accessibility, $\ge 85$ Best Practices, $\ge 80$ SEO).
+*Note on Storefront Lighthouse Performance (`50/100`):* Headless Chromium CPU/network simulation on an uncached local development container reports `50/100` for mobile rendering, reported unmodified directly from `lighthouse_storefront.html`. All WCAG 2.1 AA accessibility (`100/100`), keyboard traversal (`01_keyboard_tab_focus.png`), and usability task recovery (`workflow_a_01/02`, `workflow_b_01`) tests pass `8/8`.

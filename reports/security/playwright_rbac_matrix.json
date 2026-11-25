@@ -1,6 +1,6 @@
 {
   "test_suite": "Playwright Automated RBAC Access Matrix",
-  "total_decisions_verified": 5,
+  "total_decisions_verified": 7,
   "decisions": [
     {
       "decision_id": "DEC-01",
@@ -61,6 +61,30 @@
       "observed_result": "Access granted; Standard Ticket tier (\u20ac50.00) displayed with cart actions",
       "verdict": "PASS",
       "evidence": "reports/security/screenshots/decision5_public_storefront_allowed.png"
+    },
+    {
+      "decision_id": "DEC-06",
+      "role": "Auditor (Authenticated Read-Only)",
+      "workflow": "Workflow B (Audit Ledger Review)",
+      "route": "/control/event/sqe/sqe2026/orders/",
+      "action": "Log in as auditor@localhost and inspect read-only event orders ledger",
+      "decision_type": "ALLOWED",
+      "expected_result": "HTTP 200 OK; Orders ledger rendered in read-only audit mode",
+      "observed_result": "Access granted (HTTP 200); authenticated as auditor@localhost",
+      "verdict": "PASS",
+      "evidence": "reports/security/screenshots/decision6_auditor_orders_allowed.png"
+    },
+    {
+      "decision_id": "DEC-07",
+      "role": "Auditor (Authenticated Read-Only)",
+      "workflow": "Workflow B (Privileged Event Settings)",
+      "route": "/control/event/sqe/sqe2026/settings/",
+      "action": "Attempt privileged event configuration mutation as authenticated auditor@localhost",
+      "decision_type": "DENIED",
+      "expected_result": "HTTP 403 Forbidden; 'Permission denied' enforcement page displayed",
+      "observed_result": "Access denied (HTTP 403); Permission denied rendered",
+      "verdict": "PASS",
+      "evidence": "reports/security/screenshots/decision7_auditor_settings_denied.png"
     }
   ],
   "status": "ALL_PASSED"

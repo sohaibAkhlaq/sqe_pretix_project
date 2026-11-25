@@ -54,6 +54,8 @@ def audit_defensive_security():
         ("decision3_anon_control_panel_denied.png", 15000),
         ("decision4_anon_quota_edit_denied.png", 15000),
         ("decision5_public_storefront_allowed.png", 30000),
+        ("decision6_auditor_orders_allowed.png", 40000),
+        ("decision7_auditor_settings_denied.png", 15000),
     ]
 
     for fname, min_bytes in expected_screenshots:
@@ -97,12 +99,14 @@ def audit_defensive_security():
     assert "Figure 11.3: DEC-03" in report_text, "Missing Figure 11.3"
     assert "Figure 11.4: DEC-04" in report_text, "Missing Figure 11.4"
     assert "Figure 11.5: DEC-05" in report_text, "Missing Figure 11.5"
+    assert "Figure 11.6: DEC-06" in report_text, "Missing Figure 11.6"
+    assert "Figure 11.7: DEC-07" in report_text, "Missing Figure 11.7"
     assert "```mermaid" in report_text, "Missing Mermaid flowchart in Section 11"
     assert "pip-audit" in report_text, "Missing pip-audit in Section 11"
     assert "HttpOnly" in report_text, "Missing HttpOnly in Section 11"
     assert "SameSite" in report_text, "Missing SameSite in Section 11"
 
-    print("  [PASS] Section 11 contains all 5 authentic figures, Mermaid flowchart, and verified controls tables.")
+    print("  [PASS] Section 11 contains all 7 authentic figures, Mermaid flowchart, and verified controls tables.")
 
     print("\n======================================================================")
     print("[SUCCESS] ALL DEFENSIVE SECURITY & THREAT MODELING CRITERIA MET (6/6 MARKS)")

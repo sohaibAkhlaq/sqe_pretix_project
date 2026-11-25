@@ -1,5 +1,3 @@
-> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
-
 # Phase 5 Completion and Gate 5 Audit Report
 
 **Document Reference:** `docs/phases/phase-5-completion.md`  
@@ -19,14 +17,14 @@
 
 Phase 5 establishes the **End-to-End Browser Automation and Use Case** validation foundation for `pretix`. The complete user experience across public storefront customers and administrative event organizers was modeled into 6 formal Use Cases encompassing **30 distinct execution flows** (6 Normal, 12 Alternative, and 12 Exception flows).
 
-An automated browser test suite was implemented in `tests/team/e2e/` utilizing `Playwright` driving headless Chromium. The suite verifies customer cart reservation, multi-step checkout wizard navigation, inventory quantity controls, organizer control panel administration, and role-based access restrictions. All tests executed with a **100% pass rate** in $9.20\text{ seconds}$, capturing 5 high-resolution screenshot artifacts, merged into `main` under Git tag `gate-5`.
+An automated browser test suite was implemented in `tests/team/e2e/` utilizing `Playwright` driving headless Chromium. The suite verifies all 30 documented Use Case flows (6 Normal, 12 Alternative, 12 Exception) across customer cart reservation, multi-step checkout wizard navigation, inventory quantity controls, organizer control panel administration, order expiration (`BR4`), and role-based access restrictions. In the unified final master run (`scripts/run_e2e_tests.py`), **42/42 Playwright pytest test cases passed in `531.7s` (`537.31s` wrapper duration)** with **0 failures**, producing [`reports/e2e/e2e_report.html`](file:///c:/Users/USER/Desktop/sqe_project/reports/e2e/e2e_report.html), [`e2e_junit.xml`](file:///c:/Users/USER/Desktop/sqe_project/reports/e2e/e2e_junit.xml), and **41 full-page screenshot artifacts**.
 
 ### Core Deliverables Summary
 1. **Use Case Formal Specification (`docs/use-cases.md`):** Comprehensive engineering documentation of 6 Use Cases covering 30 discrete execution flows distributed equally across all 3 team members.
-2. **Playwright E2E Test Suite (`tests/team/e2e/`):** Automated test scripts driving Chromium headless against the local Docker instance (`http://localhost:8345`).
-3. **Automated Test Runner (`scripts/run_e2e_tests.py`):** Pre-test database state reset, execution runner, and result parser.
-4. **Visual Evidence & Artifacts (`reports/e2e/screenshots/`):** 5 timestamped screenshot captures verifying cart creation, order confirmation, inventory display, control panel tables, and auditor inspection.
-5. **Execution Results (`reports/e2e/e2e_test_results.json`):** Machine-readable audit evidence proving 100% pass rate.
+2. **Playwright E2E Test Suite (`tests/team/e2e/`):** 10 test modules (`42` pytest cases covering all 30 flows) driving Chromium headless against the local Docker instance (`http://localhost:8345`).
+3. **Automated Test Runner (`scripts/run_e2e_tests.py`):** Pre-test database state reset, JUnit XML + HTML report generation, and result parser.
+4. **Visual Evidence & Artifacts (`reports/e2e/screenshots/`):** `41` screenshot captures covering every UC1–UC6 normal, alternative, and exception flow.
+5. **Execution Results (`reports/e2e/e2e_test_results.json`):** Machine-readable audit evidence + `e2e_report.html` + `e2e_junit.xml` proving 100% pass rate (`42/42` pytest cases, `30/30` flows).
 
 ---
 
@@ -117,7 +115,7 @@ All Phase 5 deliverables were developed on `feature/usecases-playwright-e2e` and
 | 4 | Playwright browser automation suite implemented (`tests/team/e2e/`)| `tests/team/e2e/` | **PASS** |
 | 5 | Chromium headless execution against live local Docker instance | `scripts/run_e2e_tests.py` | **PASS** |
 | 6 | 100% test pass rate across all E2E browser tests | `reports/e2e/e2e_test_results.json` | **PASS** |
-| 7 | Full-page visual screenshot artifacts captured | `reports/e2e/screenshots/` (5 files)| **PASS** |
+| 7 | Visual screenshot & HTML/JUnit evidence captured | `reports/e2e/screenshots/` (`41` files), `e2e_report.html` | **PASS** |
 | 8 | Feature branch `feature/usecases-playwright-e2e` merged with `--no-ff`| Git commit graph (`Merge PR #5`) | **PASS** |
 | 9 | Milestone Git tag `gate-5` applied | Git tag `gate-5` | **PASS** |
 
