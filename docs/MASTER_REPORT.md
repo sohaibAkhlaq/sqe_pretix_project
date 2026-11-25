@@ -2118,10 +2118,10 @@ All 33 baseline Stage 1 survivors and final kill matrix are archived in [`report
    - *Gate 3:* `python scripts/run_mutation_tests.py` ($\ge 70\%$ mutation gate tied to `PRJ2` and off-by-one boundary safety).
    - *Gate 4:* `python scripts/verify_datagen_and_openapi.py --offline`.
    - *Gate 5:* `python -m pip_audit -r requirements-test.txt` (`0` CVEs gate tied to `PR6`).
-2. **Job 2 (`live-compose-integration-gates`, `needs: static-and-whitebox-gates`):** Spins up ephemeral Docker Compose Pretix stack (`scripts/seed.py`) and runs live `run_api_tests.py`, `run_e2e_tests.py`, `run_a11y_tests.py`, `run_security_tests.py`, `verify_grand_master_audit.py`, and `verify_ai_use_record.py`.
+2. **Job 2 (`live-compose-integration-gates`, `needs: static-and-whitebox-gates`):** Spins up ephemeral Docker Compose Pretix stack (`scripts/seed_internal.py` + `scripts/patch_a11y_container.py`) and runs live `run_api_tests.py`, `run_e2e_tests.py`, `run_a11y_tests.py`, `run_security_tests.py`, `verify_grand_master_audit.py`, and `verify_ai_use_record.py`.
 
 * **Local Blocked PR Simulation (`verify_mutation_and_ci_gate.py` Check 5):** Invoking `pytest tests/team/unit/ --cov=upstream.pretix.base.scoped_business_logic --cov-branch --cov-fail-under=101` returns **Exit Code `4`** cleanly, demonstrating deterministic fail-closed blocking (`docs/ci-gate-demo.md`).
-* **Remote GitHub Actions Status Note:** Workflow YAML and local verification gates are complete and tested; remote GitHub PR run links depend on repository publication with GitHub credentials (`https://github.com/sohaibAkhlaq/sqe_pretix_project.git`).
+* **Live GitHub Actions, Branch Protection & Blocked-PR Verification:** Branch Protection is active on `main` (`strict: true`, `enforce_admins: true`, requiring PRs and both GitHub Actions checks). Push baseline Run [`45657663612`](https://github.com/sohaibAkhlaq/sqe_pretix_project/actions/runs/45657663612) passed both jobs cleanly, and Pull Request [#13](https://github.com/sohaibAkhlaq/sqe_pretix_project/pull/13) verified live PR blocking on commit `86aa398` (Red-Gate Run [`45663263380`](https://github.com/sohaibAkhlaq/sqe_pretix_project/actions/runs/45663263380), `94.12% < 100%` coverage -> `mergeable_state=blocked`) prior to remediation and green merge (`https://github.com/sohaibAkhlaq/sqe_pretix_project.git`).
 
 ---
 
