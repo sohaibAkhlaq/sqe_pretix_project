@@ -1,6 +1,6 @@
 # Root Cause Analysis (RCA-01): Concurrency Race Condition in Quota Allocation
 
-**Incident ID:** `RCA-01` (Related Defect: `PR-1`, `BR-1`, `TC-PERF-CONC-01`)  
+**Incident ID:** `RCA-01` (Linked Risks & Rules: `PR1`, `BR1`, `TC-PERF-CONC-01`, `TC-STATE-RECOVERY-01`)  
 **Lead Investigator:** M. Hasaam (`24i-3107`, Git: `M-Hasaam <m.hasaam.official@gmail.com>`)  
 **Affected Component:** `pretix.base.services.orders.perform_order` & `_check_quotas`  
 **Severity:** Critical (Potential Financial Loss / Physical Venue Overbooking)  
@@ -87,7 +87,7 @@ flowchart LR
 
 | Action Type | Action Item Description | Target Component | Owner | Verification |
 | :--- | :--- | :--- | :--- | :--- |
-| **Corrective (Immediate)** | Implemented Redis distributed lock (`redlock`) scoped to `event` and `quota_id` wrapping `perform_order()` critical section. | `pretix.base.services.orders` | M. Hasaam | Gate 9 Concurrency Test (280 concurrent attempts: 0 oversold) |
-| **Corrective (Defense-in-Depth)** | Added PostgreSQL row-level locks (`select_for_update()`) on `Quota` records within the atomic database transaction block. | PostgreSQL / Django ORM | Sohaib | Zero deadlock errors observed under 5 VUs |
-| **Preventive (Testing Gate)** | Established automated k6 concurrency stress suite (`load_concurrency.js`) in CI to reject any PR causing negative quota balance. | `.github/workflows/pr-gate.yml` | M. Hasaam | Automated verification in Phase 9 |
-| **Preventive (Monitoring)** | Configured real-time capacity alerting triggering warnings when available quota reaches zero, rejecting non-idempotent replays. | `pretix.api.middleware` | Shaiman | `test_idempotency_api.py` (0 duplicate holds) |
+| **Corrective (Immediate)** | Verified Pretix Redis distributed lock (`redlock`) scoped to event/quota around `perform_order()`. | `pretix.base.services.orders` | M. Hasaam | Gate 9 Dual 5-VU Concurrency Runs (`10` sold/run, `0` oversold) |
+| **Corrective (Defense-in-Depth)** | Verified PostgreSQL row-level locking (`select_for_update()`) inside atomic database transactions. | PostgreSQL / Django ORM | Sohaib | `0` deadlocks & `0` unexpected failures (`2,352` reqs) |
+| **Preventive (Testing Gate)** | Established automated dual 60s k6 concurrency suite (`load_concurrency_60s.js`) + `TC-STATE-RECOVERY-01`. | `tests/team/perf/` | M. Hasaam | Automated verification in Phase 9 (`run_perf_dual_benchmarks.py`) |
+| **Preventive (Idempotency)** | Enforced `X-Idempotency-Key` middleware replay checks & duplicate-submission assertions across API and chaos suites. | `test_idempotency_api.py` & `test_state_changing_recovery.py` | M. Hasaam | `0` duplicate holds (`DEF-09`, `PSELH`) |

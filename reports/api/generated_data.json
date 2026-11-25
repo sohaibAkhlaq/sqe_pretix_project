@@ -63,43 +63,141 @@
       "point": "min - 1",
       "price": "-0.01",
       "valid": false,
-      "category": "Negative Price Boundary"
+      "category": "Negative Price Boundary",
+      "api_contract_note": "API organizer override allows -0.01 (201) unless client blocks; schema expects >= 0.00",
+      "payload": {
+        "email": "bva.price.minminus1@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "-0.01",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "bva.price.minminus1@example.com"
+          }
+        ]
+      }
     },
     {
       "point": "min",
       "price": "0.00",
       "valid": true,
-      "category": "Free Ticket Boundary"
+      "category": "Free Ticket Boundary",
+      "api_contract_note": "Pretix auto-confirms zero-total orders as paid ('p')",
+      "payload": {
+        "email": "bva.price.min@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "0.00",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "bva.price.min@example.com"
+          }
+        ]
+      }
     },
     {
       "point": "min + 1",
       "price": "0.01",
       "valid": true,
-      "category": "Minimal Cent Boundary"
+      "category": "Minimal Cent Boundary",
+      "api_contract_note": "Creates pending order ('n')",
+      "payload": {
+        "email": "bva.price.minplus1@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "0.01",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "bva.price.minplus1@example.com"
+          }
+        ]
+      }
     },
     {
       "point": "nominal",
       "price": "50.00",
       "valid": true,
-      "category": "Nominal Ticket Price"
+      "category": "Nominal Ticket Price",
+      "api_contract_note": "Creates pending order ('n')",
+      "payload": {
+        "email": "bva.price.nominal@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "50.00",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "bva.price.nominal@example.com"
+          }
+        ]
+      }
     },
     {
       "point": "max - 1",
       "price": "9999.99",
       "valid": true,
-      "category": "High End Tier Boundary"
+      "category": "High End Tier Boundary",
+      "api_contract_note": "Creates pending order ('n')",
+      "payload": {
+        "email": "bva.price.maxminus1@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "9999.99",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "bva.price.maxminus1@example.com"
+          }
+        ]
+      }
     },
     {
       "point": "max",
       "price": "10000.00",
       "valid": true,
-      "category": "Maximum Allowed Price Boundary"
+      "category": "Maximum Allowed Price Boundary",
+      "api_contract_note": "Creates pending order ('n')",
+      "payload": {
+        "email": "bva.price.max@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "10000.00",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "bva.price.max@example.com"
+          }
+        ]
+      }
     },
     {
       "point": "max + 1",
       "price": "10000.01",
       "valid": false,
-      "category": "Overflow Price Boundary"
+      "category": "Overflow Price Boundary",
+      "api_contract_note": "API DecimalField(max_digits=13) accepts 10000.01 (soft tier limit only)",
+      "payload": {
+        "email": "bva.price.maxplus1@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "10000.01",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "bva.price.maxplus1@example.com"
+          }
+        ]
+      }
     }
   ],
   "equivalence_partitions": {
@@ -524,5 +622,175 @@
         }
       }
     ]
+  },
+  "price_decimal_limits": [
+    {
+      "case_id": "PRC-DEC-MAX",
+      "description": "Serializer max_digits=13 upper valid boundary (99999999999.99)",
+      "expected_status": 201,
+      "payload": {
+        "email": "dec.max@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "99999999999.99",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "dec.max@example.com"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PRC-DEC-OVER",
+      "description": "Serializer 14-digit overflow (100000000000.00)",
+      "expected_status": 400,
+      "payload": {
+        "email": "dec.over@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "100000000000.00",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "dec.over@example.com"
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "PRC-DEC-NAN",
+      "description": "Malformed non-numeric price string",
+      "expected_status": 400,
+      "payload": {
+        "email": "dec.nan@example.com",
+        "locale": "en",
+        "sales_channel": "web",
+        "positions": [
+          {
+            "item": 1,
+            "price": "invalid-price",
+            "attendee_name": "Attendee Test 1",
+            "attendee_email": "dec.nan@example.com"
+          }
+        ]
+      }
+    }
+  ],
+  "idempotency_cases": {
+    "replay_key": "bdd640fb-0667-4ad1-9c80-317fa3b1799d",
+    "non_x_header_key": "23b8c1e9-3924-46de-beb1-3b9046685257",
+    "primary_payload": {
+      "email": "idempotency.replay@example.com",
+      "locale": "en",
+      "sales_channel": "web",
+      "positions": [
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 1",
+          "attendee_email": "idempotency.replay@example.com"
+        }
+      ]
+    },
+    "mismatched_retry_payload": {
+      "email": "idempotency.mismatch@example.com",
+      "locale": "en",
+      "sales_channel": "web",
+      "positions": [
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 1",
+          "attendee_email": "idempotency.mismatch@example.com"
+        },
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 2",
+          "attendee_email": "idempotency.mismatch@example.com"
+        }
+      ]
+    },
+    "distinct_header_payload": {
+      "email": "idempotency.nox@example.com",
+      "locale": "en",
+      "sales_channel": "web",
+      "positions": [
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 1",
+          "attendee_email": "idempotency.nox@example.com"
+        }
+      ]
+    }
+  },
+  "rbac_cases": {
+    "admin_post_payload": {
+      "email": "rbac.admin@example.com",
+      "locale": "en",
+      "sales_channel": "web",
+      "positions": [
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 1",
+          "attendee_email": "rbac.admin@example.com"
+        }
+      ]
+    },
+    "auditor_forbidden_post_payload": {
+      "email": "rbac.auditor.blocked@example.com",
+      "locale": "en",
+      "sales_channel": "web",
+      "positions": [
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 1",
+          "attendee_email": "rbac.auditor.blocked@example.com"
+        }
+      ]
+    },
+    "anon_blocked_post_payload": {
+      "email": "rbac.anon.blocked@example.com",
+      "locale": "en",
+      "sales_channel": "web",
+      "positions": [
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 1",
+          "attendee_email": "rbac.anon.blocked@example.com"
+        }
+      ]
+    },
+    "invalid_token_post_payload": {
+      "email": "rbac.invalid.blocked@example.com",
+      "locale": "en",
+      "sales_channel": "web",
+      "positions": [
+        {
+          "item": 1,
+          "price": "50.00",
+          "attendee_name": "Attendee Test 1",
+          "attendee_email": "rbac.invalid.blocked@example.com"
+        }
+      ]
+    }
+  },
+  "get_endpoints": {
+    "organizer": "/organizers/sqe/",
+    "event": "/organizers/sqe/events/sqe2026/",
+    "item_detail": "/organizers/sqe/events/sqe2026/items/1/",
+    "quota_availability": "/organizers/sqe/events/sqe2026/quotas/1/availability/",
+    "orders_list": "/organizers/sqe/events/sqe2026/orders/",
+    "orders_filter_pending": "/organizers/sqe/events/sqe2026/orders/?status=n",
+    "orders_filter_paid": "/organizers/sqe/events/sqe2026/orders/?status=p",
+    "orders_filter_canceled": "/organizers/sqe/events/sqe2026/orders/?status=c",
+    "orders_filter_expired": "/organizers/sqe/events/sqe2026/orders/?status=e"
   }
 }

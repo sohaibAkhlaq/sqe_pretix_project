@@ -1,10 +1,16 @@
 {
   "suite": "SE3002 pretix REST API Integration Suite",
   "phase": "Phase 4 (Gate 4)",
-  "duration_seconds": 6.34,
+  "duration_seconds": 17.31,
+  "total_tests": 18,
+  "passed": 18,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
   "status": "PASS",
-  "timestamp": "2026-11-24T11:28:36Z",
+  "timestamp": "2026-11-25T15:30:54Z",
   "test_modules": [
+    "tests/team/api/test_datagen_openapi_contract.py",
     "tests/team/api/test_order_creation_api.py",
     "tests/team/api/test_idempotency_api.py",
     "tests/team/api/test_order_lifecycle_api.py",

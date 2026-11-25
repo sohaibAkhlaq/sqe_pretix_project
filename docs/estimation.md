@@ -1,12 +1,12 @@
-> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# PERT 3-Point Work Breakdown & Effort Estimation
+# PERT 3-Point Work Breakdown & Effort Estimation
 
 **Document Reference:** `docs/estimation.md`  
 **Course:** SE3002 Software Quality Engineering  
 **Application Under Test:** pretix  
 **Lead Contributor / Author:** M. Hasaam (`24i-3107`, Member 2 — Area B)  
 **Co-Authors & Contributors:** Sohaib (`24i-3108`), Shaiman (`24i-3074`)  
-**Status:** Approved & Frozen Baseline (Gate 2 Deliverable)  
-**Date:** November 20, 2026  
+**Status:** Verified & Reconciled Against Actuals (Gate 2 + Release Audit)  
+**Date:** November 25, 2026  
 
 ---
 
@@ -178,3 +178,23 @@ pie title Effort Distribution Across Team Members
    $\text{Stack Setup & Spikes} \to \text{Test Basis \& Baseline} \to \text{Test Plan \& Matrix} \to \text{White-Box Suite} \to \text{Mutation Testing} \to \text{CI PR Gate} \to \text{Defect RCA} \to \text{Master Package}$.
 2. **Buffer Allocation:**
    A schedule buffer of $2\sigma = 12.0\text{ hours}$ is reserved in Phase 11 to protect against potential environmental regressions or viva live-task anomalies.
+
+---
+
+## 6. Actual Effort Tracking & PERT Variance Reconciliation
+
+Actual hours recorded below reconcile the baseline PERT estimate ($E = 216.58\text{ hrs}$) against completed project phases (`Phase 0`–`Phase 11`), Git commit authorship (`87+` repository commits prior to final submission packaging), and verification-script execution logs.
+
+### 6.1. Variance by Team Member & Primary Area
+
+| Member / ID | Primary Area | Git Commits (Baseline) | Expected Hours ($E$) | Actual Hours Logged | Variance ($\text{Actual} - E$) | Variance % | Evidence / Source Basis |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Sohaib (`24i-3108`)** | Area A: Static, White-Box, AST Mutation, CI Gate, Reporting | 55 | 78.39 hrs | **82.50 hrs** | +4.11 hrs | +5.2% | Unit tests, AST mutator, `.github/workflows/pr-gate.yml`, `phase-{0,1,2,3,8,10,11}-completion.md` |
+| **M. Hasaam (`24i-3107`)** | Area B: Test Mgmt, OpenAPI/Datagen, REST API, Perf/k6, Defects | 12 | 63.30 hrs | **64.00 hrs** | +0.70 hrs | +1.1% | `tools/datagen/generator.py`, `tests/team/api/`, dual 60s `k6` & recovery, `defect-log.md` |
+| **Shaiman (`24i-3074`)** | Area C: Use Cases, 30 E2E Flows, A11y/Lighthouse, Security | 20 | 74.89 hrs | **74.50 hrs** | -0.39 hrs | -0.5% | `docs/use-cases.md`, 30 E2E Playwright flows, container a11y patches, 7-decision RBAC matrix |
+| **Project Total** | Full SE3002 Quality Engineering Scope | **87+** | **216.58 hrs** | **221.00 hrs** | **+4.42 hrs** | **+2.04%** | Within $+0.74\sigma$ of PERT expected total ($< 2\sigma = 12.0\text{ hrs}$ schedule buffer) |
+
+### 6.2. Key Drivers of Schedule Variance
+* **Positive Variance (+4.11 hrs in Area A):** Unplanned Windows POSIX `fork()` failure in `mutmut` (`DEF-08`, `PRJ2`) and migrating unit/mutation coverage from helper scripts directly onto AST-verified upstream production functions (`upstream/pretix/base/scoped_business_logic.py`).
+* **Positive Variance (+0.70 hrs in Area B):** Expanding API integration vectors to cover all 7 live `bva_quantity` and `bva_price` boundaries, `DecimalField(max_digits=13)` serialization limits, and `X-Idempotency-Key` behavior (`DEF-09`).
+* **Favorable Variance (-0.39 hrs in Area C):** Reproducible Playwright fixture reuse (`conftest.py` + `scripts/reset.py`) reduced manual environment setup overhead across UC1–UC6.

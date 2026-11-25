@@ -117,23 +117,92 @@ def generate_bva_quantity(quota_size: int) -> List[Dict[str, Any]]:
     ]
     return points
 
-def generate_bva_price(base_price_str: str) -> List[Dict[str, Any]]:
+def generate_bva_price(base_price_str: str, item_id: int = 1) -> List[Dict[str, Any]]:
     """
-    Computes Boundary Value Analysis on ticket unit price:
+    Computes 3-Point Boundary Value Analysis on ticket unit price:
     Points: min-1, min, min+1, nominal, max-1, max, max+1
     Valid domain: [0.00, 10000.00]
     """
     base = Decimal(base_price_str)
-    points = [
-        {"point": "min - 1", "price": "-0.01",   "valid": False, "category": "Negative Price Boundary"},
-        {"point": "min",     "price": "0.00",    "valid": True,  "category": "Free Ticket Boundary"},
-        {"point": "min + 1", "price": "0.01",    "valid": True,  "category": "Minimal Cent Boundary"},
-        {"point": "nominal", "price": str(base), "valid": True,  "category": "Nominal Ticket Price"},
-        {"point": "max - 1", "price": "9999.99", "valid": True,  "category": "High End Tier Boundary"},
-        {"point": "max",     "price": "10000.00","valid": True,  "category": "Maximum Allowed Price Boundary"},
-        {"point": "max + 1", "price": "10000.01","valid": False, "category": "Overflow Price Boundary"},
+    specs = [
+        ("min - 1", "-0.01",    False, "Negative Price Boundary",        "API organizer override allows -0.01 (201) unless client blocks; schema expects >= 0.00"),
+        ("min",     "0.00",     True,  "Free Ticket Boundary",           "Pretix auto-confirms zero-total orders as paid ('p')"),
+        ("min + 1", "0.01",     True,  "Minimal Cent Boundary",          "Creates pending order ('n')"),
+        ("nominal", str(base),  True,  "Nominal Ticket Price",           "Creates pending order ('n')"),
+        ("max - 1", "9999.99",  True,  "High End Tier Boundary",         "Creates pending order ('n')"),
+        ("max",     "10000.00", True,  "Maximum Allowed Price Boundary", "Creates pending order ('n')"),
+        ("max + 1", "10000.01", False, "Overflow Price Boundary",        "API DecimalField(max_digits=13) accepts 10000.01 (soft tier limit only)"),
     ]
+    points = []
+    for pt, price_val, valid, cat, api_note in specs:
+        email = f"bva.price.{pt.replace(' ', '').replace('+', 'plus').replace('-', 'minus')}@example.com"
+        points.append({
+            "point": pt,
+            "price": price_val,
+            "valid": valid,
+            "category": cat,
+            "api_contract_note": api_note,
+            "payload": build_order_payload(item_id, price_val, 1, email),
+        })
     return points
+
+
+def generate_extended_api_vectors(cfg: Dict[str, Any], seed: int) -> Dict[str, Any]:
+    """Generates payloads and vectors for price DecimalField limits, idempotency, RBAC, and GET filters."""
+    rng = random.Random(seed)
+    item_id = cfg["item_id"]
+    price = cfg["default_price"]
+    idem_uuid = str(uuid.UUID(int=rng.getrandbits(128), version=4))
+    idem_uuid_2 = str(uuid.UUID(int=rng.getrandbits(128), version=4))
+    org = cfg["organizer_slug"]
+    ev = cfg["event_slug"]
+
+    return {
+        "price_decimal_limits": [
+            {
+                "case_id": "PRC-DEC-MAX",
+                "description": "Serializer max_digits=13 upper valid boundary (99999999999.99)",
+                "expected_status": 201,
+                "payload": build_order_payload(item_id, "99999999999.99", 1, "dec.max@example.com"),
+            },
+            {
+                "case_id": "PRC-DEC-OVER",
+                "description": "Serializer 14-digit overflow (100000000000.00)",
+                "expected_status": 400,
+                "payload": build_order_payload(item_id, "100000000000.00", 1, "dec.over@example.com"),
+            },
+            {
+                "case_id": "PRC-DEC-NAN",
+                "description": "Malformed non-numeric price string",
+                "expected_status": 400,
+                "payload": build_order_payload(item_id, "invalid-price", 1, "dec.nan@example.com"),
+            },
+        ],
+        "idempotency_cases": {
+            "replay_key": idem_uuid,
+            "non_x_header_key": idem_uuid_2,
+            "primary_payload": build_order_payload(item_id, price, 1, "idempotency.replay@example.com"),
+            "mismatched_retry_payload": build_order_payload(item_id, price, 2, "idempotency.mismatch@example.com"),
+            "distinct_header_payload": build_order_payload(item_id, price, 1, "idempotency.nox@example.com"),
+        },
+        "rbac_cases": {
+            "admin_post_payload": build_order_payload(item_id, price, 1, "rbac.admin@example.com"),
+            "auditor_forbidden_post_payload": build_order_payload(item_id, price, 1, "rbac.auditor.blocked@example.com"),
+            "anon_blocked_post_payload": build_order_payload(item_id, price, 1, "rbac.anon.blocked@example.com"),
+            "invalid_token_post_payload": build_order_payload(item_id, price, 1, "rbac.invalid.blocked@example.com"),
+        },
+        "get_endpoints": {
+            "organizer": f"/organizers/{org}/",
+            "event": f"/organizers/{org}/events/{ev}/",
+            "item_detail": f"/organizers/{org}/events/{ev}/items/{item_id}/",
+            "quota_availability": f"/organizers/{org}/events/{ev}/quotas/1/availability/",
+            "orders_list": f"/organizers/{org}/events/{ev}/orders/",
+            "orders_filter_pending": f"/organizers/{org}/events/{ev}/orders/?status=n",
+            "orders_filter_paid": f"/organizers/{org}/events/{ev}/orders/?status=p",
+            "orders_filter_canceled": f"/organizers/{org}/events/{ev}/orders/?status=c",
+            "orders_filter_expired": f"/organizers/{org}/events/{ev}/orders/?status=e",
+        },
+    }
 
 def build_order_payload(item_id: int, price: str, quantity: int, email: str = "attendee@example.com") -> Dict[str, Any]:
     """Constructs a pretix REST API compliant POST /orders/ payload."""
@@ -266,6 +335,7 @@ def generate_ep_datasets(config: Dict[str, Any] = None, seed: int = 42) -> Dict[
 def generate_full_dataset(config: Dict[str, Any] = None, seed: int = 42) -> Dict[str, Any]:
     """Assembles comprehensive test data package for API test runner consumption."""
     cfg = config or DEFAULT_CONSTRAINTS
+    ext = generate_extended_api_vectors(cfg, seed)
     return {
         "metadata": {
             "generator": "SE3002 Automated Data Generator v1.0",
@@ -273,8 +343,9 @@ def generate_full_dataset(config: Dict[str, Any] = None, seed: int = 42) -> Dict
             "seed": seed
         },
         "bva_quantity": generate_bva_quantity(cfg["quota_size"]),
-        "bva_price": generate_bva_price(cfg["default_price"]),
-        "equivalence_partitions": generate_ep_datasets(cfg, seed)
+        "bva_price": generate_bva_price(cfg["default_price"], cfg["item_id"]),
+        "equivalence_partitions": generate_ep_datasets(cfg, seed),
+        **ext,
     }
 
 class DataGenerator:

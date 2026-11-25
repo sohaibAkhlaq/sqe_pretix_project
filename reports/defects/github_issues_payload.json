@@ -1,122 +1,96 @@
-[
-  {
-    "title": "[DEF-01] Critical: Protected Foreign Key Constraint Prevents Order Deletion",
-    "body": "### Defect Overview: DEF-01\n* **Component / Layer:** Database / State Reset\n* **Severity:** Critical\n* **Priority:** P1\n* **Status:** Resolved\n* **Reporter:** Sohaib (24i-3108)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - Mandatory P1 fix; blocks test environment repeatability and idempotency.\n\n### Root Cause Analysis\nGoBD German accounting compliance: Invoices and Transactions use on_delete=models.PROTECT.\n\n### Resolution & Corrective Action\nRe-architected scripts/reset_internal.py to delete models in strict reverse dependency order.\n\n### Verification Reference\n`scripts/reset_internal.py proven idempotent R(R(S)) = R(S).`\n",
-    "labels": [
-      "severity:critical",
-      "priority:p1",
-      "status:resolved",
-      "component:database"
-    ]
+{
+  "metadata": {
+    "title": "SE3002 Defect Management Issue Export (GitHub Issues Schema)",
+    "application": "pretix v2026.9.3",
+    "repository_target": "sohaibAkhlaq/sqe_pretix_project",
+    "risk_register_source": "docs/risk-register.md",
+    "total_defects": 12,
+    "open_defects": 0
   },
-  {
-    "title": "[DEF-02] High: Asynchronous AJAX Cart Addition Race Condition in Playwright",
-    "body": "### Defect Overview: DEF-02\n* **Component / Layer:** E2E / Playwright\n* **Severity:** High\n* **Priority:** P2\n* **Status:** Resolved\n* **Reporter:** Shaiman (24i-3074)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P2 fix; causes intermittent test failures during CI runs.\n\n### Root Cause Analysis\nPretix processes cart additions asynchronously; networkidle fired before session redirect.\n\n### Resolution & Corrective Action\nReplaced sleep/networkidle with explicit predicate polling: wait_for_selector('text=Proceed with checkout').\n\n### Verification Reference\n`100% pass rate across 10 consecutive E2E executions.`\n",
-    "labels": [
-      "severity:high",
-      "priority:p2",
-      "status:resolved",
-      "component:e2e"
-    ]
-  },
-  {
-    "title": "[DEF-03] Medium: Empty Orders List Table Locator Failure in Zero-State Reset",
-    "body": "### Defect Overview: DEF-03\n* **Component / Layer:** E2E / Playwright\n* **Severity:** Medium\n* **Priority:** P3\n* **Status:** Resolved\n* **Reporter:** Shaiman (24i-3074)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P3 fix; harmless in non-zero states but breaks clean baseline tests.\n\n### Root Cause Analysis\nPretix renders 'Nobody ordered a ticket yet.' alert instead of an empty table element.\n\n### Resolution & Corrective Action\nUpdated locator to evaluate ('Nobody ordered' in content or page.locator('table').count() > 0).\n\n### Verification Reference\n`Verified in Gate 5 E2E test runs.`\n",
-    "labels": [
-      "severity:medium",
-      "priority:p3",
-      "status:resolved",
-      "component:e2e"
-    ]
-  },
-  {
-    "title": "[DEF-04] High: Content Security Policy (CSP) Directives Block Axe-Core Inline Script",
-    "body": "### Defect Overview: DEF-04\n* **Component / Layer:** Usability / A11y\n* **Severity:** High\n* **Priority:** P1\n* **Status:** Resolved\n* **Reporter:** Shaiman (24i-3074)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P1 test blocker; prevents automated WCAG 2.1 AA evaluation.\n\n### Root Cause Analysis\nPretix delivers defensive HTTP header Content-Security-Policy: script-src 'self'.\n\n### Resolution & Corrective Action\nConfigured Playwright browser context with bypass_csp=True in tests/team/a11y/conftest.py.\n\n### Verification Reference\n`tests/team/a11y/test_axe_accessibility.py executes cleanly.`\n",
-    "labels": [
-      "severity:high",
-      "priority:p1",
-      "status:resolved",
-      "component:usability"
-    ]
-  },
-  {
-    "title": "[DEF-05] Critical: Missing Alternative Text on Control Panel Login Logo (WCAG 1.1.1)",
-    "body": "### Defect Overview: DEF-05\n* **Component / Layer:** Usability / A11y\n* **Severity:** Critical\n* **Priority:** P1\n* **Status:** Remediated\n* **Reporter:** Shaiman (24i-3074)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P1 accessibility defect; violates WCAG 2.1 AA compliance.\n\n### Root Cause Analysis\nUpstream pretix control panel template omitted alt attribute on logo SVG.\n\n### Resolution & Corrective Action\nApplied alt='pretix logo' attribute remediation; verified violation count drops from 1 to 0.\n\n### Verification Reference\n`Remediated DOM evaluated by axe-core: 0 critical violations.`\n",
-    "labels": [
-      "severity:critical",
-      "priority:p1",
-      "status:remediated",
-      "component:usability"
-    ]
-  },
-  {
-    "title": "[DEF-06] High: Insufficient Color Contrast on Storefront Help Sub-Text (WCAG 1.4.3)",
-    "body": "### Defect Overview: DEF-06\n* **Component / Layer:** Usability / A11y\n* **Severity:** High\n* **Priority:** P2\n* **Status:** Remediated\n* **Reporter:** Shaiman (24i-3074)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P2 accessibility defect; text unreadable for low-vision users.\n\n### Root Cause Analysis\nCSS class .text-muted produces 3.2:1 contrast ratio on #f8f9fa background (requires 4.5:1).\n\n### Resolution & Corrective Action\nRemediated color token to #495057, raising contrast ratio to 5.8:1.\n\n### Verification Reference\n`Automated contrast check in test_a11y_remediation.py passes.`\n",
-    "labels": [
-      "severity:high",
-      "priority:p2",
-      "status:remediated",
-      "component:usability"
-    ]
-  },
-  {
-    "title": "[DEF-07] Critical: Gunicorn Worker Multiplication Causing Host OOM Crash",
-    "body": "### Defect Overview: DEF-07\n* **Component / Layer:** Infrastructure / Docker\n* **Severity:** Critical\n* **Priority:** P1\n* **Status:** Resolved\n* **Reporter:** M. Hasaam (24i-3107)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - Mandatory P1 fix; crashed host memory and killed containers.\n\n### Root Cause Analysis\nDefault Gunicorn spawns 2x cores (>36 Python processes on 12-core host).\n\n### Resolution & Corrective Action\nPinned NUM_WORKERS=2 and CELERY_WORKER_CONCURRENCY=1 in docker-compose.yml.\n\n### Verification Reference\n`Host memory stabilized at <800MB; container uptime 100%.`\n",
-    "labels": [
-      "severity:critical",
-      "priority:p1",
-      "status:resolved",
-      "component:infrastructure"
-    ]
-  },
-  {
-    "title": "[DEF-08] High: Windows POSIX Signal Failure in Native mutmut Execution",
-    "body": "### Defect Overview: DEF-08\n* **Component / Layer:** Mutation / mutmut\n* **Severity:** High\n* **Priority:** P2\n* **Status:** Resolved\n* **Reporter:** Sohaib (24i-3108)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P2 test infrastructure; mutmut CLI crashes natively on Windows.\n\n### Root Cause Analysis\nmutmut relies on POSIX fork() and SIGALRM timers unavailable on Windows OS.\n\n### Resolution & Corrective Action\nEngineered standalone AST/function mutation runner in scripts/run_mutation_tests.py.\n\n### Verification Reference\n`50 mutants evaluated, 30 survivors analyzed, 100% effective mutation score.`\n",
-    "labels": [
-      "severity:high",
-      "priority:p2",
-      "status:resolved",
-      "component:mutation"
-    ]
-  },
-  {
-    "title": "[DEF-09] High: Idempotency Header Prefix Inconsistency",
-    "body": "### Defect Overview: DEF-09\n* **Component / Layer:** API / Middleware\n* **Severity:** High\n* **Priority:** P2\n* **Status:** Resolved\n* **Reporter:** M. Hasaam (24i-3107)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P2 API integration defect; standard header did not prevent duplicates.\n\n### Root Cause Analysis\nPretix middleware inspects custom header X-Idempotency-Key, ignoring Idempotency-Key.\n\n### Resolution & Corrective Action\nUpdated all API test suites and k6 load scripts to transmit X-Idempotency-Key.\n\n### Verification Reference\n`tests/team/api/test_idempotency_api.py verifies 0 duplicates.`\n",
-    "labels": [
-      "severity:high",
-      "priority:p2",
-      "status:resolved",
-      "component:api"
-    ]
-  },
-  {
-    "title": "[DEF-10] High: Multi-Tenancy Scope Violation During Database Seeding",
-    "body": "### Defect Overview: DEF-10\n* **Component / Layer:** Data Layer / Scopes\n* **Severity:** High\n* **Priority:** P1\n* **Status:** Resolved\n* **Reporter:** Sohaib (24i-3108)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P1 data layer defect; blocks direct ORM queries and resets.\n\n### Root Cause Analysis\nPretix enforces strict multi-tenancy isolation via django_scopes library.\n\n### Resolution & Corrective Action\nWrapped all internal ORM operations in scope(organizer=org) context manager.\n\n### Verification Reference\n`scripts/seed.py and reset scripts execute cleanly.`\n",
-    "labels": [
-      "severity:high",
-      "priority:p1",
-      "status:resolved",
-      "component:data layer"
-    ]
-  },
-  {
-    "title": "[DEF-11] Medium: Quota Exhaustion During Rapid Consecutive Test Execution",
-    "body": "### Defect Overview: DEF-11\n* **Component / Layer:** Test Runner / Quota\n* **Severity:** Medium\n* **Priority:** P2\n* **Status:** Resolved\n* **Reporter:** M. Hasaam (24i-3107)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P2 test runner defect; cascading 400 errors across test suites.\n\n### Root Cause Analysis\nPrevious test runs created 10 orders without teardown, leaving 0 quota for next run.\n\n### Resolution & Corrective Action\nIntegrated automated baseline reset (scripts/reset.py) as Stage 1 in all runners.\n\n### Verification Reference\n`100% test reliability with zero cascading state failures.`\n",
-    "labels": [
-      "severity:medium",
-      "priority:p2",
-      "status:resolved",
-      "component:test runner"
-    ]
-  },
-  {
-    "title": "[DEF-12] Low: Missing Base Directory in Python Module Search Path",
-    "body": "### Defect Overview: DEF-12\n* **Component / Layer:** Build / Module Path\n* **Severity:** Low\n* **Priority:** P3\n* **Status:** Resolved\n* **Reporter:** Sohaib (24i-3108)\n\n---\n\n### Triage Decision (IEEE 1044-2009)\nAccepted - P3 developer convenience; standalone script execution failure.\n\n### Root Cause Analysis\nRunning python scripts/script.py puts scripts/ at sys.path[0], missing project root.\n\n### Resolution & Corrective Action\nAdded sys.path.insert(0, str(BASE_DIR)) at entry point of all runner scripts and conftest.\n\n### Verification Reference\n`All test runners and conftest files execute cleanly standalone.`\n",
-    "labels": [
-      "severity:low",
-      "priority:p3",
-      "status:resolved",
-      "component:build"
-    ]
-  }
-]
+  "issues": [
+    {
+      "defect_id": "DEF-01",
+      "risk_id": "PR3",
+      "title": "[DEF-01] Critical: Protected Foreign Key Constraint Prevents Order Deletion",
+      "labels": ["severity:critical", "priority:p1", "status:resolved", "component:database", "risk:PR3"],
+      "body": "**Defect ID:** DEF-01 | **Severity:** Critical | **Priority:** P1 | **Linked Risk ID:** `PR3` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Create a paid or canceled order containing invoice/transaction ledger children.\n2. Execute direct ORM deletion (`Order.objects.all().delete()`) during database reset.\n\n### Expected Behavior\nReset restores seeded zero-order baseline (`Orders=0, Quota Available=10`) idempotently without IntegrityError/ProtectedError.\n\n### Actual Behavior\nDjango raises `ProtectedError: Cannot delete 'Order' referenced through 'Transaction.order'` / `Invoice.order`, aborting environment reset.\n\n### Root Cause & Verified Resolution\nFinancial models enforce `on_delete=models.PROTECT`. Implemented reverse-topological deletion order in `scripts/reset_internal.py` (TaxRule/InvoiceLine/OrderPosition/OrderRefund/OrderPayment -> Order), verified across 2 consecutive idempotency cycles (`scripts/reset.py --verify-idempotency`)."
+    },
+    {
+      "defect_id": "DEF-02",
+      "risk_id": "PR4",
+      "title": "[DEF-02] High: Asynchronous AJAX Cart Addition Race Condition in Playwright",
+      "labels": ["severity:high", "priority:p2", "status:resolved", "component:e2e", "risk:PR4"],
+      "body": "**Defect ID:** DEF-02 | **Severity:** High | **Priority:** P2 | **Linked Risk ID:** `PR4` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Navigate to `/sqe/sqe2026/`, select quantity `1`, click `#btn-add-to-cart`.\n2. Immediately click checkout link without waiting for AJAX cart completion.\n\n### Expected Behavior\nCheckout renders active cart positions cleanly every run.\n\n### Actual Behavior\nFast browser execution outruns XHR cart creation (~150ms), landing on an empty cart page.\n\n### Root Cause & Verified Resolution\nBlind clicks ignored async XHR completion. Replaced fixed sleeps with explicit Playwright state polling (`wait_for_selector` on cart checkout container) in `tests/team/e2e/test_customer_order_flow.py` and `test_uc1_flows.py`."
+    },
+    {
+      "defect_id": "DEF-03",
+      "risk_id": "PR3",
+      "title": "[DEF-03] Medium: Empty Orders List Table Locator Failure in Zero-State Reset",
+      "labels": ["severity:medium", "priority:p3", "status:resolved", "component:e2e", "risk:PR3"],
+      "body": "**Defect ID:** DEF-03 | **Severity:** Medium | **Priority:** P3 | **Linked Risk ID:** `PR3` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Run `scripts/reset.py` so `Orders=0`.\n2. Execute Playwright control-panel assertion for `table.table-orders` immediately.\n\n### Expected Behavior\nControl panel flow either seeds a prerequisite order or verifies the empty-state view cleanly.\n\n### Actual Behavior\nStrict locator `table.table-orders` times out because Pretix renders an empty-state callout instead of a table when zero orders exist.\n\n### Root Cause & Verified Resolution\nTest order coupling caused false failure after zero-state reset. Decoupled control-panel test setup in `tests/team/e2e/test_organizer_control_panel_flow.py` to create a prerequisite order via UI/API before asserting ledger rows."
+    },
+    {
+      "defect_id": "DEF-04",
+      "risk_id": "PR6",
+      "title": "[DEF-04] High: Content Security Policy (CSP) Directives Block Axe-Core Inline Script",
+      "labels": ["severity:high", "priority:p1", "status:resolved", "component:usability", "risk:PR6"],
+      "body": "**Defect ID:** DEF-04 | **Severity:** High | **Priority:** P1 | **Linked Risk ID:** `PR6` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Open `/control/login` in headless Chromium.\n2. Call `page.add_script_tag(content=axe_js)` via Playwright.\n\n### Expected Behavior\n`axe.run()` executes WCAG 2.1 AA DOM audit.\n\n### Actual Behavior\nCSP blocks inline `<script>` injection (`EvalError`/`SecurityError` or missing `window.axe`).\n\n### Root Cause & Verified Resolution\nAdded deterministic CSP bypass (`context.set_bypass_csp(True)`) solely inside the Playwright audit fixture (`tests/team/a11y/conftest.py`) while leaving production server CSP controls unweakened."
+    },
+    {
+      "defect_id": "DEF-05",
+      "risk_id": "PR6",
+      "title": "[DEF-05] Critical: Control Panel Login Screen Fails WCAG Language, Landmark, H1, and Alt Checks",
+      "labels": ["severity:critical", "priority:p1", "status:resolved", "component:usability", "risk:PR6"],
+      "body": "**Defect ID:** DEF-05 | **Severity:** Critical | **Priority:** P1 | **Linked Risk ID:** `PR6` (Compliance & Auditability) | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Audit `http://localhost:8345/control/login` using `axe-core` and Google Lighthouse.\n\n### Expected Behavior\n0 axe-core WCAG 2.1 AA violations and valid HTML semantics.\n\n### Actual Behavior\nUnpatched template failed Lighthouse Accessibility (`69/100`) and triggered axe-core findings (`html-has-lang`, `landmark-one-main`, `page-has-heading-one`, `region`, and missing logo `alt`).\n\n### Root Cause & Verified Resolution\nDurably patched `/pretix/src/pretix/control/templates/pretixcontrol/auth/base.html` and `auth/login.html` via `scripts/patch_a11y_container.py` (`lang='en'`, `<header role='banner'>`, `<main role='main'>`, `<h1 class='sr-only'>`, `alt='pretix official logo'`, `<meta name='description'>`). Verified 0 axe violations and Lighthouse Accessibility 100/100."
+    },
+    {
+      "defect_id": "DEF-06",
+      "risk_id": "PR6",
+      "title": "[DEF-06] High: Insufficient Color Contrast and Focus Indicator on Storefront Sub-Text",
+      "labels": ["severity:high", "priority:p2", "status:resolved", "component:usability", "risk:PR6"],
+      "body": "**Defect ID:** DEF-06 | **Severity:** High | **Priority:** P2 | **Linked Risk ID:** `PR6` (WCAG 2.1 AA Compliance) | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Audit `/sqe/sqe2026/` storefront `.text-muted` / `.help-block` and `:focus-visible` states under WCAG 1.4.3 / 2.4.7.\n\n### Expected Behavior\nContrast >= 4.5:1 and prominent focus outline rendered natively by server HTML.\n\n### Actual Behavior\nBootstrap muted text failed contrast targets (`3.2:1` vs `4.5:1`) and focus ring lacked prominence without client injection.\n\n### Root Cause & Verified Resolution\nAdded durable server-rendered `<style id='sqe-a11y-contrast-patch'>` (`.text-muted #4a4a4a`, `:focus-visible 3px solid #ff9900`) and `<meta name='description'>` in `pretixpresale/base.html` via `scripts/patch_a11y_container.py`; verified 0 storefront axe violations and Lighthouse A11y 100 / SEO 100 without runtime JS injection."
+    },
+    {
+      "defect_id": "DEF-07",
+      "risk_id": "PRJ1",
+      "title": "[DEF-07] Critical: Gunicorn Worker Multiplication Causing Host OOM Crash",
+      "labels": ["severity:critical", "priority:p1", "status:resolved", "component:infrastructure", "risk:PRJ1"],
+      "body": "**Defect ID:** DEF-07 | **Severity:** Critical | **Priority:** P1 | **Linked Risk ID:** `PRJ1` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Start `pretix/standalone:stable` with default worker auto-sizing (`2*cores + 1`) on multi-thread Windows Docker host.\n2. Run 5-VU `k6` concurrency benchmark.\n\n### Expected Behavior\nSustained stability under load within host RAM limits.\n\n### Actual Behavior\nContainer spawned ~24 Gunicorn + Celery processes consuming >6GB RAM and causing worker OOM kills.\n\n### Root Cause & Verified Resolution\nPinned `NUM_WORKERS=2` and `CELERY_WORKER_CONCURRENCY=1` in `docker-compose.yml`; verified 0% unexpected errors across 2,529 total requests in dual 60s 1-VU and 5-VU k6 runs."
+    },
+    {
+      "defect_id": "DEF-08",
+      "risk_id": "PRJ2",
+      "title": "[DEF-08] High: Windows POSIX Signal & Fork Failure in Native mutmut Execution",
+      "labels": ["severity:high", "priority:p2", "status:resolved", "component:mutation", "risk:PRJ2"],
+      "body": "**Defect ID:** DEF-08 | **Severity:** High | **Priority:** P2 | **Linked Risk ID:** `PRJ2` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Run `mutmut run` inside Windows `.venv` (Python 3.11).\n\n### Expected Behavior\nMutants compile and execute against test suite.\n\n### Actual Behavior\n`mutmut` crashes (`AttributeError: module 'os' has no attribute 'fork'` / POSIX `SIGALRM` unsupported on Win32).\n\n### Root Cause & Verified Resolution\nBuilt native cross-platform AST single-site mutation engine in `scripts/run_mutation_tests.py` mutating `upstream/pretix/base/scoped_business_logic.py` directly via `ast.NodeTransformer` + `compile()`, evaluating 51 mutants (`48` killed, `3` equivalent, `100.00%` effective score)."
+    },
+    {
+      "defect_id": "DEF-09",
+      "risk_id": "PR5",
+      "title": "[DEF-09] High: Idempotency Header Prefix Requirement (`X-Idempotency-Key` vs `Idempotency-Key`)",
+      "labels": ["severity:high", "priority:p2", "status:resolved", "component:api", "risk:PR5"],
+      "body": "**Defect ID:** DEF-09 | **Severity:** High | **Priority:** P2 | **Linked Risk ID:** `PR5` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Send two identical `POST .../orders/` requests with header `Idempotency-Key: <uuid>` instead of `X-Idempotency-Key`.\n\n### Expected Behavior\nSecond request returns original order without extra quota deduction.\n\n### Actual Behavior\nServer treats `Idempotency-Key` as unrecognized header, creating two distinct orders and decrementing quota by 2.\n\n### Root Cause & Verified Resolution\nPretix REST middleware specifically reads `X-Idempotency-Key`. Documented requirement in `openapi/team-spec.yaml` and verified both behaviors (`X-Idempotency-Key` replay vs non-`X` duplicate allocation) in `tests/team/api/test_idempotency_api.py` and `test_state_changing_recovery.py`."
+    },
+    {
+      "defect_id": "DEF-10",
+      "risk_id": "PR1",
+      "title": "[DEF-10] High: Multi-Tenancy Scope Violation (`ScopeError`) During Direct ORM Seeding",
+      "labels": ["severity:high", "priority:p1", "status:resolved", "component:data layer", "risk:PR1"],
+      "body": "**Defect ID:** DEF-10 | **Severity:** High | **Priority:** P1 | **Linked Risk ID:** `PR1` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Run standalone Python inside `pretix_web` querying `Order.objects` or `Quota.objects` without organizer context.\n\n### Expected Behavior\nQuery resolves scoped organizer/event records cleanly.\n\n### Actual Behavior\nRaises `django_scopes.exceptions.ScopeError: A scope on dimension 'organizer' needs to be active`.\n\n### Root Cause & Verified Resolution\nPretix enforces `django-scopes` multi-tenant safety globally. Wrapped internal seed/reset operations in `with scope(organizer=org):` / `scopes_disabled()` in `scripts/seed_internal.py` and `scripts/reset_internal.py`."
+    },
+    {
+      "defect_id": "DEF-11",
+      "risk_id": "PR1",
+      "title": "[DEF-11] Medium: Shared Quota Exhaustion Across Consecutive Integration Test Runs",
+      "labels": ["severity:medium", "priority:p2", "status:resolved", "component:test runner", "risk:PR1"],
+      "body": "**Defect ID:** DEF-11 | **Severity:** Medium | **Priority:** P2 | **Linked Risk ID:** `PR1` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Run API/E2E test suites repeatedly without clearing leftover orders against finite quota (`size=10`).\n\n### Expected Behavior\nValid test cases consistently start with full `available_number=10` capacity.\n\n### Actual Behavior\nLeftover pending/paid orders saturate quota, causing spurious `400 Not enough quota` failures in later suites.\n\n### Root Cause & Verified Resolution\nIntegrated `scripts/reset.py --verify-idempotency` as pre-suite reset hook in `run_api_tests.py`, `run_e2e_tests.py`, `run_security_tests.py`, and `run_perf_dual_benchmarks.py`, plus in-test order cleanup."
+    },
+    {
+      "defect_id": "DEF-12",
+      "risk_id": "PRJ2",
+      "title": "[DEF-12] Low: Missing Project Root on `sys.path` Under Direct Script / Pytest Invocation",
+      "labels": ["severity:low", "priority:p3", "status:resolved", "component:build", "risk:PRJ2"],
+      "body": "**Defect ID:** DEF-12 | **Severity:** Low | **Priority:** P3 | **Linked Risk ID:** `PRJ2` | **Status:** RESOLVED\n\n### Steps to Reproduce\n1. Execute `python tests/team/api/...` or `pytest` without `PYTHONPATH=.`.\n\n### Expected Behavior\nTests import `scripts.*`, `tools.*`, and `upstream.*` reliably.\n\n### Actual Behavior\nRaises `ModuleNotFoundError: No module named 'scripts'` or `'upstream'`.\n\n### Root Cause & Verified Resolution\nAdded `PROJECT_ROOT` / `BASE_DIR` insertion into `tests/team/unit/conftest.py`, `tests/team/api/conftest.py`, `tests/team/e2e/conftest.py`, `tests/team/security/conftest.py`, and runner entrypoints."
+    }
+  ]
+}

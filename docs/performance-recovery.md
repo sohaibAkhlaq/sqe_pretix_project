@@ -5,7 +5,7 @@
 **Target Environment:** pretix v2026.9.3 containerized stack on Docker Desktop Windows  
 **Milestone Tag:** `gate-9`  
 **Load Testing Tool:** `k6 v2.2.0` (commit `00a9a1b7f5`, go1.26.5)  
-**Execution Date:** November 24, 2026  
+**Execution Date:** November 25, 2026  
 **Overall Status:** **100% VERIFIED — ALL DUAL 60-SECOND BENCHMARKS & FAULT RECOVERY SLAS MET**
 
 ---
@@ -84,22 +84,22 @@ In accordance with the assignment specification, both the baseline (1 VU) and co
 ### Summary of Four Benchmark Runs:
 | Workload Setup | Run # | Steady-State Duration | Total Requests | Completed RPS | $p95$ Latency | Avg Latency | Unexpected Failures | SLA Verdict |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Setup 1 (1 VU)** | Run 1 | 60.0s | 194 | 2.76 req/s | **56.68 ms** | 35.05 ms | **0.00%** (0 / 194) | **PASS** ($p95 < 500\text{ms}$) |
-| **Setup 1 (1 VU)** | Run 2 | 60.0s | 196 | 2.80 req/s | **48.78 ms** | 31.29 ms | **0.00%** (0 / 196) | **PASS** ($p95 < 500\text{ms}$) |
-| **Setup 2 (5 VUs)**| Run 1 | 60.0s | 1212 | 15.14 req/s | **60.26 ms** | 39.04 ms | **0.00%** (0 / 1212) | **PASS** ($p95 < 500\text{ms}$) |
-| **Setup 2 (5 VUs)**| Run 2 | 60.0s | 1176 | 14.64 req/s | **61.16 ms** | 48.43 ms | **0.00%** (0 / 1176) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 1 (1 VU)** | Run 1 | 60.0s (+5s ramp) | 167 | 2.38 req/s | **183.98 ms** | 88.40 ms | **0.00%** (0 / 167) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 1 (1 VU)** | Run 2 | 60.0s (+5s ramp) | 171 | 2.44 req/s | **186.16 ms** | 79.62 ms | **0.00%** (0 / 171) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)**| Run 1 | 60.0s (+10s ramp) | 922 | 11.49 req/s | **354.47 ms** | 135.41 ms | **0.00%** (0 / 922) | **PASS** ($p95 < 500\text{ms}$) |
+| **Setup 2 (5 VUs)**| Run 2 | 60.0s (+10s ramp) | 1092 | 13.64 req/s | **212.14 ms** | 71.43 ms | **0.00%** (0 / 1092) | **PASS** ($p95 < 500\text{ms}$) |
 
 ### Metric Analysis & Scaling:
-1. **Latency Scaling:** Across all 4 runs, $p95$ latency ranged between **48.78 ms and 61.16 ms**, operating with an **87.8% - 90.2% safety margin** below the 500 ms ceiling. Even under 5-VU concurrent write contention, pretix's row-level locking introduced negligible queueing delay.
-2. **Throughput Scaling:** Throughput scaled from $2.76 - 2.80\text{ req/s}$ (1 VU) to **$14.64 - 15.14\text{ req/s}$** (5 VUs), representing a $5.4\times$ increase that demonstrates near-linear scaling without worker exhaustion.
-3. **Zero Unexpected Failures:** Across all 2,778 cumulative requests in the 4 benchmark runs, **0 unexpected 5xx crashes or network drops occurred (0.00%)**, comfortably satisfying the $< 1.0\%$ SLA.
+1. **Latency Scaling:** Across all 4 runs, $p95$ latency ranged between **183.98 ms and 354.47 ms**, operating comfortably within the 500 ms ceiling (**29.1% to 63.2% SLA safety margin**). Even under 5-VU concurrent write contention against a shared 10-ticket pool, Pretix's row-level locking remained well under SLA.
+2. **Throughput Scaling:** Throughput scaled from $2.38 - 2.44\text{ req/s}$ (1 VU) to **$11.49 - 13.64\text{ req/s}$** (5 VUs), demonstrating $4.8\times - 5.6\times$ concurrency scaling without worker exhaustion.
+3. **Zero Unexpected Failures:** Across all **2,352 cumulative requests** in the 4 benchmark runs (`461` + `546` concurrent POST attempts across the two 5-VU runs yielded strictly `10` HTTP 201 orders per run and `451` + `536` expected HTTP 400 `quota_sold_out` rejections), **0 unexpected 5xx crashes or network drops occurred (0.00%)**, comfortably satisfying the $< 1.0\%$ SLA.
 
 ---
 
 ## 5. Controlled Fault Injection & State-Changing Recovery
 
 ### 5.1 Test Design & Failure Scenario (`TC-STATE-RECOVERY-01`)
-* **Linked Risk ID:** **`RSK-04`** (Data corruption or duplicate order creation during infrastructure/network disruption during state-changing order creation).
+* **Linked Risk IDs:** **`PR4, PR5`** (Non-atomic transaction hazard and idempotency replay risk under infrastructure disruption during state-changing order creation).
 * **Target Operation:** State-changing `POST /api/v1/organizers/sqe/events/sqe2026/orders/` with `X-Idempotency-Key`.
 * **Controlled Fault:** The Redis distributed lock/cache dependency (`pretix_redis`) was terminated via Docker command immediately before the order write completed.
 * **Test Implementation:** [`tests/team/perf/test_state_changing_recovery.py`](file:///c:/Users/USER/Desktop/sqe_project/tests/team/perf/test_state_changing_recovery.py).
@@ -118,23 +118,23 @@ sequenceDiagram
 
     Client->>Web: 2. Attempt State-Changing Order POST (Key: recovery-{id})
     Web--xRedis: Connection Timeout / Socket Drop
-    Web-->>Client: 3. Outage Interruption (ReadTimeout / 5xx)
+    Web-->>Client: 3. Outage Interruption (ReadTimeout)
 
     Note over DB: 4. Database-Level Persisted State Check
     Client->>DB: Query Order count for buyer & Quota availability
     DB-->>Client: Matching Orders = 0, Quota = 10 (Zero partial writes)
 
     Client->>Redis: 5. Dependency Restoral: docker start pretix_redis
-    Redis-->>Client: Container Restored (RTO = 0.03s)
+    Redis-->>Client: Container Restored (RTO = 0.28s)
 
     Note over Client,Web: 6. Reclaim In-flight Lock & Retry with SAME Idempotency Key
     Client->>Web: Retry POST /orders/ (Key: recovery-{id})
     Web->>DB: Atomically commit order & decrement quota (10 -> 9)
-    Web-->>Client: HTTP 201 Created (Order Code: returned)
+    Web-->>Client: HTTP 201 Created (Order Code: PSELH)
 
     Note over Client,DB: 7. Idempotency Replay & Duplicate Assertion
     Client->>Web: Replay POST /orders/ (Key: recovery-{id})
-    Web-->>Client: HTTP 201 Created (Exact Matching Order Code)
+    Web-->>Client: HTTP 201 Created (Exact Matching Order Code: PSELH)
     Client->>DB: Query PostgreSQL for buyer email
     DB-->>Client: Exactly 1 record found (TOTAL DUPLICATES = 0)
 ```
@@ -143,12 +143,12 @@ sequenceDiagram
 | Metric | SLA Target | Measured Reality | Status |
 | :--- | :---: | :---: | :---: |
 | **Test Identifier** | — | `TC-STATE-RECOVERY-01` | Evaluated |
-| **Linked Risk ID** | — | `RSK-04` | Evaluated |
+| **Linked Risk IDs** | — | `PR4, PR5` | Evaluated |
 | **Persisted Orders After Failure** | Exactly 0 | **0 matching orders** | **PASS** |
 | **Quota After Failure** | Exactly 10 | **10 available** | **PASS** |
-| **Recovery Time Objective (RTO)**| $< 15.0\text{ seconds}$ | **$0.03\text{ seconds}$** | **PASS** (99.8% buffer) |
-| **Retry Status Code** | HTTP 200 or 201 | **HTTP 201 Created** | **PASS** |
-| **Replay Order Code Match** | Identical code | **True (Identical Code)** | **PASS** |
+| **Recovery Time Objective (RTO)**| $< 15.0\text{ seconds}$ | **$0.28\text{ seconds}$** | **PASS** (98.1% buffer) |
+| **Retry Status Code** | HTTP 200 or 201 | **HTTP 201 Created** (`PSELH`) | **PASS** |
+| **Replay Order Code Match** | Identical code | **True (`PSELH`)** | **PASS** |
 | **Persisted Orders After Retry/Replay** | Exactly 1 | **1 order in PostgreSQL** | **PASS** |
 | **Total Duplicate Records** | 0 Duplicates | **0 Duplicates** | **PASS** |
 | **Final Quota Available** | Exactly 9 | **9 available** | **PASS** |

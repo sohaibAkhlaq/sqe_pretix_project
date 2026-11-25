@@ -60,13 +60,14 @@ def generated_data():
     """Loads authoritative generated test vectors from tools/datagen output."""
     import json
     gen_file = BASE_DIR / "reports" / "api" / "generated_data.json"
-    if not gen_file.exists():
-        from tools.datagen.generator import generate_full_dataset
-        data = generate_full_dataset()
-        gen_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(gen_file, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
-        return data
-    with open(gen_file, "r", encoding="utf-8") as f:
-        return json.load(f)
+    from tools.datagen.generator import generate_full_dataset, load_constraints_from_openapi
+    if gen_file.exists():
+        data = json.loads(gen_file.read_text(encoding="utf-8"))
+        if all(k in data for k in ("idempotency_cases", "rbac_cases", "price_decimal_limits", "get_endpoints")):
+            return data
+    cfg = load_constraints_from_openapi(str(BASE_DIR / "openapi" / "team-spec.yaml"))
+    data = generate_full_dataset(cfg, seed=42)
+    gen_file.parent.mkdir(parents=True, exist_ok=True)
+    gen_file.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    return data
 

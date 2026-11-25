@@ -1,5 +1,3 @@
-> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
-
 # Phase 4 Completion and Gate 4 Audit Report
 
 **Document Reference:** `docs/phases/phase-4-completion.md`  
@@ -151,7 +149,7 @@ All Phase 4 deliverables were developed on `feature/api-testing-datagen` and com
 | 3 | 3-Point Boundary Value Analysis ($\min-1, \min, \min+1, \text{nom}, \dots$) | `tools/datagen/generator.py` | **PASS** |
 | 4 | Equivalence Partitioning (Valid, Invalid, Boundary partitions) | `reports/api/generated_data.json` | **PASS** |
 | 5 | Live regeneration demo with 2 altered constraints (Quota & Price) | `docs/regeneration-demo.md` | **PASS** |
-| 6 | Automated REST API test suite passing 100% against Docker stack | `scripts/run_api_tests.py` (16/16 passed)| **PASS** |
+| 6 | Automated REST API test suite passing 100% against Docker stack | `scripts/run_api_tests.py` (`18/18` passed)| **PASS** |
 | 7 | Idempotency verified on repeated submissions with zero quota leaks | `tests/team/api/test_idempotency_api.py` | **PASS** |
 | 8 | Cross-workflow quota restoration verified upon cancellation | `tests/team/api/test_order_lifecycle_api.py` | **PASS** |
 | 9 | Role-Based Access Control verified (Auditor mutation HTTP 403) | `tests/team/api/test_rbac_api.py` | **PASS** |

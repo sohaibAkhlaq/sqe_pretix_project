@@ -213,26 +213,38 @@ def generate_issues_payload():
     print("Author: M. Hasaam (24i-3107) | Target: " + GITHUB_REPO)
     print("=" * 70)
 
-    payload = []
-    for d in DEFECTS:
-        labels = [
-            f"severity:{d['severity'].lower()}",
-            f"priority:{d['priority'].lower()}",
-            f"status:{d['status'].lower()}",
-            f"component:{d['component'].split('/')[0].strip().lower()}"
-        ]
-        issue_data = {
-            "title": d["title"],
-            "body": format_issue_body(d),
-            "labels": labels
-        }
-        payload.append(issue_data)
-
-    # Save JSON payload
     payload_file = REPORTS_DIR / "github_issues_payload.json"
-    with open(payload_file, "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2)
-    print(f"[OUTPUT] Generated GitHub Issues JSON payload: {payload_file.relative_to(BASE_DIR)}")
+    if payload_file.exists():
+        loaded = json.loads(payload_file.read_text(encoding="utf-8"))
+        issues = loaded["issues"] if isinstance(loaded, dict) and "issues" in loaded else loaded
+        print(f"[OUTPUT] Using canonical GitHub Issues JSON payload: {payload_file.relative_to(BASE_DIR)} ({len(issues)} issues)")
+    else:
+        issues = []
+        for d in DEFECTS:
+            labels = [
+                f"severity:{d['severity'].lower()}",
+                f"priority:{d['priority'].lower()}",
+                f"status:{d['status'].lower()}",
+                f"component:{d['component'].split('/')[0].strip().lower()}"
+            ]
+            issues.append({
+                "title": d["title"],
+                "body": format_issue_body(d),
+                "labels": labels
+            })
+        payload_doc = {
+            "metadata": {
+                "title": "SE3002 Defect Management Issue Export (GitHub Issues Schema)",
+                "application": "pretix v2026.9.3",
+                "repository_target": GITHUB_REPO,
+                "risk_register_source": "docs/risk-register.md",
+                "total_defects": len(issues),
+                "open_defects": 0,
+            },
+            "issues": issues,
+        }
+        payload_file.write_text(json.dumps(payload_doc, indent=2), encoding="utf-8")
+        print(f"[OUTPUT] Generated GitHub Issues JSON payload: {payload_file.relative_to(BASE_DIR)}")
 
     # Check for GITHUB_TOKEN environment variable
     token = os.environ.get("GITHUB_TOKEN")
@@ -245,9 +257,10 @@ def generate_issues_payload():
                 "User-Agent": "SQE-Defect-Sync"
             }
             url = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
-            print(f"[*] GITHUB_TOKEN detected. Synchronizing {len(payload)} issues to GitHub API...")
-            for idx, item in enumerate(payload, 1):
-                data = json.dumps(item).encode("utf-8")
+            print(f"[*] GITHUB_TOKEN detected. Synchronizing {len(issues)} issues to GitHub API...")
+            for item in issues:
+                post_payload = {"title": item["title"], "body": item["body"], "labels": item.get("labels", [])}
+                data = json.dumps(post_payload).encode("utf-8")
                 req = urllib.request.Request(url, data=data, headers=headers)
                 with urllib.request.urlopen(req) as resp:
                     res_json = json.loads(resp.read().decode())
@@ -257,7 +270,7 @@ def generate_issues_payload():
             print(f"[WARNING] GitHub API sync failed: {e}. Payload preserved in {payload_file.name}")
     else:
         print("[INFO] GITHUB_TOKEN not set in environment. Payload ready for instant sync via GitHub API or CLI.")
-        print(f"[SUMMARY] 12 IEEE 1044 defects registered with severity, priority, and triage decisions.")
+        print(f"[SUMMARY] {len(issues)} IEEE 1044 defects registered with severity, priority, labels, and triage decisions.")
 
 if __name__ == "__main__":
     generate_issues_payload()

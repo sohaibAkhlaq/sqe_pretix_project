@@ -147,7 +147,7 @@ def test_state_changing_order_recovers_without_partial_or_duplicate_records():
     (REPORTS_DIR / "state_changing_recovery_report.json").write_text(
         json.dumps({
             "test_id": "TC-STATE-RECOVERY-01",
-            "risk_id": "RSK-04",
+            "risk_id": "PR4, PR5",
             "operation": "POST /api/v1/organizers/sqe/events/sqe2026/orders/",
             "state_changing": True,
             "simulated_failure": "pretix_redis stopped before the state-changing request",

@@ -92,7 +92,7 @@ Product risks evaluate potential failures in pretix's order, inventory, quota, p
 * **Description:** A client submits an order with `X-Idempotency-Key`. Connection drops before receiving HTTP 201. Client retries with identical key. If cache expired or key was not locked, duplicate order is placed and quota decremented twice.
 * **Trigger:** Network latency or client retry within the 2-minute idempotency window.
 * **Initial Assessment:** Probability = 3 (Moderate), Impact = 4 (Major) $\to$ **Score = 12 (High)**
-* **Mitigation Strategy:** Automated API test sending identical key 10 times consecutively, asserting identical order code and zero additional quota hold.
+* **Mitigation Strategy:** Automated API idempotency test (`tests/team/api/test_idempotency_api.py`) sending duplicate and mismatched-payload POST retries with identical `X-Idempotency-Key`, plus controlled Redis-outage replay (`test_state_changing_recovery.py`), asserting identical order code and zero additional quota hold.
 * **Contingency Plan:** Rely on pretix `IdempotencyMiddleware` backed by Redis TTL cache.
 * **Post-Mitigation Assessment:** $P = 1, I = 4 \to$ **Score = 4 (Low)**
 * **Owner:** M. Hasaam
