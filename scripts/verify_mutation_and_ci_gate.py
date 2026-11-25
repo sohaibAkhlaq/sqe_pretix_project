@@ -70,9 +70,9 @@ def audit_mutation_and_ci_gate():
     adr = ops["ADR_Custom_2_Arithmetic_Delta_Replacement"]
     std = ops["Standard_Operators_ROR_COR_LCR_SVR"]
 
-    print(f"  [PASS] Custom Operator 1 (BCR - Boundary Condition Replacement): {bcr['killed']}/{bcr['generated']} Killed (100%)")
-    print(f"  [PASS] Custom Operator 2 (ADR - Arithmetic Delta Replacement):     {adr['killed']}/{adr['generated']} Killed (100%)")
-    print(f"  [PASS] Standard Mutators (ROR, COR, LCR, SVR):                    {std['killed']}/{std['generated']} Killed (100%)")
+    print(f"  [PASS] Custom Operator 1 (BCR - Boundary Condition Replacement): {bcr['killed']}/{bcr['generated']} Killed ({bcr['killed'] / max(1, bcr['generated'] - bcr.get('equivalent', 0)) * 100:.1f}% killable)")
+    print(f"  [PASS] Custom Operator 2 (ADR - Arithmetic Delta Replacement):     {adr['killed']}/{adr['generated']} Killed ({adr['killed'] / max(1, adr['generated'] - adr.get('equivalent', 0)) * 100:.1f}% killable)")
+    print(f"  [PASS] Standard Mutators (ROR, COR, LCR, SVR):                    {std['killed']}/{std['generated']} Killed ({std['killed'] / max(1, std['generated'] - std.get('equivalent', 0)) * 100:.1f}% killable)")
 
     assert bcr["generated"] >= 5, "Expected at least 5 BCR mutants"
     assert adr["generated"] >= 2, "Expected at least 2 ADR mutants"
@@ -86,19 +86,20 @@ def audit_mutation_and_ci_gate():
 
     gates = [
         ("Gate 1: Static Analysis", "radon cc"),
-        ("Gate 2: Branch Coverage >= 80%", "--cov-fail-under=80"),
-        ("Gate 3: Mutation Score >= 70%", "python scripts/run_mutation_tests.py"),
-        ("Gate 4: Vulnerability Scan", "pip_audit")
+        ("Gate 2: Scoped Branch Coverage 100%", "--cov-fail-under=100"),
+        ("Gate 3: Mutation Score Gate", "python scripts/run_mutation_tests.py"),
+        ("Gate 4: Vulnerability Scan", "pip_audit"),
+        ("Gate 5: Live Integration Runner", "python scripts/run_api_tests.py"),
     ]
     for gate_name, needle in gates:
         assert needle in ci_content, f"Missing {gate_name} in CI workflow"
-        print(f"  [PASS] {gate_name:32} -> Enforced in .github/workflows/pr-gate.yml")
+        print(f"  [PASS] {gate_name:34} -> Enforced in .github/workflows/pr-gate.yml")
 
     # 5. Verify Blocked PR Simulation Logic
     print("\n--- [CHECK 5] Simulating CI Quality Gate Blocking Behavior (Red Gate) ---")
     # Simulate a failing check: pytest with strict fail-under exceeding current threshold
     cov_fail_sim = subprocess.run(
-        [PYTHON_BIN, "-m", "pytest", "tests/team/unit/test_quota_early_outs.py", "--cov=tests/team/unit/test_quota_early_outs.py", "--cov-fail-under=101"],
+        [PYTHON_BIN, "-m", "pytest", "tests/team/unit/", "--cov=upstream.pretix.base.scoped_business_logic", "--cov-branch", "--cov-fail-under=101"],
         capture_output=True, text=True
     )
     print("  Simulating gate failure (--cov-fail-under > achievable):")

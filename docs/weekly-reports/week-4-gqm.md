@@ -21,10 +21,10 @@ flowchart TD
     Q3["Q3: Does the test suite kill >= 70% of mutants including custom BCR/ADR?"]
     Q4["Q4: Does the system maintain p95 < 500ms and recover from Redis failure in < 15s?"]
 
-    M1["M1: Axe-core critical violations reduced from 1 -> 0; Contrast 3.2:1 -> 5.8:1"]
-    M2["M2: 25/25 Security tests passing; 0 CVEs in pip-audit; 0 High ZAP alerts"]
-    M3["M3: 24/24 Mutants killed (100.00% Mutation Score)"]
-    M4["M4: Baseline p95 = 92.3ms (<500ms); RTO = 0.66s (<15s); 0 oversold"]
+    M1["M1: Login & Storefront 0 axe violations; Lighthouse A11y 69 -> 100"]
+    M2["M2: 26/26 Security tests pass; 7 RBAC UI checks; 0 host CVEs; 152 container pkgs"]
+    M3["M3: 51 AST mutants (48 killed, 3 equiv = 100.00% eff.)"]
+    M4["M4: k6 p95 = 183.98-354.47ms (<500ms); RTO = 0.28s (<15s); 0 oversold"]
 
     G1 --> Q1 --> M1
     G2 --> Q2 --> M2
@@ -38,28 +38,28 @@ flowchart TD
 
 | Goal | Question | Metric | Target | Measured Reality | Status |
 | :--- | :--- | :--- | :---: | :---: | :---: |
-| **G1: Usability/A11y**| Q1: WCAG 2.1 AA | Axe-core critical violations | 0 | **0 violations post-remediation (1 $\to$ 0)** | **PASS** |
-| **G1: Usability/A11y**| Q1: Contrast | Color contrast ratio | $\ge 4.5:1$ | **$5.8:1$ post-remediation ($3.2:1 \to 5.8:1$)** | **PASS** |
-| **G2: Security** | Q2: RBAC Matrix | 8-endpoint authorization check | 100% | **100% enforced (Admin, Auditor, Anon)** | **PASS** |
-| **G2: Security** | Q2: Vulnerabilities | `pip-audit` known CVEs | 0 | **0 known vulnerabilities (48 pkgs)** | **PASS** |
-| **G2: Security** | Q2: Web Security | OWASP ZAP High-Severity Alerts | 0 | **0 High-severity alerts** | **PASS** |
-| **G3: Mutation** | Q3: Mutation Score | Killed mutants / Total mutants | $\ge 70\%$ | **100.00% (24 killed / 24 generated)** | **PASS** |
-| **G4: Performance** | Q4: Baseline Latency | $p95$ read latency | $< 500\text{ ms}$ | **$92.30\text{ ms}$** | **PASS** |
-| **G4: Concurrency** | Q4: Overselling | Excess quota tickets sold | 0 | **0 oversold ($Q_{\text{final}} = 0$)** | **PASS** |
-| **G4: Chaos Recovery**| Q4: RTO | Recovery Time Objective | $< 15.0\text{ s}$ | **$0.66\text{ seconds}$** | **PASS** |
+| **G1: Usability/A11y**| Q1: WCAG 2.1 AA | `axe-core` & Lighthouse A11y | 0 Viol | **0 total axe violations; Login Lighthouse `69 -> 100`** | **PASS** |
+| **G1: Usability/A11y**| Q1: Contrast | Server CSS color contrast ratio | $\ge 4.5:1$ | **$\ge 5.8:1$ (`#4a4a4a` + `3px #ff9900` focus)** | **PASS** |
+| **G2: Security** | Q2: RBAC Matrix | Playwright & REST RBAC checks | 100% | **`7/7` RBAC UI checks + `26/26` tests (Admin, Auditor, Anon)** | **PASS** |
+| **G2: Security** | Q2: Vulnerabilities | `pip-audit` known CVEs | 0 | **0 CVEs across 48 host pkgs (+ 152 container pkgs inventoried)** | **PASS** |
+| **G2: Security** | Q2: Web Security | Passive HTTP & Django SecurityMiddleware | 0 High | **0 High-severity alerts (`8` total informational/medium)** | **PASS** |
+| **G3: Mutation** | Q3: Mutation Score | Killed / killable AST mutants | $\ge 70\%$ | **100.00% eff. (48 killed, 3 equiv / 51 total; 94.12% raw)** | **PASS** |
+| **G4: Performance** | Q4: Baseline & Stress | Dual 60s k6 $p95$ latency | $< 500\text{ ms}$ | **$183.98 - 354.47\text{ ms}$ (`0.00%` unexpected fails / `2,352` reqs)** | **PASS** |
+| **G4: Concurrency** | Q4: Overselling | Excess quota tickets sold | 0 | **0 oversold (`10` sold/run; `987` HTTP 400 rejections)** | **PASS** |
+| **G4: Chaos Recovery**| Q4: RTO | State-changing Redis outage RTO | $< 15.0\text{ s}$ | **$0.28\text{ seconds}$ (`TC-STATE-RECOVERY-01`, `0` dupes, `PSELH`)** | **PASS** |
 
 ---
 
 ## 3. Engineering Discoveries & Corrective Decisions
-* **Real Upstream Accessibility Defect (DEF-05):** Identified missing `alt` on pretix logo; authored patch reducing violations from $1 \to 0$.
-* **POSIX mutmut Windows Workaround (DEF-08):** Implemented standalone AST-based mutation engine killing 24 mutants across BCR and ADR operators.
-* **Rapid Chaos Self-Healing:** Verified that pretix automatically reconnects to Redis within $0.66\text{s}$ upon container restart without losing persistent PostgreSQL state.
+* **Durable Server Template Remediation (`DEF-05`, `DEF-06`):** Patched `auth/base.html`, `auth/login.html`, and `presale/base.html` directly via `scripts/patch_a11y_container.py`, achieving 0 axe violations without runtime JS style injection.
+* **Windows AST Single-Site Mutator (`DEF-08`):** Built in-memory Python `ast.NodeTransformer` mutator over `upstream/pretix/base/scoped_business_logic.py` (`51` mutants: BCR `8/10`, ADR `8/8`, STD `32/33`, `3` proven equivalent).
+* **State-Changing Redis Recovery (`PR4, PR5`):** Verified `docker stop pretix_redis` triggers `ReadTimeout` containment (`0` partial orders), restores in **`0.28s`**, and completes single-decrement `POST /orders/` (`PSELH`) with **0 duplicates**.
 ## Common GQM metric definitions and audited final values
 
 These definitions apply consistently across the project lifecycle:
 
-- **Defect density** = count of distinct confirmed defects first detected in the reporting period divided by the declared size unit. Across the 3,431 lines of scoped business logic (`upstream/pretix/base/services`), a total of 12 distinct confirmed defects were logged and resolved:
-  $$\text{Defect Density} = \frac{12 \text{ defects}}{3.431 \text{ KLOC}} = 3.50 \text{ defects / KLOC}$$
+- **Defect density** = count of distinct confirmed defects first detected in the reporting period divided by the declared size unit. Across the `3,431` NCLOC of scoped business services (`upstream/pretix/base/services/`) and `6,260` NCLOC aggregate SonarQube scope (`scoped_business_logic.py` + `services/` + `models/orders.py`), `12` distinct confirmed defects were logged and resolved:
+  $$\text{Defect Density} = \frac{12 \text{ defects}}{3.431 \text{ KLOC}} = 3.50 \text{ defects/KLOC} \quad \left(\text{or } \frac{12}{6.260} = 1.92 \text{ defects/KLOC aggregate}\right)$$
   - Severity mix: 3 Critical (25%), 6 High (50%), 2 Medium (16.7%), 1 Low (8.3%).
 - **Requirements coverage** = count of canonical FR/BR IDs with at least one executed, passing test and linked raw result divided by the total canonical FR/BR IDs in `docs/test-basis.md`:
   $$\text{Requirements Coverage} = \frac{12 \text{ passing canonical specifications (8 FRs + 4 BRs)}}{12 \text{ total canonical specifications}} = 100.0\%$$

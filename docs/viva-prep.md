@@ -10,48 +10,47 @@
 ## 1. Member Defense Profiles & Individual Contribution Ownership
 
 ### Member 1: Sohaib (`24i-3108`, Git: `sohaibAkhlaq`) — Area A Lead
-* **Primary Scope:** Static Analysis, White-Box Unit Testing, Basis Paths & MC/DC, Mutation Testing (`mutmut`, Custom BCR & ADR Operators), GitHub Actions CI PR Quality Gate.
+* **Primary Scope:** Static Analysis (SonarQube/Radon/Lizard), White-Box Unit Testing (100% Statement & Branch Coverage on `upstream/pretix/base/scoped_business_logic.py`, Basis Paths, MCC & MC/DC), Real AST Mutation Testing (BCR & ADR Operators), Two-Job GitHub Actions CI PR Quality Gate.
 * **Key Codebase Artifacts:**
-  - `docs/cfg/cfg_analysis.md`: Control Flow Graphs and 3-formula CCN calculations ($V=6$ and $V=8$).
-  - `docs/cfg/mcc_mcdc.md`: 16-row MCC truth table and 5-test MC/DC minimal suite.
-  - `tests/team/unit/`: 49 unit tests with 100% statement and 100% branch coverage.
-  - `scripts/run_mutation_tests.py`: 24 mutants, 2 custom operators (BCR, ADR), 100% mutation kill rate.
-  - `.github/workflows/pr-gate.yml` & `docs/ci-gate-demo.md`: CI Quality Gate blocking non-compliant PRs.
+  - `upstream/pretix/base/scoped_business_logic.py`: Pinned production rules `BR1`–`BR4` (`70` stmts, `32` branches), AST-verified against upstream source via `production_source.py`.
+  - `docs/cfg/cfg_analysis.md`: Control Flow Graphs and 3-formula CCN calculations ($V=6$ `_compute_early_outs`, $V=8$ `_check_quotas`, and $V=10$ `Order._can_be_paid`).
+  - `docs/cfg/mcc_mcdc.md`: `BR2` (`4`-row MCC + `2` MC/DC pairs) and `BR4` (`8`-row MCC + `4` MC/DC pairs).
+  - `tests/team/unit/`: `49` unit tests achieving **100.00% (`70/70`) statement and 100.00% (`32/32`) branch coverage**.
+  - `scripts/run_mutation_tests.py`: `51` real AST mutants on `scoped_business_logic.py` (`48` killed, `3` proven equivalent = **100.00% effective score**, `94.12%` raw), custom BCR/ADR operators.
+  - `.github/workflows/pr-gate.yml` & `docs/ci-gate-demo.md`: Two-job fail-closed CI Quality Gate blocking non-compliant PRs.
 * **Core Theoretical Defense:**
-  - *Cyclomatic Complexity Proof:* $V(G) = E - N + 2P = P_R + 1 = R$. For `_compute_early_outs`, $14 - 10 + 2 = 6 = 5 \text{ predicates} + 1 = 6 \text{ regions}$.
-  - *MC/DC Formulation:* For $D = C_1 \land C_2 \land C_3 \land C_4$, each condition $C_i$ is shown to independently affect outcome $D$ while holding all other conditions $C_{j \neq i}$ constant. Requires exactly $N+1 = 5$ tests.
+  - *Cyclomatic Complexity Proof:* $V(G) = E - N + 2P = P_R + 1 = R$. For `_compute_early_outs` (`BR2`), $15 - 11 + 2 = 6 = 5 + 1$; for `_check_quotas` (`BR1`), $19 - 14 + 2 = 8 = 7 + 1$; for `Order._can_be_paid` (`BR4`), $25 - 17 + 2 = 10 = 9 + 1$.
+  - *MC/DC Formulation:* For `BR2` ($q.\text{closed} \land \neg\text{\_ignore\_closed}$), $2^2=4$ MCC vectors prove $2$ independence pairs. For `BR4` ($\neg\text{accept\_late} \land \neg\text{ignore\_date} \land \neg\text{force}$), $2^3=8$ MCC combinations prove independence of every condition plus `_is_still_available(...)`.
   - *Custom Mutation Operators:*
-    - Boundary Condition Replacement (BCR): Mutates strict inequality to non-strict inequality (`<` to `<=`, `>` to `>=`), testing off-by-one errors in capacity checks.
-    - Arithmetic Delta Replacement (ADR): Mutates capacity offsets ($\pm 1$) and suppresses state restoration on cancellation.
+    - Boundary Condition Replacement (BCR): Mutates relational comparisons (`<` $\leftrightarrow$ `<=`, `>` $\leftrightarrow$ `>=`, `== 0`), catching off-by-one capacity/expiration bugs (`8/10` killed + `2` proven equiv).
+    - Arithmetic Delta Replacement (ADR): Shifts constants/offsets (`0 -> 1 / -1`, `diff -> diff +/- 1`) (`8/8` killed).
 
 ---
 
 ### Member 2: M. Hasaam (`24i-3107`, Git: `M-Hasaam`) — Area B Lead
-* **Primary Scope:** OpenAPI 3.0 Contract Specification, Automated Synthetic Test Data Generation (`tools/datagen/`), REST API Integration Testing, k6 Performance Baseline, Concurrency Stress & Chaos Fault Recovery.
+* **Primary Scope:** OpenAPI 3.0 Contract Specification, Automated Synthetic Test Data Generation (`tools/datagen/`), REST API Integration Testing, Dual 60s k6 Benchmarks & State-Changing Chaos Fault Recovery.
 * **Key Codebase Artifacts:**
-  - `openapi/team-spec.yaml`: OpenAPI 3.0.3 contract covering 8 core endpoints.
-  - `tools/datagen/generator.py` & `cli.py`: Dynamic 3-point BVA ($\min-1, \min, \min+1, \text{nom}, \max-1, \max, \max+1$) and EP generator.
-  - `docs/regeneration-demo.md`: Demonstration of live zero-code test data adaptation.
-  - `tests/team/api/`: 16 integration tests verifying idempotency, lifecycle, and restoration.
-  - `tests/team/perf/`: k6 baseline ($p95 = 92.3\text{ms} < 500\text{ms}$), 5 VU concurrency (0 oversold), and Redis chaos test ($RTO = 0.66\text{s} < 15\text{s}$).
+  - `openapi/team-spec.yaml`: OpenAPI 3.0.3 contract covering catalog, quotas, `?status=` filtering, `401` responses, and order transitions.
+  - `tools/datagen/generator.py` & `cli.py`: Dynamic 3-point BVA ($\min-1, \min, \min+1, \text{nom}, \max-1, \max, \max+1$) for both Quantity and Price, Decimal limits (`13` vs `14` digits), EP vectors, idempotency, and RBAC cases.
+  - `docs/regeneration-demo.md`: Live zero-code test data adaptation under `S: 10 -> 15, P: 50 -> 75`.
+  - `tests/team/api/`: `18` integration tests dynamically consuming `generated_data.json` with live quota/state read-backs.
+  - `tests/team/perf/`: Dual 60s 1-VU (`p95 = 183.98 / 186.16 ms`) and 5-VU (`p95 = 354.47 / 212.14 ms`) k6 runs (`0.00%` unexpected failures across `2,352` reqs), plus Redis outage recovery (`RTO = 0.28s`, `0` duplicates, `PSELH`).
 * **Core Theoretical Defense:**
-  - *Dynamic Test Data Generation:* Explaining how modifying `config.yaml` propagates new boundary values across all test payloads without editing test assertions.
-  - *Idempotency Header Mechanism:* Explaining `X-Idempotency-Key` hash caching in Redis, preventing duplicate holds on network retransmissions.
-  - *Concurrency Invariant Proof:* Demonstrating how Redis distributed locks serialize checkout requests so that $\sum \text{Orders} \le Q_{\text{capacity}}$, preventing negative inventory.
+  - *Dynamic Test Data Generation:* Running `python -m tools.datagen.cli --quota-size <S> --price <P>` shifts all BVA boundaries in `reports/api/generated_data.json` without editing API assertions.
+  - *Idempotency Header Mechanism:* Explaining `X-Idempotency-Key` middleware caching in Redis (whereas omitting `X-` causes duplicate creation, `DEF-09`).
+  - *Concurrency Invariant Proof:* Demonstrating how PostgreSQL `SELECT FOR UPDATE` + Redlock serialize concurrent checkout attempts so `10` orders succeed and excess attempts return HTTP `400`, preserving $\sum \text{Orders} \le Q_{\text{capacity}}$.
 
 ---
 
 ### Member 3: Shaiman (`24i-3074`, Git: `ShaimanQasir`) — Area C Lead
-* **Primary Scope:** Use Case Analysis (6 UCs, 30 Flows), Playwright E2E UI Automation, Usability/Accessibility (axe-core WCAG 2.1 AA with Before/After Remediation), Defensive Security & STRIDE Threat Modeling.
+* **Primary Scope:** Use Case Analysis (`6` UCs, `30` Flows), Playwright E2E UI Automation, Usability/Accessibility (axe-core & Lighthouse WCAG 2.1 AA with Durable Server-Side Template Remediation), Defensive Security & RBAC Matrix.
 * **Key Codebase Artifacts:**
-  - `docs/use-cases.md`: 6 Use Cases covering 30 execution flows (6 normal, 12 alt, 12 exc).
-  - `tests/team/e2e/`: Playwright browser suite driving customer purchase, sold-out lockout, and control panel.
-  - `tests/team/a11y/`: Automated axe-core audits detecting upstream logo missing `alt` defect (WCAG 1.1.1) and remediating it ($1 \to 0$ violations).
-  - `docs/security-model.md` & `tests/team/security/`: STRIDE threat model, 5 trust zones, 8-endpoint RBAC authorization matrix, injection defenses, and `pip-audit` scan.
+  - `docs/use-cases.md`: `6` Use Cases covering `30` execution flows (`6` normal, `12` alt, `12` exc) automated via `42` Playwright pytest cases (`e2e_report.html` + `41` screenshots).
+  - `scripts/patch_a11y_container.py` & `tests/team/a11y/`: Durable server-template remediation on `auth/base.html`, `auth/login.html`, and `presale/base.html`, driving axe violations `4 -> 0` (`0` total) and Login Lighthouse Accessibility `69 -> 100`.
+  - `docs/security-model.md` & `tests/team/security/`: `7`-decision Playwright RBAC access matrix (`DEC-01`..`DEC-07` across Admin, Auditor, Public/Anon), ZAP-aligned HTTP passive inspector, `pip-audit` (`0` CVEs / `48` host pkgs) + `152` container pkgs inventory (`26/26` security tests pass).
 * **Core Technical Defense:**
-  - *Upstream Accessibility Defect:* Demonstrating how axe-core detected `<img src="...pretix-logo.svg">` lacking `alt` on `/control/login/`, and walking through the patch that remediates it.
-  - *Color Contrast Calculations:* Explaining how `#888888` on `#f8f9fa` failed WCAG AA ($3.2:1 < 4.5:1$) and how adjusting to `#495057` restored compliance ($5.8:1$).
-  - *RBAC Authorization Matrix:* Explaining why Auditor tokens receive HTTP 403 on mutations, while Anonymous requests return HTTP 401 or redirect to login.
+  - *Durable Server Accessibility Fix:* Walking through `scripts/patch_a11y_container.py` adding `lang="en"`, `<main>`, `<h1>`, `alt="pretix official logo"`, `.text-muted` `#4a4a4a` ($\ge 5.8:1$), and `:focus-visible` `3px #ff9900` directly in Django templates.
+  - *RBAC Authorization Matrix:* Demonstrating `DEC-06` (`auditor@localhost` Orders GET allowed HTTP `200`) and `DEC-07` (`auditor@localhost` Settings blocked HTTP `403 Permission denied`), alongside Anonymous `302`/login redirects and REST `401/403` enforcement.
 
 ---
 
@@ -60,65 +59,47 @@
 ### Live Task 1: "Change quota size from 10 to 20 and show me what happens to your tests."
 * **Examiner Goal:** Test whether the team's data generation and test suites are hardcoded or dynamically adaptive.
 * **Resolution Steps (M. Hasaam):**
-  1. Open `tools/datagen/config.yaml` and change `quota.total_size` from `10` to `20`.
-  2. Run `python -m tools.datagen.cli --config tools/datagen/config.yaml --out tools/datagen/generated_dataset.json`.
-  3. Show the examiner: The 3-point boundary values dynamically shift:
-     - Old: $\min=1, \text{nom}=5, \max-1=9, \max=10, \max+1=11$.
-     - New: $\min=1, \text{nom}=10, \max-1=19, \max=20, \max+1=21$.
-  4. Point to `docs/regeneration-demo.md` proving this capability was architected from Day 1.
+  1. Run `.venv\Scripts\python.exe -m tools.datagen.cli --quota-size 20 --price 50.00 --output reports/api/generated_data.json`.
+  2. Show the examiner: The 3-point boundary values dynamically shift:
+     - Old (`S=10`): `0, 1, 2, 5, 9, 10, 11`.
+     - New (`S=20`): `0, 1, 2, 10, 19, 20, 21`.
+  3. Point to `docs/regeneration-demo.md` and `tests/team/api/test_datagen_openapi_contract.py` proving dynamic consumption without test code edits.
 
 ---
 
 ### Live Task 2: "Introduce an off-by-one mutant in `_check_quotas` (`<` to `<=`) and show me how you catch it."
 * **Examiner Goal:** Test whether the team truly understands mutation testing and boundary condition coverage.
 * **Resolution Steps (Sohaib):**
-  1. Explain: "In `_check_quotas`, the condition `avail[1] < diff` checks if available capacity is strictly less than required tickets. If mutated to `avail[1] <= diff`, the system rejects requests where available capacity exactly equals required tickets (e.g. 5 tickets available, buyer requests 5)."
-  2. Run `python scripts/run_mutation_tests.py`.
-  3. Point to **`mutant-12`** in the output table:
-     - Operator: `BCR (Custom 1)`
-     - Mutated Code: `avail[1] <= diff`
-     - Status: **`KILLED`**
-     - Killing Test Case: `test_path_4_insufficient_capacity_raises` / `test_boundary_exact_capacity_allowed`.
-  4. Explain: "Our boundary test explicitly sends `diff == avail` and asserts success. The mutant threw an unexpected `OrderError`, killing the mutant instantly."
+  1. Explain: "In `_check_quotas` (`upstream/pretix/base/scoped_business_logic.py`), the condition `avail[1] < diff` checks if available capacity is strictly less than required tickets. Mutated to `avail[1] <= diff`, exact boundary requests (`avail == diff`) fail falsely."
+  2. Run `.venv\Scripts\python.exe scripts/run_mutation_tests.py`.
+  3. Point to the `BCR` `avail[1] < diff -> avail[1] <= diff` mutant (`KILLED`, out of `51` AST mutants: `48` killed, `3` equiv, `100.00%` effective kill rate).
+  4. Explain: "Our boundary unit test sends `avail == diff` and asserts pass; the mutant throws `QuotaExceeded`, killing the mutant deterministically."
 
 ---
 
 ### Live Task 3: "Show me an Auditor token trying to cancel an order or mark it paid."
 * **Examiner Goal:** Verify RBAC authorization enforcement live.
 * **Resolution Steps (Shaiman):**
-  1. Run `pytest tests/team/security/test_rbac_security.py -k "test_auditor_forbidden" -v`.
-  2. Show live output:
-     - `test_auditor_forbidden_from_creating_orders PASSED` (HTTP 403)
-     - `test_auditor_forbidden_from_marking_order_paid PASSED` (HTTP 403)
-     - `test_auditor_forbidden_from_canceling_order PASSED` (HTTP 403)
-  3. Explain: "Pretix checks `has_event_permission(request.user, 'can_change_orders')`. The Auditor role only has `can_view_orders`. Django's permission middleware intercepts the request before touching business logic and returns `403 Forbidden`."
+  1. Run `.venv\Scripts\python.exe -m pytest tests/team/api/test_rbac_api.py tests/team/security/test_playwright_rbac_access_matrix.py -v`.
+  2. Show live output (`HTTP 403 Forbidden` on auditor POST/PATCH mutations + Playwright `DEC-06` Allowed `GET orders` vs `DEC-07` Denied `GET settings`).
+  3. Explain how `has_event_permission(..., 'can_change_orders')` separates read-only Auditor roles from Admin mutations.
 
 ---
 
-### Live Task 4: "Show me the upstream accessibility defect and your before/after fix."
+### Live Task 4: "Show me the upstream accessibility defect and your durable server-side fix."
 * **Examiner Goal:** Verify authentic usability defect discovery and remediation.
 * **Resolution Steps (Shaiman):**
-  1. Open `docs/a11y-before-after.md`.
-  2. Run `pytest tests/team/a11y/test_axe_accessibility.py -v`.
-     - Show: axe-core detects `image-alt` violation on `<img src="...pretix-logo.svg">` on `/control/login/`.
-  3. Run `pytest tests/team/a11y/test_a11y_remediation.py -v`.
-     - Show: Test injects `alt="pretix logo"`, re-runs axe-core evaluation, and proves violations drop from **$1 \to 0$**.
-  4. Show visual screenshots in `reports/a11y/screenshots/`:
-     - `02_login_unremediated.png` (Missing alt)
-     - `05_login_remediated.png` (Remediated)
+  1. Open `docs/a11y-before-after.md` and `scripts/patch_a11y_container.py`.
+  2. Show unpatched baseline `reports/a11y/lighthouse_before.html` (Accessibility `69/100`) vs durably patched `reports/a11y/lighthouse_after.html` (Accessibility `100/100`) and `lighthouse_storefront.html` (`100/100` A11y & SEO).
+  3. Run `.venv\Scripts\python.exe -m pytest tests/team/a11y/ -v` proving `0` axe-core violations natively from server HTML (`8/8` tests pass) and show screenshots (`02_login_remediation_before.png` vs `03_login_remediation_after.png`).
 
 ---
 
-### Live Task 5: "Kill Redis right now and show me the system recovering within 15 seconds."
-* **Examiner Goal:** Verify chaos testing and high availability.
+### Live Task 5: "Kill Redis right now and show me the system recovering cleanly."
+* **Examiner Goal:** Verify chaos testing and state-changing fault recovery.
 * **Resolution Steps (M. Hasaam):**
-  1. Run `pytest tests/team/perf/test_fault_recovery.py -v -s`.
-  2. The test prints:
-     - `[CHAOS] Injecting Fault: Stopping pretix_redis container...`
-     - Verifies database and web containers remain alive.
-     - `[HEAL] Triggering Recovery: Restarting pretix_redis container...`
-     - Measures recovery time and prints: `[RECOVERY CONFIRMED] RTO = 0.66 seconds (Target: < 15.0s)`.
-  3. Explain: "Pretix’s connection pool catches socket drops gracefully. Once the container restarts, Redis socket re-attaches in $< 1\text{ second}$, preserving complete PostgreSQL data integrity."
+  1. Run `.venv\Scripts\python.exe -m pytest tests/team/perf/test_state_changing_recovery.py -v -s`.
+  2. Point to `docker stop pretix_redis`, PostgreSQL check (`0` partial orders committed), `docker start pretix_redis` (`RTO = 0.28s`), retry with identical `X-Idempotency-Key` (`HTTP 201`, `PSELH`), and replay asserting `total_duplicate_records == 0`.
 
 ---
 
@@ -128,10 +109,10 @@
 *Answer:* "Workflow A (Order Placement) reads quota availability and decrements it upon completion. Workflow B (Order Cancellation / State Transitions) mutates order states and restores availability. Testing them together proves shared state consistency and conservation of finite inventory."
 
 **Q2: What is the difference between MCC and MC/DC?**  
-*Answer:* "Multiple Condition Coverage (MCC) tests all $2^N$ combinations of conditions in a compound decision (16 tests for BR2). Modified Condition/Decision Coverage (MC/DC) achieves linear scaling ($N+1 = 5$ tests) while still proving that every individual condition can independently affect the decision outcome."
+*Answer:* "Multiple Condition Coverage (MCC) tests all $2^N$ combinations of conditions in a compound decision (`4` rows for BR2's `q.closed and not _ignore_closed`; `8` rows for BR4's late-payment compound gate). Modified Condition/Decision Coverage (MC/DC) scales linearly ($N+1$ minimum vectors) by proving every atomic boolean condition independently flips the overall decision outcome while holding all other conditions fixed."
 
 **Q3: How do you mathematically prove that no overselling occurred during concurrency tests?**  
-*Answer:* "Initial quota was $Q = 10$. Under 5 concurrent VUs issuing 280 order requests, exactly 10 orders received HTTP 201 Created. The remaining 130 requests received HTTP 400 (The quota is full). Final available quota was exactly 0. The capacity conservation invariant $\sum \text{Orders} \le Q_{\text{initial}}$ was preserved 100%."
+*Answer:* "Initial quota before each 5-VU run was reset deterministically to $Q = 10$. Across two 60-second 5-VU runs (`461` and `546` concurrent POST attempts), strictly `10` orders succeeded per run with HTTP 201 and all remaining competing attempts (`451` and `536`) returned domain HTTP 400 (`quota_sold_out`) with `0` unexpected failures (`0.00%`)."
 
 **Q4: How does your GitHub Actions PR Quality Gate work?**  
-*Answer:* "Every pull request into `main` must pass 4 gates: (1) Static complexity analysis ($CCN \le 10$), (2) Pytest with branch coverage $\ge 80\%$, (3) Mutation testing score $\ge 70\%$, and (4) Dependency vulnerability check (`pip-audit`). If any gate fails, GitHub Actions exits with code 1, marking the check red and blocking the merge."
+*Answer:* "`.github/workflows/pr-gate.yml` enforces two fail-closed jobs: Job 1 checks Radon/Lizard complexity, enforces `pytest --cov=upstream.pretix.base.scoped_business_logic --cov-branch --cov-fail-under=100`, verifies $\ge 70\%$ AST mutation kill rate, runs offline OpenAPI datagen verification, and runs `pip-audit` (`0` CVEs). Job 2 boots the containerized Pretix stack and executes the live API, E2E, a11y, security, and master verification audits."

@@ -1,0 +1,116 @@
+{
+  "quality_gate": {
+    "projectStatus": {
+      "status": "ERROR",
+      "conditions": [
+        {
+          "status": "OK",
+          "metricKey": "new_reliability_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_security_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_maintainability_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "ERROR",
+          "metricKey": "new_coverage",
+          "comparator": "LT",
+          "periodIndex": 1,
+          "errorThreshold": "80",
+          "actualValue": "5.8"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_duplicated_lines_density",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "3",
+          "actualValue": "2.25426"
+        },
+        {
+          "status": "ERROR",
+          "metricKey": "new_security_hotspots_reviewed",
+          "comparator": "LT",
+          "periodIndex": 1,
+          "errorThreshold": "100",
+          "actualValue": "0.0"
+        }
+      ],
+      "periods": [
+        {
+          "index": 1,
+          "mode": "PREVIOUS_VERSION",
+          "date": "2026-11-20T19:20:31+0000"
+        }
+      ],
+      "ignoredConditions": false,
+      "period": {
+        "mode": "PREVIOUS_VERSION",
+        "date": "2026-11-20T19:20:31+0000"
+      },
+      "caycStatus": "compliant"
+    }
+  },
+  "hotspots": {
+    "paging": {
+      "pageIndex": 1,
+      "pageSize": 100,
+      "total": 1
+    },
+    "hotspots": [
+      {
+        "key": "AaITPjfRiKng7qF-WOMv",
+        "component": "sqe-pretix-team:upstream/pretix/base/models/orders.py",
+        "project": "sqe-pretix-team",
+        "securityCategory": "others",
+        "vulnerabilityProbability": "LOW",
+        "status": "TO_REVIEW",
+        "line": 131,
+        "message": "Make sure that hashing data is safe here.",
+        "author": "",
+        "creationDate": "2026-11-25T15:05:11+0000",
+        "updateDate": "2026-11-25T15:05:11+0000",
+        "textRange": {
+          "startLine": 131,
+          "endLine": 131,
+          "startOffset": 28,
+          "endOffset": 32
+        },
+        "flows": [],
+        "ruleKey": "python:S4790",
+        "messageFormattings": []
+      }
+    ],
+    "components": [
+      {
+        "key": "sqe-pretix-team:upstream/pretix/base/models/orders.py",
+        "qualifier": "FIL",
+        "name": "orders.py",
+        "longName": "upstream/pretix/base/models/orders.py",
+        "path": "upstream/pretix/base/models/orders.py"
+      },
+      {
+        "key": "sqe-pretix-team",
+        "qualifier": "TRK",
+        "name": "pretix-sqe-testing",
+        "longName": "pretix-sqe-testing"
+      }
+    ]
+  }
+}

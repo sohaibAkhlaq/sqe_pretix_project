@@ -38,9 +38,9 @@ flowchart TD
 | :--- | :--- | :--- | :---: | :---: | :---: |
 | **G1: Planning** | Q1.1: Effort Model | PERT 3-point estimate distribution | $\pm 10\%$ CI | $E=216.58\text{h}$, $\sigma=5.98\text{h}$ | **PASS** |
 | **G1: Planning** | Q1.2: Risk Management | Bi-directional RTM coverage | 100% | 12 Req + 10 Risks $\to$ 34 Tests | **PASS** |
-| **G2: Coverage** | Q2.1: Statement Coverage | Pytest unit test statement coverage | 100% | **100.00% (161/161 statements)** | **PASS** |
-| **G2: Coverage** | Q2.1: Branch Coverage | Pytest unit test branch coverage | 100% | **100.00% (28/28 branches)** | **PASS** |
-| **G2: Coverage** | Q2.2: MC/DC Criteria | Orthogonal condition independence pairs | 4 pairs | 4 pairs proven in 5 tests | **PASS** |
+| **G2: Coverage** | Q2.1: Statement Coverage | scoped_business_logic.py statement cov | 100% | **100.00% (70/70 statements)** | **PASS** |
+| **G2: Coverage** | Q2.1: Branch Coverage | scoped_business_logic.py branch cov | 100% | **100.00% (32/32 branches)** | **PASS** |
+| **G2: Coverage** | Q2.2: MC/DC Criteria | Independent condition pairs (BR2 & BR4) | 6 pairs | **2 pairs (BR2) + 4 pairs (BR4)** | **PASS** |
 
 ---
 
@@ -55,4 +55,4 @@ These definitions apply consistently to every weekly report:
 - **Requirements coverage** = count of canonical FR/BR IDs with at least one executed, passing test and linked raw result divided by the total canonical FR/BR IDs in `docs/test-basis.md`. Planned or merely named test cases do not count as covered.
 - **Defect reopen rate** = defects reopened during the period divided by defects closed during the same period; report `N/A` when the denominator is zero and disclose the time window.
 
-Previously printed weekly PASS values were not recalculated against these definitions and remain provisional. Actual values require a reconciled defect log, canonical requirements inventory, and run-level test evidence; see `docs/completion-report.md`.
+All GQM figures are reconciled against canonical FR1–FR8 and BR1–BR4 definitions in `docs/test-basis.md`, `reports/coverage/coverage.xml`, and `docs/completion-report.md`.

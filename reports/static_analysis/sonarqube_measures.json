@@ -1,0 +1,71 @@
+{
+  "component": {
+    "key": "sqe-pretix-team",
+    "name": "pretix-sqe-testing",
+    "qualifier": "TRK",
+    "measures": [
+      {
+        "metric": "code_smells",
+        "value": "96",
+        "bestValue": false
+      },
+      {
+        "metric": "duplicated_lines_density",
+        "value": "2.3",
+        "bestValue": false
+      },
+      {
+        "metric": "ncloc",
+        "value": "6260"
+      },
+      {
+        "metric": "complexity",
+        "value": "1655"
+      },
+      {
+        "metric": "sqale_index",
+        "value": "1610",
+        "bestValue": false
+      },
+      {
+        "metric": "vulnerabilities",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "security_hotspots",
+        "value": "1",
+        "bestValue": false
+      },
+      {
+        "metric": "coverage",
+        "value": "2.6",
+        "bestValue": false
+      },
+      {
+        "metric": "bugs",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "line_coverage",
+        "value": "1.8",
+        "bestValue": false
+      },
+      {
+        "metric": "cognitive_complexity",
+        "value": "2271",
+        "bestValue": false
+      },
+      {
+        "metric": "branch_coverage",
+        "value": "100.0",
+        "bestValue": true
+      },
+      {
+        "metric": "alert_status",
+        "value": "ERROR"
+      }
+    ]
+  }
+}

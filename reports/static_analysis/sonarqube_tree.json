@@ -1,0 +1,2774 @@
+{
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 100,
+    "total": 60
+  },
+  "baseComponent": {
+    "key": "sqe-pretix-team",
+    "name": "pretix-sqe-testing",
+    "qualifier": "TRK",
+    "measures": [
+      {
+        "metric": "code_smells",
+        "value": "96",
+        "bestValue": false
+      },
+      {
+        "metric": "bugs",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "vulnerabilities",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "sqale_index",
+        "value": "1610",
+        "bestValue": false
+      },
+      {
+        "metric": "security_hotspots",
+        "value": "1",
+        "bestValue": false
+      },
+      {
+        "metric": "ncloc",
+        "value": "6260"
+      },
+      {
+        "metric": "complexity",
+        "value": "1655"
+      },
+      {
+        "metric": "cognitive_complexity",
+        "value": "2271",
+        "bestValue": false
+      },
+      {
+        "metric": "coverage",
+        "value": "2.6",
+        "bestValue": false
+      },
+      {
+        "metric": "line_coverage",
+        "value": "1.8",
+        "bestValue": false
+      },
+      {
+        "metric": "branch_coverage",
+        "value": "100.0",
+        "bestValue": true
+      },
+      {
+        "metric": "duplicated_lines_density",
+        "value": "2.3",
+        "bestValue": false
+      },
+      {
+        "metric": "alert_status",
+        "value": "ERROR"
+      }
+    ]
+  },
+  "components": [
+    {
+      "key": "sqe-pretix-team:tests/team/a11y",
+      "name": "a11y",
+      "qualifier": "DIR",
+      "path": "tests/team/a11y",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/api",
+      "name": "api",
+      "qualifier": "DIR",
+      "path": "tests/team/api",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/security/conftest.py",
+      "name": "conftest.py",
+      "qualifier": "UTS",
+      "path": "tests/team/security/conftest.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/a11y/conftest.py",
+      "name": "conftest.py",
+      "qualifier": "UTS",
+      "path": "tests/team/a11y/conftest.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/conftest.py",
+      "name": "conftest.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/conftest.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/unit/conftest.py",
+      "name": "conftest.py",
+      "qualifier": "UTS",
+      "path": "tests/team/unit/conftest.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/api/conftest.py",
+      "name": "conftest.py",
+      "qualifier": "UTS",
+      "path": "tests/team/api/conftest.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e",
+      "name": "e2e",
+      "qualifier": "DIR",
+      "path": "tests/team/e2e",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/e2e_helpers.py",
+      "name": "e2e_helpers.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/e2e_helpers.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf/load_baseline.js",
+      "name": "load_baseline.js",
+      "qualifier": "UTS",
+      "path": "tests/team/perf/load_baseline.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf/load_baseline_60s.js",
+      "name": "load_baseline_60s.js",
+      "qualifier": "UTS",
+      "path": "tests/team/perf/load_baseline_60s.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf/load_concurrency.js",
+      "name": "load_concurrency.js",
+      "qualifier": "UTS",
+      "path": "tests/team/perf/load_concurrency.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf/load_concurrency_60s.js",
+      "name": "load_concurrency_60s.js",
+      "qualifier": "UTS",
+      "path": "tests/team/perf/load_concurrency_60s.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:upstream/pretix/base/models",
+      "name": "models",
+      "qualifier": "DIR",
+      "path": "upstream/pretix/base/models",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "29",
+          "bestValue": false
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "321",
+          "bestValue": false
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "1",
+          "bestValue": false
+        },
+        {
+          "metric": "ncloc",
+          "value": "2751"
+        },
+        {
+          "metric": "complexity",
+          "value": "689"
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "715",
+          "bestValue": false
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "2.5",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:upstream/pretix/base/services/orders.py",
+      "name": "orders.py",
+      "qualifier": "FIL",
+      "path": "upstream/pretix/base/services/orders.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "59",
+          "bestValue": false
+        },
+        {
+          "metric": "sqale_index",
+          "value": "1182",
+          "bestValue": false
+        },
+        {
+          "metric": "ncloc",
+          "value": "3074"
+        },
+        {
+          "metric": "complexity",
+          "value": "827"
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "1352",
+          "bestValue": false
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.9",
+          "bestValue": false
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:upstream/pretix/base/models/orders.py",
+      "name": "orders.py",
+      "qualifier": "FIL",
+      "path": "upstream/pretix/base/models/orders.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "29",
+          "bestValue": false
+        },
+        {
+          "metric": "sqale_index",
+          "value": "321",
+          "bestValue": false
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "1",
+          "bestValue": false
+        },
+        {
+          "metric": "ncloc",
+          "value": "2751"
+        },
+        {
+          "metric": "complexity",
+          "value": "689"
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "715",
+          "bestValue": false
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "2.5",
+          "bestValue": false
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf",
+      "name": "perf",
+      "qualifier": "DIR",
+      "path": "tests/team/perf",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/unit/production_source.py",
+      "name": "production_source.py",
+      "qualifier": "UTS",
+      "path": "tests/team/unit/production_source.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:upstream/pretix/base/services/quotas.py",
+      "name": "quotas.py",
+      "qualifier": "FIL",
+      "path": "upstream/pretix/base/services/quotas.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "7",
+          "bestValue": false
+        },
+        {
+          "metric": "sqale_index",
+          "value": "102",
+          "bestValue": false
+        },
+        {
+          "metric": "ncloc",
+          "value": "357"
+        },
+        {
+          "metric": "complexity",
+          "value": "111"
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "174",
+          "bestValue": false
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:upstream/pretix/base/scoped_business_logic.py",
+      "name": "scoped_business_logic.py",
+      "qualifier": "FIL",
+      "path": "upstream/pretix/base/scoped_business_logic.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "1",
+          "bestValue": false
+        },
+        {
+          "metric": "sqale_index",
+          "value": "5",
+          "bestValue": false
+        },
+        {
+          "metric": "ncloc",
+          "value": "78"
+        },
+        {
+          "metric": "complexity",
+          "value": "28"
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "30",
+          "bestValue": false
+        },
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "line_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "branch_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "49.1",
+          "bestValue": false
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/security",
+      "name": "security",
+      "qualifier": "DIR",
+      "path": "tests/team/security",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:upstream/pretix/base/services",
+      "name": "services",
+      "qualifier": "DIR",
+      "path": "upstream/pretix/base/services",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "66",
+          "bestValue": false
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "1284",
+          "bestValue": false
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "ncloc",
+          "value": "3431"
+        },
+        {
+          "metric": "complexity",
+          "value": "938"
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "1526",
+          "bestValue": false
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.8",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf/spike_load.js",
+      "name": "spike_load.js",
+      "qualifier": "UTS",
+      "path": "tests/team/perf/spike_load.js",
+      "language": "js",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/spike_login.py",
+      "name": "spike_login.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/spike_login.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/a11y/test_a11y_remediation.py",
+      "name": "test_a11y_remediation.py",
+      "qualifier": "UTS",
+      "path": "tests/team/a11y/test_a11y_remediation.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_auditor_access_control_ui.py",
+      "name": "test_auditor_access_control_ui.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_auditor_access_control_ui.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/a11y/test_axe_accessibility.py",
+      "name": "test_axe_accessibility.py",
+      "qualifier": "UTS",
+      "path": "tests/team/a11y/test_axe_accessibility.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_customer_order_flow.py",
+      "name": "test_customer_order_flow.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_customer_order_flow.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/api/test_datagen_openapi_contract.py",
+      "name": "test_datagen_openapi_contract.py",
+      "qualifier": "UTS",
+      "path": "tests/team/api/test_datagen_openapi_contract.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf/test_fault_recovery.py",
+      "name": "test_fault_recovery.py",
+      "qualifier": "UTS",
+      "path": "tests/team/perf/test_fault_recovery.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/api/test_idempotency_api.py",
+      "name": "test_idempotency_api.py",
+      "qualifier": "UTS",
+      "path": "tests/team/api/test_idempotency_api.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/security/test_input_sanitization.py",
+      "name": "test_input_sanitization.py",
+      "qualifier": "UTS",
+      "path": "tests/team/security/test_input_sanitization.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/a11y/test_keyboard_navigation.py",
+      "name": "test_keyboard_navigation.py",
+      "qualifier": "UTS",
+      "path": "tests/team/a11y/test_keyboard_navigation.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/unit/test_mcc_mcdc_quota_policy.py",
+      "name": "test_mcc_mcdc_quota_policy.py",
+      "qualifier": "UTS",
+      "path": "tests/team/unit/test_mcc_mcdc_quota_policy.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/unit/test_order_change_quotas.py",
+      "name": "test_order_change_quotas.py",
+      "qualifier": "UTS",
+      "path": "tests/team/unit/test_order_change_quotas.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/api/test_order_creation_api.py",
+      "name": "test_order_creation_api.py",
+      "qualifier": "UTS",
+      "path": "tests/team/api/test_order_creation_api.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/api/test_order_lifecycle_api.py",
+      "name": "test_order_lifecycle_api.py",
+      "qualifier": "UTS",
+      "path": "tests/team/api/test_order_lifecycle_api.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/unit/test_order_state_transitions.py",
+      "name": "test_order_state_transitions.py",
+      "qualifier": "UTS",
+      "path": "tests/team/unit/test_order_state_transitions.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_organizer_control_panel_flow.py",
+      "name": "test_organizer_control_panel_flow.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_organizer_control_panel_flow.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/security/test_playwright_rbac_access_matrix.py",
+      "name": "test_playwright_rbac_access_matrix.py",
+      "qualifier": "UTS",
+      "path": "tests/team/security/test_playwright_rbac_access_matrix.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/unit/test_quota_early_outs.py",
+      "name": "test_quota_early_outs.py",
+      "qualifier": "UTS",
+      "path": "tests/team/unit/test_quota_early_outs.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/api/test_rbac_api.py",
+      "name": "test_rbac_api.py",
+      "qualifier": "UTS",
+      "path": "tests/team/api/test_rbac_api.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/security/test_rbac_security.py",
+      "name": "test_rbac_security.py",
+      "qualifier": "UTS",
+      "path": "tests/team/security/test_rbac_security.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/security/test_security_headers.py",
+      "name": "test_security_headers.py",
+      "qualifier": "UTS",
+      "path": "tests/team/security/test_security_headers.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_sold_out_ui_flow.py",
+      "name": "test_sold_out_ui_flow.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_sold_out_ui_flow.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/perf/test_state_changing_recovery.py",
+      "name": "test_state_changing_recovery.py",
+      "qualifier": "UTS",
+      "path": "tests/team/perf/test_state_changing_recovery.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc1_exception_flows.py",
+      "name": "test_uc1_exception_flows.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc1_exception_flows.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc1_flows.py",
+      "name": "test_uc1_flows.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc1_flows.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc2_cancellation_e2e.py",
+      "name": "test_uc2_cancellation_e2e.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc2_cancellation_e2e.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc2_flows.py",
+      "name": "test_uc2_flows.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc2_flows.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc3_flows.py",
+      "name": "test_uc3_flows.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc3_flows.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc4_flows.py",
+      "name": "test_uc4_flows.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc4_flows.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc4_sold_out_flow.py",
+      "name": "test_uc4_sold_out_flow.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc4_sold_out_flow.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc5_admin_order_management.py",
+      "name": "test_uc5_admin_order_management.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc5_admin_order_management.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc5_flows.py",
+      "name": "test_uc5_flows.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc5_flows.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/e2e/test_uc6_flows.py",
+      "name": "test_uc6_flows.py",
+      "qualifier": "UTS",
+      "path": "tests/team/e2e/test_uc6_flows.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/a11y/test_usability_workflow_tasks.py",
+      "name": "test_usability_workflow_tasks.py",
+      "qualifier": "UTS",
+      "path": "tests/team/a11y/test_usability_workflow_tasks.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team",
+      "name": "tests/team",
+      "qualifier": "DIR",
+      "path": "tests/team",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:tests/team/unit",
+      "name": "unit",
+      "qualifier": "DIR",
+      "path": "tests/team/unit",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "key": "sqe-pretix-team:upstream/pretix/base",
+      "name": "upstream/pretix/base",
+      "qualifier": "DIR",
+      "path": "upstream/pretix/base",
+      "measures": [
+        {
+          "metric": "code_smells",
+          "value": "96",
+          "bestValue": false
+        },
+        {
+          "metric": "bugs",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "vulnerabilities",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "sqale_index",
+          "value": "1610",
+          "bestValue": false
+        },
+        {
+          "metric": "security_hotspots",
+          "value": "1",
+          "bestValue": false
+        },
+        {
+          "metric": "ncloc",
+          "value": "6260"
+        },
+        {
+          "metric": "complexity",
+          "value": "1655"
+        },
+        {
+          "metric": "cognitive_complexity",
+          "value": "2271",
+          "bestValue": false
+        },
+        {
+          "metric": "coverage",
+          "value": "2.6",
+          "bestValue": false
+        },
+        {
+          "metric": "line_coverage",
+          "value": "1.8",
+          "bestValue": false
+        },
+        {
+          "metric": "branch_coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "2.3",
+          "bestValue": false
+        }
+      ]
+    }
+  ]
+}

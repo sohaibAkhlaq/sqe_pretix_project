@@ -1,39 +1,27 @@
-"""MCC and MC/DC checks against pretix's production closed-quota decision."""
-from types import MethodType, SimpleNamespace
-
+"""MCC and MC/DC checks against pretix's production closed-quota decision (BR2)."""
 import pytest
 
-from production_source import load_upstream_method
+from upstream.pretix.base.scoped_business_logic import Quota, QuotaAvailabilityPolicy
 
-AVAILABILITY_OK = 100
-AVAILABILITY_GONE = 20
-AVAILABILITY_ORDERED = 0
+AVAILABILITY_ORDERED = Quota.AVAILABILITY_ORDERED
 
 
-class Quota:
+class StubQuota:
     def __init__(self, closed, size=10):
         self.closed = closed
         self.size = size
 
 
 def run_production_decision(closed, ignore_closed):
-    """Execute the exact method body at upstream/.../quotas.py, with only state stubbed."""
-    method = load_upstream_method(
-        "base/services/quotas.py",
-        "QuotaAvailability",
-        "_compute_early_outs",
-        {"Quota": type("QuotaConstants", (), {
-            "AVAILABILITY_OK": AVAILABILITY_OK,
-            "AVAILABILITY_GONE": AVAILABILITY_GONE,
-            "AVAILABILITY_ORDERED": AVAILABILITY_ORDERED,
-        })},
-    )
-    subject = SimpleNamespace(results={}, _ignore_closed=ignore_closed)
-    MethodType(method, subject)([Quota(closed=closed, size=10)])
+    """Execute upstream QuotaAvailability._compute_early_outs with stubbed state."""
+    subject = QuotaAvailabilityPolicy()
+    subject.results = {}
+    subject._ignore_closed = ignore_closed
+    subject._compute_early_outs([StubQuota(closed=closed, size=10)])
     return subject.results
 
 
-# BR2's compound condition is: q.closed AND NOT ignore_closed.
+# BR2 compound condition: q.closed AND NOT self._ignore_closed
 MCC_ROWS = [
     ("TC-MCC-01", True, False, True),
     ("TC-MCC-02", True, True, False),

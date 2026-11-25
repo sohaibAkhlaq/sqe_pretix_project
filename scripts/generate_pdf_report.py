@@ -6,7 +6,8 @@ from playwright.sync_api import sync_playwright
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPORT_MD_PATH = os.path.join(BASE_DIR, 'docs', 'MASTER_REPORT.md')
 OUTPUT_PDF_PATH_A = os.path.join(BASE_DIR, 'Project_24i-3108_24i-3107_24i-3074_A.pdf')
-OUTPUT_PDF_PATH_PLAIN = os.path.join(BASE_DIR, 'Project_24i-3108_24i-3074_24i-3107.pdf')
+if os.path.exists(os.path.join(BASE_DIR, 'Project_24i-3108_24i-3074_24i-3107.pdf')):
+    os.remove(os.path.join(BASE_DIR, 'Project_24i-3108_24i-3074_24i-3107.pdf'))
 
 with open(REPORT_MD_PATH, 'r', encoding='utf-8') as f:
     md_content = f.read()
@@ -186,25 +187,9 @@ with sync_playwright() as p:
         footer_template='<div style="font-size: 7pt; color: #888; width: 100%; text-align: center;">Page <span class="pageNumber"></span> of <span class="totalPages"></span> | FAST-NUCES Islamabad (Fall 2026)</div>'
     )
     
-    # Generate standard named PDF
-    page.pdf(
-        path=OUTPUT_PDF_PATH_PLAIN,
-        format='A4',
-        print_background=True,
-        margin={
-            'top': '20mm',
-            'bottom': '20mm',
-            'left': '15mm',
-            'right': '15mm'
-        },
-        display_header_footer=True,
-        header_template='<div style="font-size: 7pt; color: #888; width: 100%; text-align: right; padding-right: 15mm;">SE3002 SQE Final Engineering Report - pretix v2026.9.3</div>',
-        footer_template='<div style="font-size: 7pt; color: #888; width: 100%; text-align: center;">Page <span class="pageNumber"></span> of <span class="totalPages"></span> | FAST-NUCES Islamabad (Fall 2026)</div>'
-    )
     browser.close()
 
 if os.path.exists(temp_html):
     os.remove(temp_html)
 
 print("Generated:", OUTPUT_PDF_PATH_A, f"({os.path.getsize(OUTPUT_PDF_PATH_A) / 1024:.1f} KB)")
-print("Generated:", OUTPUT_PDF_PATH_PLAIN, f"({os.path.getsize(OUTPUT_PDF_PATH_PLAIN) / 1024:.1f} KB)")

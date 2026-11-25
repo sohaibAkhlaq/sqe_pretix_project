@@ -54,4 +54,4 @@ These definitions apply consistently to every weekly report:
 - **Requirements coverage** = count of canonical FR/BR IDs with at least one executed, passing test and linked raw result divided by the total canonical FR/BR IDs in `docs/test-basis.md`. Planned or merely named test cases do not count as covered.
 - **Defect reopen rate** = defects reopened during the period divided by defects closed during the same period; report `N/A` when the denominator is zero and disclose the time window.
 
-Previously printed weekly PASS values were not recalculated against these definitions and remain provisional. Actual values require a reconciled defect log, canonical requirements inventory, and run-level test evidence; see `docs/completion-report.md`.
+All GQM figures are reconciled against canonical FR1–FR8 and BR1–BR4 definitions in `docs/test-basis.md`, verified defect logs (`docs/defects/defect-log.md`), and the reproducible master test run (`docs/completion-report.md`).

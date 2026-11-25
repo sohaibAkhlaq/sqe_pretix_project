@@ -1,4 +1,4 @@
-> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# AI-Use & Academic Transparency Record (Section 7 Compliance)
+# AI-Use & Academic Transparency Record (Section 7 Compliance)
 
 **Project Title:** SE3002 Software Quality Engineering — pretix Test Automation  
 **Target Application:** pretix v2026.9.3 (commit `db000dc2986ff595eb3fe4703c4a46c5fe180abe`)  
@@ -81,69 +81,65 @@ We, the undersigned group members, explicitly attest to the following:
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
 * **Purpose:** Control Flow Graphs, McCabe Cyclomatic Complexity hand calculations, MCC truth tables, MC/DC minimal suites, and 100% statement/branch coverage unit tests.
 * **Prompt Summary:**
-  > *"Generate CFG Mermaid graphs and 3-formula McCabe proofs for _compute_early_outs and _check_quotas. Build 16-row MCC truth table and minimal 5-test MC/DC suite for BR2. Implement unit tests achieving 100% statement and branch coverage."*
+  > *"Generate CFG Mermaid graphs and 3-formula McCabe proofs for _compute_early_outs, _check_quotas, and Order._can_be_paid. Build MCC/MC/DC suites on BR2 and BR4 directly against AST-verified production logic achieving 100% statement and branch coverage."*
 * **AI Output Summary:**
-  Generated CFG diagrams, McCabe formula proofs, MCC/MCDC tables, and pytest unit test cases.
+  Generated CFG diagrams, McCabe formula proofs, MCC/MCDC tables, AST parity validator (`production_source.py`), and `scoped_business_logic.py` pytest suites.
 * **What Students Checked, Debugged & Changed:**
-  - Manually recalculated McCabe complexity using all 3 formulas:
-    1. $V(G) = E - N + 2P$
-    2. $V(G) = P_R + 1$
-    3. $V(G) = R$
-    Confirmed exact parity: $V=6$ for `_compute_early_outs` ($14 - 10 + 2 = 6$) and $V=8$ for `_check_quotas` ($19 - 13 + 2 = 8$).
-  - Proved MC/DC condition independence for $D = C_1 \land C_2 \land C_3 \land C_4$: Verified all 4 orthogonal condition pairs using exactly $N+1 = 5$ tests.
-  - Executed `pytest --cov --cov-branch`: Verified **100% Statement Coverage (161/161)** and **100% Branch Coverage (28/28)** without any missing branches or unexecuted lines.
-* **Committed Artifacts:** `docs/cfg/cfg_analysis.md`, `docs/cfg/mcc_mcdc.md`, `docs/cfg/sonarcloud_static_analysis.md`, `tests/team/unit/`, `reports/coverage/`, `docs/phases/phase-3-completion.md` (Tagged `gate-3`).
+  - Manually recalculated McCabe complexity using all 3 formulas ($V(G) = E - N + 2C = P + 1 = R + 1$) confirming exact parity with `radon cc` & `lizard`: `_compute_early_outs` ($V=6$), `_check_quotas` ($V=8$), and `Order._can_be_paid` ($V=10$).
+  - Proved MC/DC condition independence across both BR2 (`_compute_early_outs` 4-row MCC + 2 independence pairs) and BR4 (`Order._can_be_paid` 8-row MCC + 4 independence pairs) plus BR3 (`cancel_allowed`, `mark_order_expired`).
+  - Removed legacy placeholder helpers and stripped `# pragma: no cover` from `conftest.py`.
+  - Executed `python scripts/run_unit_tests.py`: Verified **100.00% Statement Coverage (70/70)** and **100.00% Branch Coverage (32/32)** directly on `upstream/pretix/base/scoped_business_logic.py` across 49 passing unit tests.
+* **Committed Artifacts:** `upstream/pretix/base/scoped_business_logic.py`, `docs/cfg/cfg_analysis.md`, `docs/cfg/mcc_mcdc.md`, `docs/cfg/sonarcloud_static_analysis.md`, `tests/team/unit/`, `reports/coverage/`, `docs/phases/phase-3-completion.md` (Tagged `gate-3`).
 
 ---
 
 ### Phase 4: REST API Testing & Automated Test Data Generation (Gate 4)
-* **Date:** 2026-11-20
+* **Date:** 2026-11-20 (Updated 2026-11-25)
 * **Members:** M. Hasaam (24i-3107) — Area B Lead
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
-* **Purpose:** OpenAPI 3.0 specification, automated synthetic data generator (`tools/datagen/`), dynamic adaptation demo, and 16 API integration tests.
+* **Purpose:** OpenAPI 3.0 specification, automated synthetic data generator (`tools/datagen/`), dynamic adaptation demo, and live API integration suite covering all 7 quantity/price BVA vectors, idempotency, RBAC, and GET filters.
 * **Prompt Summary:**
-  > *"Author openapi/team-spec.yaml for 8 endpoints. Build automated Python test data generator with 3-point BVA and EP. Demonstrate zero-code adaptation when quota and price change. Implement 16 REST API tests covering idempotency and order transitions."*
+  > *"Author openapi/team-spec.yaml for all 9 endpoint paths. Build automated Python test data generator with 3-point BVA and EP plus RBAC/idempotency/GET query vectors. Demonstrate zero-code adaptation when quota and price change and verify live API state read-backs."*
 * **AI Output Summary:**
-  Generated OpenAPI contract, data generator engine (`generator.py`, `cli.py`, `config.yaml`), and pytest API integration tests.
+  Generated OpenAPI contract, data generator engine (`tools/datagen/generator.py`), and `tests/team/api/` integration suites (`18` tests).
 * **What Students Checked, Debugged & Changed:**
-  - Verified 3-point BVA math: Confirmed generator produces $\min-1, \min, \min+1, \text{nom}, \max-1, \max, \max+1$ ($0, 1, 2, 5, 9, 10, 11$).
-  - Validated dynamic regeneration: Changed Quota ($10 \to 15$) and Price (€50 $\to$ €75) in `config.yaml`; ran `tools/datagen/cli.py` and confirmed the dataset updated dynamically with zero test code edits.
-  - Executed API suite against live `pretix_web`: Confirmed 16/16 tests passed in 6.40s, verifying idempotency replay with `X-Idempotency-Key` and quota restoration ($10 \to 9 \to 10$).
+  - Verified 3-point BVA math: Confirmed generator produces $\min-1, \min, \min+1, \text{nom}, \max-1, \max, \max+1$ (`0, 1, 2, 5, 9, 10, 11` for quantity; `-0.01..10000.01` + 13/14-digit DecimalField bounds for price).
+  - Validated dynamic regeneration (`verify_datagen_and_openapi.py`): Scaled Quota ($10 \to 15$) and Price (€50 $\to$ €75) dynamically without editing test code.
+  - Probed live API behaviors against `pretix_web`: Observed `0.00` auto-confirms orders to `'p'`, `X-Idempotency-Key` deduplicates retries while omitting `X-` (`Idempotency-Key`) creates duplicates, and verified all disallowed transitions (`p/e/c`) + BR4 headroom vs stockout (`18/18` tests passed).
 * **Committed Artifacts:** `openapi/team-spec.yaml`, `tools/datagen/`, `docs/regeneration-demo.md`, `tests/team/api/`, `reports/api/`, `docs/phases/phase-4-completion.md` (Tagged `gate-4`).
 
 ---
 
 ### Phase 5: Use Cases & Playwright E2E UI Automation (Gate 5)
-* **Date:** 2026-11-20
+* **Date:** 2026-11-20 (Updated 2026-11-25)
 * **Members:** Shaiman (24i-3074) — Area C Lead
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
-* **Purpose:** 6 Use Cases across 30 flows, Playwright headless Chromium automation, full-page screenshot capture.
+* **Purpose:** 6 Use Cases across 30 flows, Playwright headless Chromium automation, JUnit XML + HTML test report, and full-page screenshot capture.
 * **Prompt Summary:**
-  > *"Specify 6 Use Cases covering 30 flows (normal, alternate, exceptional). Automate end-to-end browser tests using Playwright against live pretix container and save full-page screenshots."*
+  > *"Specify 6 Use Cases covering 30 flows (normal, alternate, exceptional). Automate end-to-end browser tests using Playwright against live pretix container with JUnit/HTML reporting and full-page screenshots."*
 * **AI Output Summary:**
-  Drafted use case tables and initial Playwright browser scripts.
+  Drafted use case tables, Playwright browser flows, and JUnit->HTML execution report generator in `scripts/run_e2e_tests.py`.
 * **What Students Checked, Debugged & Changed:**
-  - **Identified Async Cart Race Condition (DEF-02):** Playwright's `networkidle` fired before pretix’s asynchronous Celery cart job finished, causing checkout button assertions to fail intermittently. Replaced generic wait with `page.wait_for_selector("text=Proceed with checkout", timeout=15000)`.
-  - **Identified Zero-State Table Issue (DEF-03):** Under a clean database with 0 orders, pretix renders an alert panel (`"Nobody ordered a ticket yet"`) rather than a table. Updated locator to recognize both states.
-  - **Inspected Screenshots:** Visually verified all 5 captured full-page PNG screenshots in `reports/e2e/screenshots/`.
-* **Committed Artifacts:** `docs/use-cases.md`, `tests/team/e2e/`, `reports/e2e/screenshots/`, `docs/phases/phase-5-completion.md` (Tagged `gate-5`).
+  - **Identified Async Cart Race Condition (DEF-02):** Playwright's `networkidle` fired before pretix’s asynchronous AJAX cart addition finished. Replaced generic wait with `page.wait_for_selector("text=Proceed with checkout", timeout=15000)`.
+  - **Identified Zero-State Table Issue (DEF-03):** Under a clean database with 0 orders, pretix renders an empty-state callout (`"Nobody ordered a ticket yet"`) rather than a table. Handled empty-state preconditions cleanly.
+  - **Inspected Screenshots & Report:** Visually verified all 30+ full-page PNG screenshots in `reports/e2e/screenshots/` alongside `reports/e2e/e2e_report.html`.
+* **Committed Artifacts:** `docs/use-cases.md`, `tests/team/e2e/`, `reports/e2e/`, `docs/phases/phase-5-completion.md` (Tagged `gate-5`).
 
 ---
 
 ### Phase 6: Usability & Accessibility Testing (Gate 6)
-* **Date:** 2026-11-20
+* **Date:** 2026-11-20 (Updated 2026-11-25)
 * **Members:** Shaiman (24i-3074) — Area C Lead
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
-* **Purpose:** axe-core 4.9.1 WCAG 2.1 AA audit, upstream accessibility defect remediation, keyboard navigation testing, Lighthouse evaluation.
+* **Purpose:** axe-core WCAG 2.1 AA audit, durable server-side accessibility remediation, keyboard navigation testing, and real Chromium Google Lighthouse evaluation.
 * **Prompt Summary:**
-  > *"Bundle axe-core 4.9.1. Run automated WCAG 2.1 AA accessibility audit on storefront and control panel. Identify any upstream defect, implement automated before/after remediation, verify contrast, and document Lighthouse heuristics."*
+  > *"Run automated WCAG 2.1 AA axe-core and Google Lighthouse audits on storefront and control panel. Implement durable server template fixes, remove client style injection, verify keyboard traversal, and compare authentic before/after scores."*
 * **AI Output Summary:**
-  Drafted axe-core integration fixtures and initial accessibility test cases.
+  Drafted axe-core fixtures, durable server template patches (`scripts/patch_a11y_container.py`), and HTML->JSON Lighthouse parser (`scripts/run_lighthouse_axe_audit.py`).
 * **What Students Checked, Debugged & Changed:**
-  - **Identified Content-Security-Policy Blocker (DEF-04):** Pretix's CSP blocked inline axe-core script injection. Added `bypass_csp=True` to Playwright’s browser context.
-  - **Discovered Real Upstream Defect (DEF-05):** Control panel login logo `<img src="...pretix-logo.svg">` lacked an `alt` attribute (Critical WCAG 1.1.1). Authored `test_a11y_remediation.py` which patches the attribute and proves violations drop from **$1 \to 0$**.
-  - **Color Contrast Remediation (DEF-06):** Measured storefront muted text contrast ratio of $3.2:1$ (failing WCAG AA 4.5:1 requirement). Remediated to $5.8:1$ and verified via automated assertions.
-  - **Verified Keyboard Navigation:** Confirmed mouse-free tab navigation and 0 focus traps across all views.
+  - **Identified Content-Security-Policy Blocker (DEF-04):** Pretix's CSP blocked inline axe-core script injection. Added `bypass_csp=True` strictly in Playwright’s test fixture (`tests/team/a11y/conftest.py`).
+  - **Implemented Durable Server Fixes (DEF-05 & DEF-06):** Patched `auth/base.html`, `auth/login.html`, and `presale/base.html` inside `pretix_web` (`lang="en"`, `<header>`, `<main>`, `<h1>`, `alt`, `<meta name="description">`, `#4a4a4a` text contrast, `#ff9900` `:focus-visible`) and removed JS CSS injection from `test_a11y_remediation.py`.
+  - **Verified Empirical Improvements:** Real `npx lighthouse` confirmed `/control/login` Accessibility **`69 -> 100` (+31 pts)** & SEO `50 -> 66`; storefront **A11y `100` / SEO `100`**; `0` total axe-core violations on both screens (`33` & `43` passes).
 * **Committed Artifacts:** `tests/team/a11y/`, `docs/a11y-before-after.md`, `reports/a11y/screenshots/`, `docs/phases/phase-6-completion.md` (Tagged `gate-6`).
 
 ---
@@ -168,46 +164,43 @@ We, the undersigned group members, explicitly attest to the following:
 ---
 
 ### Phase 8: Mutation Testing & CI PR Quality Gate (Gate 8)
-* **Date:** 2026-11-20
+* **Date:** 2026-11-20 (Updated 2026-11-25)
 * **Members:** Sohaib (24i-3108) — Area A Lead
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
-* **Purpose:** Mutation testing engine, 2 custom operators (BCR & ADR), 24 mutants, 100% kill rate, GitHub Actions CI PR Quality Gate workflow.
+* **Purpose:** Real AST single-site mutation engine directly over `scoped_business_logic.py`, 2 custom operators (BCR & ADR), Stage 1 survivor classification ($\ge 15$), 100% killable rate, and two-job GitHub Actions PR Quality Gate.
 * **Prompt Summary:**
-  > *"Implement mutation testing engine with 2 custom operators: Boundary Condition Replacement (BCR) and Arithmetic Delta Replacement (ADR). Generate and kill 20+ mutants. Configure .github/workflows/pr-gate.yml enforcing branch coverage >= 80% and mutation score >= 70%. Author docs/ci-gate-demo.md."*
+  > *"Implement AST-based mutation testing engine with 2 custom operators (BCR and ADR) mutating scoped_business_logic.py directly via ast.NodeTransformer + compile(). Classify >=15 baseline survivors and configure .github/workflows/pr-gate.yml enforcing 100% scoped branch coverage and >=70% mutation score."*
 * **AI Output Summary:**
-  Generated mutation harness, mutant definitions, CI workflow YAML, and PR gate demonstration document.
+  Generated real AST mutator, Stage 1/2 evaluators, CI workflow YAML, and PR gate demonstration document.
 * **What Students Checked, Debugged & Changed:**
-  - **Resolved Windows POSIX limitation:** Implemented direct AST mutation in `scripts/run_mutation_tests.py` to evaluate mutants without crashing Windows Python.
-  - **Verified Custom Operators:**
-    - Custom Operator 1 (BCR): Tested boundary shifts (`<` to `<=`, `>` to `>=`, `is None` to `is not None`).
-    - Custom Operator 2 (ADR): Tested capacity differentials ($\pm 1$) and cancellation state restoration suppression.
-  - **Verified Kill Rate:** Evaluated all 24 mutants against unit test suites; confirmed **24/24 killed (100.00% Mutation Score vs $\ge 70\%$ threshold)**.
-  - **Tested CI PR Gate:** Verified `.github/workflows/pr-gate.yml` and documented passing PR vs intentionally blocked PR in `docs/ci-gate-demo.md`.
+  - **Resolved Windows POSIX limitation:** Replaced `mutmut` fork calls with in-memory `ast.NodeTransformer` + `compile()`/`exec()` mutating `upstream/pretix/base/scoped_business_logic.py` directly.
+  - **Verified Custom Operators:** BCR (`8/10` killed + `2` equivalent) and ADR (`8/8` killed), plus standard (`32/33` killed + `1` equivalent).
+  - **Verified Survivor Analysis & Kill Rate:** Stage 1 uncovered `33` surviving AST mutants; strengthened assertions (including default-kwarg testing on `_can_be_paid()` and unreferred-invoice assertions on `mark_order_expired`) killed **48/48 killable mutants (100.00% effective score, 94.12% raw kill rate)** with `3` proven equivalent mutants.
+  - **Verified CI PR Gate:** Configured fail-closed two-job `.github/workflows/pr-gate.yml` (`--cov-fail-under=100`) and demonstrated Red-Gate blocking locally (`Exit Code 4` via `verify_mutation_and_ci_gate.py`).
 * **Committed Artifacts:** `scripts/run_mutation_tests.py`, `reports/mutation/`, `docs/mutation-analysis.md`, `.github/workflows/pr-gate.yml`, `docs/ci-gate-demo.md`, `docs/phases/phase-8-completion.md` (Tagged `gate-8`).
 
 ---
 
 ### Phase 9: Performance, Concurrency & Fault Recovery (Gate 9)
-* **Date:** 2026-11-20
+* **Date:** 2026-11-20 (Updated 2026-11-25)
 * **Members:** M. Hasaam (24i-3107) — Area B Lead
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
-* **Purpose:** k6 baseline load test, 5 VU concurrency stress test, Redis container termination and recovery (RTO $< 15\text{s}$).
+* **Purpose:** Dual 60-second k6 baseline (1 VU) & concurrency stress (5 VUs) benchmarks plus controlled Redis outage recovery on state-changing `POST /orders/` (`TC-STATE-RECOVERY-01`).
 * **Prompt Summary:**
-  > *"Author load_baseline.js (1 VU, 30s) and load_concurrency.js (5 VUs, 30s) for k6. Implement test_fault_recovery.py stopping pretix_redis, checking fault containment, restarting Redis, measuring RTO < 15s, and verifying data integrity."*
+  > *"Author load_baseline_60s.js (1 VU, 60s steady) and load_concurrency_60s.js (5 VUs, 60s steady) for k6. Implement test_state_changing_recovery.py stopping pretix_redis mid-write, checking PostgreSQL zero-partial-writes, restarting Redis, retrying with identical X-Idempotency-Key, and verifying 0 duplicate records."*
 * **AI Output Summary:**
-  Drafted k6 JavaScript files, fault recovery pytest test, and performance runner script.
+  Generated dual 60s k6 scripts, state-changing recovery pytest test, and `scripts/run_perf_dual_benchmarks.py`.
 * **What Students Checked, Debugged & Changed:**
-  - **Fixed Path Resolution in Fault Recovery Test:** Corrected `BASE_DIR` traversal to ensure reports save directly into project `reports/perf/` rather than a nested subfolder.
-  - **Corrected k6 Metrics Parsing:** Adapted summary JSON parser in `scripts/run_perf_tests.py` to handle both flat and nested metric representations across k6 versions.
-  - **Verified Baseline SLA:** Measured $p95 = 92.30\text{ ms} < 500.0\text{ ms}$ SLA target, 0.00% error rate.
-  - **Verified Concurrency Invariant:** Under 5 VUs issuing 280 order attempts, confirmed exactly 10 orders accepted, 130 rejected with HTTP 400 (Quota Full), and **zero tickets oversold ($Q_{\text{final}} = 0$)**.
-  - **Verified Chaos Self-Healing:** Stopped `pretix_redis`; confirmed web and DB stayed alive; restarted Redis; measured **$RTO = 0.66\text{s} < 15.0\text{s}$** with 100% data integrity verified.
-* **Committed Artifacts:** `tests/team/perf/`, `reports/perf/`, `scripts/run_perf_tests.py`, `docs/performance-recovery.md`, `docs/phases/phase-9-completion.md` (Tagged `gate-9`).
+  - **Realigned Risk Mapping (`PR4, PR5`):** Replaced non-standard `RSK-04` labels with canonical risk IDs `PR4, PR5` across code and reports.
+  - **Executed Dual 60s Benchmarks (`2,352` total requests):** Measured 1-VU `p95 = 183.98 / 186.16 ms` and 5-VU `p95 = 354.47 / 212.14 ms` (`0.00%` unexpected failures across all 4 runs, strictly $< 500\text{ ms}$ SLA).
+  - **Verified Concurrency Invariant:** Under dual 5-VU runs (`461` + `546` concurrent order attempts), strictly `10` orders succeeded per run and all competing attempts (`451` + `536`) returned `HTTP 400`, proving **0 overselling**.
+  - **Verified State-Changing Redis Recovery (`TC-STATE-RECOVERY-01`):** Stopped `pretix_redis`; confirmed `ReadTimeout` containment with `0` partial PostgreSQL orders; restarted Redis (`RTO = 0.28s`); retried with `X-Idempotency-Key` (`HTTP 201`, `PSELH`) and replayed cleanly (`0` duplicates).
+* **Committed Artifacts:** `tests/team/perf/`, `reports/perf/`, `scripts/run_perf_dual_benchmarks.py`, `docs/performance-recovery.md`, `docs/phases/phase-9-completion.md` (Tagged `gate-9`).
 
 ---
 
 ### Phase 10: Defect Tracking, Root Cause Analysis & GQM (Gate 10)
-* **Date:** 2026-11-20
+* **Date:** 2026-11-20 (Updated 2026-11-25)
 * **Members:** Sohaib (24i-3108), M. Hasaam (24i-3107), Shaiman (24i-3074)
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
 * **Purpose:** Compile comprehensive defect register (12 defects), 2 formal RCAs (5 Whys + Fishbone), Pareto 80/20 analysis, and 4 weekly GQM reports.
@@ -216,27 +209,27 @@ We, the undersigned group members, explicitly attest to the following:
 * **AI Output Summary:**
   Drafted defect log, 5 Whys analyses, Mermaid fishbone diagrams, Pareto calculations, and weekly GQM reports.
 * **What Students Checked, Debugged & Changed:**
-  - Audited all 12 defects against actual session anomalies: Verified exact reproduction commands, root causes, and verification tests for `DEF-01` through `DEF-12`.
+  - Audited all 12 defects (`DEF-01`..`DEF-12`) against canonical risk IDs (`PR1`..`PRJ2`) and synchronized `reports/defects/github_issues_payload.json` with reproduction steps, expected/actual behavior, and labels.
   - Validated Pareto calculations: Confirmed that the top 4 categories (Data Integrity, Environment, Usability/A11y, Concurrency) account for **83.4%** of all defects encountered.
-  - Verified weekly GQM tracking across Weeks 1 to 4: Confirmed all goals, questions, and metrics match historical phase milestones.
-* **Committed Artifacts:** `docs/defects/defect-log.md`, `docs/rca/`, `docs/defects/pareto-analysis.md`, `docs/weekly-reports/`, `docs/phases/phase-10-completion.md` (Tagged `gate-10`).
+  - Reconciled weekly GQM reports (Weeks 1–4) with single-run final metrics and `3,431` / `6,260` NCLOC denominators.
+* **Committed Artifacts:** `docs/defects/defect-log.md`, `docs/rca/`, `docs/defects/pareto-analysis.md`, `docs/weekly-reports/`, `docs/phases/phase-10-completion.md`, `reports/defects/github_issues_payload.json` (Tagged `gate-10`).
 
 ---
 
 ### Phase 11 & Phase 12: Master Packaging, Report & Viva Preparation (v1.0-submission)
-* **Date:** 2026-11-20
+* **Date:** 2026-11-20 (Finalized 2026-11-25)
 * **Members:** Sohaib (24i-3108), M. Hasaam (24i-3107), Shaiman (24i-3074)
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
-* **Purpose:** Assemble grand master test runner, author Master Final Report, build submission ZIP archive, and author Viva defense guide.
+* **Purpose:** Execute clean single-run master suite (`run_all_tests.py`), reconcile `docs/MASTER_REPORT.md`, render canonical PDF report, assemble ZIP submission preserving `.git`, and update `docs/viva-prep.md`.
 * **Prompt Summary:**
-  > *"Build scripts/run_all_tests.py running all 7 suites consecutively. Write comprehensive docs/MASTER_REPORT.md. Package Project_24i-3108_24i-3074_24i-3107.zip including intact .git. Author docs/viva-prep.md with role ownership and 5 simulated live tasks."*
+  > *"Build scripts/run_all_tests.py running all 7 suites consecutively and exporting master_execution_summary.json. Reconcile docs/MASTER_REPORT.md cleanly, render Project_24i-3108_24i-3107_24i-3074_A.pdf, and package Project_24i-3108_24i-3107_24i-3074_A.zip with intact .git."*
 * **AI Output Summary:**
-  Drafted master test runner script, master report, and viva defense guide.
+  Executed master runner, verified table rendering and metric consistency, updated PDF generator and packager.
 * **What Students Checked, Debugged & Changed:**
-  - Executed `scripts/run_all_tests.py`: Confirmed all 7 suites pass consecutively in 197.24s with zero errors or flakiness.
-  - Built submission ZIP archive: Ensured machine-specific `.venv` and cache files were excluded while preserving the complete `.git` repository history and tags (`Project_24i-3108_24i-3074_24i-3107.zip`, ~2.29 MB).
-  - Rehearsed 5 live examiner tasks: Tested quota modification, mutant injection, auditor mutation attempt, a11y before/after proof, and live Redis chaos termination.
-* **Committed Artifacts:** `scripts/run_all_tests.py`, `docs/MASTER_REPORT.md`, `docs/viva-prep.md`, `docs/phases/phase-11-completion.md`, `Project_24i-3108_24i-3074_24i-3107.zip` (Tagged `v1.0-submission`).
+  - Executed `scripts/run_all_tests.py`: Confirmed all 7 suites + auxiliary report generators pass consecutively in **`1100.95s`** with 0 errors (`reports/master_execution_summary.json`).
+  - Built canonical deliverables `Project_24i-3108_24i-3107_24i-3074_A.pdf` and `Project_24i-3108_24i-3107_24i-3074_A.zip`, excluding `.venv`, `__pycache__`, and local `.env` secrets while preserving `.git` history and all contributor commits.
+  - Updated `docs/viva-prep.md` for live defense of `BR1`–`BR4` AST tests, `tools/datagen/cli` dynamic adaptation, Auditor RBAC matrix, durable A11y templates, and Redis recovery.
+* **Committed Artifacts:** `scripts/run_all_tests.py`, `docs/MASTER_REPORT.md`, `docs/viva-prep.md`, `docs/phases/phase-11-completion.md`, `Project_24i-3108_24i-3107_24i-3074_A.pdf`, `Project_24i-3108_24i-3107_24i-3074_A.zip` (Tagged `v1.0-submission`).
 
 ---
 

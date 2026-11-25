@@ -1,16 +1,13 @@
 """
 Pytest configuration for SQE pretix unit tests.
-Supports both isolated execution on host and full-context execution in Docker container.
+Ensures repository root is importable so upstream scoped production logic executes cleanly.
 """
 import os
 import sys
+from pathlib import Path
 
-# Configure Django settings if pretix is available
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pretix.settings')
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-try:  # pragma: no cover
-    import django
-    django.setup()
-except Exception:
-    # Running outside Django environment with standalone mocks
-    pass
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretix.settings")

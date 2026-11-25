@@ -1,6 +1,13 @@
 import os
+import sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.test_secrets import get_test_secret
 
 def capture_real_sonarqube_screenshots():
     base_dir = Path(__file__).resolve().parent.parent
@@ -22,7 +29,7 @@ def capture_real_sonarqube_screenshots():
         
         if page.locator("input[name='login']").count() > 0:
             page.fill("input[name='login']", "admin")
-            page.fill("input[name='password']", "AdminPassword123!")
+            page.fill("input[name='password']", get_test_secret("SONARQUBE_ADMIN_PASSWORD"))
             page.click("button[type='submit']")
             page.wait_for_timeout(3000)
         

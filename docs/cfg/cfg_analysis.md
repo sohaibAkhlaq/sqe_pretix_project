@@ -2,28 +2,34 @@
 
 **Document Reference:** `docs/cfg/cfg_analysis.md`  
 **Course:** SE3002 Software Quality Engineering  
-**Application Under Test:** pretix (`upstream/pretix/base/services/`)  
+**Application Under Test:** pretix (`upstream/pretix/base/scoped_business_logic.py` — AST-identical to `services/quotas.py`, `services/orders.py`, `models/orders.py`)
 **Lead Contributor / Author:** Sohaib (`24i-3108`, Member 1 — Area A Lead)  
 **Reviewers:** M. Hasaam (`24i-3107`), Shaiman (`24i-3074`)  
-**Status:** Approved & Frozen (Gate 3 Deliverable)  
-**Date:** November 20, 2026  
+**Status:** Verified & Synchronized (Gate 3 Deliverable)  
+**Date:** November 25, 2026  
 
 ---
 
 ## 1. Executive Summary & Selection Criteria
 
-In accordance with course guidelines for White-Box Testing, candidate functions were analyzed across `pretix.base.services.quotas` and `pretix.base.services.orders` using `radon cc` and `lizard`. Two functions exhibiting between 6 and 10 decision paths were selected:
+In accordance with course guidelines for White-Box Testing, candidate functions across `pretix.base.services.quotas`, `pretix.base.services.orders`, and `pretix.base.models.orders` were analyzed using `radon cc` and `lizard`. Three primary decision-heavy business rules exhibiting Cyclomatic Complexity $V(G)$ between 6 and 10 (plus BR3 state-transition helpers) were selected for full CFG hand-calculation:
 
-1. **Function 1:** `QuotaAvailability._compute_early_outs`
+1. **Function 1 (BR2):** `QuotaAvailability._compute_early_outs`
    - *Module:* `pretix/base/services/quotas.py` (Lines 493–500)
    - *Lines of Code (NLOC):* 8
    - *McCabe's Cyclomatic Complexity (CCN):* **6** (Rank B)
    - *Role in Workflows:* Evaluates quota boundaries (closed, unlimited, or exhausted) for fast-path availability assignment.
-2. **Function 2:** `OrderChangeManager._check_quotas`
+2. **Function 2 (BR1):** `OrderChangeManager._check_quotas`
    - *Module:* `pretix/base/services/orders.py` (Lines 2285–2294)
    - *Lines of Code (NLOC):* 10
    - *McCabe's Cyclomatic Complexity (CCN):* **8** (Rank B)
    - *Role in Workflows:* Validates inventory headroom during order item alterations and position updates.
+3. **Function 3 (BR4):** `Order._can_be_paid`
+   - *Module:* `pretix/base/models/orders.py` (Lines 1026–1047)
+   - *Lines of Code (NLOC):* 22
+   - *McCabe's Cyclomatic Complexity (CCN):* **10** (Rank B)
+   - *Role in Workflows:* Enforces approval gates, payment-term deadlines, and the 3-condition late-payment acceptance policy on expired orders before capacity checks.
+4. **Scoped BR3 Companion Helpers:** `Order.cancel_allowed` (`models/orders.py:646–648`, CCN = **2**) and `mark_order_expired` (`services/orders.py:360–382`, CCN = **5**).
 
 ---
 
@@ -225,3 +231,100 @@ $$V(G) = R_{\text{enclosed}} + 1 = 7 + 1 = \mathbf{8}$$
 6. **Path 6 (Quota Unlimited, `avail[1] is None`):** $M_6 \to M_7 \to M_8 \to M_9 \to M_{10} \to M_{11} \to M_7 \to M_{14}$
 7. **Path 7 (Finite Quota Over-Demanded, `avail[1] < diff`):** $M_6 \to M_7 \to M_8 \to M_9 \to M_{10} \to M_{11} \to M_{12} \to M_{13}$
 8. **Path 8 (Finite Quota Sufficient, `avail[1] >= diff`):** $M_6 \to M_7 \to M_8 \to M_9 \to M_{10} \to M_{11} \to M_{12} \to M_7 \to M_{14}$
+
+---
+
+## 4. Function 3: `Order._can_be_paid` (BR4, CCN = 10)
+
+### 4.1. Python Source Code (`upstream/pretix/base/models/orders.py`)
+```python
+1026:     def _can_be_paid(self, count_waitinglist=True, ignore_date=False, force=False, lock=False) -> Union[bool, str]:
+1027:         error_messages = { ... }
+1034:         if not force:
+1035:             if self.require_approval:
+1036:                 return error_messages['require_approval']
+1037:             term_last = self.payment_term_last
+1038:             if term_last and not ignore_date:
+1039:                 if time_machine_now() > term_last:
+1040:                     return error_messages['late_lastdate']
+1042:         if self.status == self.STATUS_PENDING:
+1043:             return True
+1044:         if not self.event.settings.get('payment_term_accept_late') and not ignore_date and not force:
+1045:             return error_messages['late']
+1047:         return self._is_still_available(count_waitinglist=count_waitinglist, force=force, lock=lock)
+```
+
+### 4.2. Control Flow Graph Diagram
+
+```mermaid
+flowchart TD
+    B1["B1: Entry + error_messages dict"] --> B2{"B2: not force?"}
+    B2 -- "False" --> B10{"B10: status == STATUS_PENDING?"}
+    B2 -- "True" --> B3{"B3: self.require_approval?"}
+    B3 -- "True" --> B4["B4: return require_approval"] --> B17(["B17: Exit"])
+    B3 -- "False" --> B5["B5: term_last = payment_term_last"] --> B6{"B6: term_last?"}
+    B6 -- "False" --> B10
+    B6 -- "True" --> B7{"B7: not ignore_date?"}
+    B7 -- "False" --> B10
+    B7 -- "True" --> B8{"B8: now > term_last?"}
+    B8 -- "True" --> B9["B9: return late_lastdate"] --> B17
+    B8 -- "False" --> B10
+    B10 -- "True" --> B11["B11: return True"] --> B17
+    B10 -- "False" --> B12{"B12: not accept_late?"}
+    B12 -- "False" --> B16["B16: return _is_still_available()"] --> B17
+    B12 -- "True" --> B13{"B13: not ignore_date?"}
+    B13 -- "False" --> B16
+    B13 -- "True" --> B14{"B14: not force?"}
+    B14 -- "False" --> B16
+    B14 -- "True" --> B15["B15: return late"] --> B17
+```
+
+### 4.3. Graph Properties
+* **Node Inventory ($N = 17$):**
+  - $B_1$: Entry & `error_messages` dictionary initialization
+  - $B_2$: Predicate `not force`
+  - $B_3$: Predicate `self.require_approval`
+  - $B_4$: Early return `error_messages['require_approval']`
+  - $B_5$: Assignment `term_last = self.payment_term_last`
+  - $B_6$: Predicate `term_last` truthy
+  - $B_7$: Predicate `not ignore_date` (term check)
+  - $B_8$: Predicate `time_machine_now() > term_last`
+  - $B_9$: Early return `error_messages['late_lastdate']`
+  - $B_{10}$: Predicate `self.status == self.STATUS_PENDING`
+  - $B_{11}$: Early return `True`
+  - $B_{12}$: Predicate `not self.event.settings.get('payment_term_accept_late')`
+  - $B_{13}$: Predicate `not ignore_date` (late-payment gate)
+  - $B_{14}$: Predicate `not force` (late-payment gate)
+  - $B_{15}$: Early return `error_messages['late']`
+  - $B_{16}$: Return `self._is_still_available(...)`
+  - $B_{17}$: Exit / Return
+* **Edge Inventory ($E = 25$):**
+  - $(B_1,B_2)$, $(B_2,B_3)$, $(B_2,B_{10})$, $(B_3,B_4)$, $(B_3,B_5)$, $(B_4,B_{17})$, $(B_5,B_6)$, $(B_6,B_7)$, $(B_6,B_{10})$, $(B_7,B_8)$, $(B_7,B_{10})$, $(B_8,B_9)$, $(B_8,B_{10})$, $(B_9,B_{17})$, $(B_{10},B_{11})$, $(B_{10},B_{12})$, $(B_{11},B_{17})$, $(B_{12},B_{13})$, $(B_{12},B_{16})$, $(B_{13},B_{14})$, $(B_{13},B_{16})$, $(B_{14},B_{15})$, $(B_{14},B_{16})$, $(B_{15},B_{17})$, $(B_{16},B_{17})$.
+* **Predicate Nodes ($P = 9$):** $\{B_2, B_3, B_6, B_7, B_8, B_{10}, B_{12}, B_{13}, B_{14}\}$
+* **Connected Components ($C = 1$):** Single method CFG.
+
+### 4.4. Hand Calculation of McCabe's Cyclomatic Complexity
+
+#### Formula 1 (Edges and Nodes):
+$$V(G) = E - N + 2C = 25 - 17 + 2(1) = \mathbf{10}$$
+
+#### Formula 2 (Predicate Nodes):
+$$V(G) = P + 1 = 9 + 1 = \mathbf{10}$$
+
+#### Formula 3 (Planar Bounded Regions):
+Planar embedding yields 9 bounded regions plus 1 unbounded outer region:
+$$V(G) = R_{\text{enclosed}} + 1 = 9 + 1 = \mathbf{10}$$
+
+**Verification:** All three formulas yield $V(G) = 10$, in exact agreement with `radon cc` (`B (10)`).
+
+### 4.5. Linearly Independent Basis Paths (10 Paths)
+1. $B_1 \to B_2 \to B_3 \to B_4 \to B_{17}$ (`force=False, require_approval=True`)
+2. $B_1 \to B_2 \to B_3 \to B_5 \to B_6 \to B_{10} \to B_{11} \to B_{17}$ (`term_last=None, status='n'`)
+3. $B_1 \to B_2 \to B_3 \to B_5 \to B_6 \to B_7 \to B_{10} \to B_{11} \to B_{17}$ (`term_last set, ignore_date=True, status='n'`)
+4. $B_1 \to B_2 \to B_3 \to B_5 \to B_6 \to B_7 \to B_8 \to B_9 \to B_{17}$ (`now > term_last` -> late_lastdate)
+5. $B_1 \to B_2 \to B_3 \to B_5 \to B_6 \to B_7 \to B_8 \to B_{10} \to B_{11} \to B_{17}$ (`now <= term_last, status='n'`)
+6. $B_1 \to B_2 \to B_{10} \to B_{12} \to B_{16} \to B_{17}$ (`force=True, status='e'` -> availability check)
+7. $B_1 \to B_2 \to B_3 \to B_5 \to B_6 \to B_{10} \to B_{12} \to B_{16} \to B_{17}$ (`status='e', accept_late=True` -> availability check)
+8. $B_1 \to B_2 \to B_3 \to B_5 \to B_6 \to B_{10} \to B_{12} \to B_{13} \to B_{16} \to B_{17}$ (`status='e', accept_late=False, ignore_date=True`)
+9. $B_1 \to B_2 \to B_{10} \to B_{12} \to B_{13} \to B_{14} \to B_{16} \to B_{17}$ (`force=True` with pending=False passes 3rd gate condition)
+10. $B_1 \to B_2 \to B_3 \to B_5 \to B_6 \to B_{10} \to B_{12} \to B_{13} \to B_{14} \to B_{15} \to B_{17}$ (`status='e', accept_late=False, ignore_date=False, force=False` -> `'late'`)

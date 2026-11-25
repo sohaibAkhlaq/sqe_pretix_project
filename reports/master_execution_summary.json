@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-11-25T15:48:56Z",
+  "total_duration_seconds": 1100.95,
+  "suites": [
+    {
+      "name": "White-Box Unit Testing (Gate 3)",
+      "status": "PASSED",
+      "duration": 1.37,
+      "exit_code": 0
+    },
+    {
+      "name": "REST API Integration Testing (Gate 4)",
+      "status": "PASSED",
+      "duration": 24.22,
+      "exit_code": 0
+    },
+    {
+      "name": "Playwright E2E UI Automation (Gate 5)",
+      "status": "PASSED",
+      "duration": 537.31,
+      "exit_code": 0
+    },
+    {
+      "name": "Usability & Accessibility Audit (Gate 6)",
+      "status": "PASSED",
+      "duration": 26.24,
+      "exit_code": 0
+    },
+    {
+      "name": "Defensive Security & Threat Audit (Gate 7)",
+      "status": "PASSED",
+      "duration": 87.31,
+      "exit_code": 0
+    },
+    {
+      "name": "Mutation Testing Quality Gate (Gate 8)",
+      "status": "PASSED",
+      "duration": 1.18,
+      "exit_code": 0
+    },
+    {
+      "name": "Performance, Concurrency & Chaos (Gate 9)",
+      "status": "PASSED",
+      "duration": 423.31,
+      "exit_code": 0
+    }
+  ]
+}

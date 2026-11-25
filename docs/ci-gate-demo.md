@@ -2,183 +2,95 @@
 
 **Project:** SE3002 Software Quality Engineering Final Project  
 **Author:** Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibikhlaq5@gmail.com>`)  
-**CI Configuration:** [`.github/workflows/pr-gate.yml`](file:///c:/Users/USER/Desktop/sqe_project/.github/workflows/pr-gate.yml)  
-**Quality Standards:** Branch Coverage $\ge 80\%$, Mutation Kill Score $\ge 70\%$, Zero Known CVEs.
+**CI Workflow Definition:** [`.github/workflows/pr-gate.yml`](file:///c:/Users/USER/Desktop/sqe_project/.github/workflows/pr-gate.yml)  
+**Verified Target:** `upstream/pretix/base/scoped_business_logic.py` + live containerized pretix stack  
+**Local CI Gate Enforcer:** [`scripts/verify_mutation_and_ci_gate.py`](file:///c:/Users/USER/Desktop/sqe_project/scripts/verify_mutation_and_ci_gate.py)
 
 ---
 
-## 1. Quality Gate Architecture
+## 1. Two-Stage Fail-Closed GitHub Actions Architecture
 
-To prevent regressions, untested branches, or escaping mutants from polluting the production `main` branch, an automated GitHub Actions PR Quality Gate evaluates every proposed pull request across 7 consecutive fail-closed gates defined in [`.github/workflows/pr-gate.yml`](file:///c:/Users/USER/Desktop/sqe_project/.github/workflows/pr-gate.yml):
+[`.github/workflows/pr-gate.yml`](file:///c:/Users/USER/Desktop/sqe_project/.github/workflows/pr-gate.yml) defines two sequential fail-closed jobs with zero `|| true` or `continue-on-error` bypasses:
 
 ```mermaid
 flowchart TD
     PR["Developer Opens Pull Request into main"]
-    G1["Gate 1: Static Complexity (Radon CC <= 10, MI >= 40)"]
-    G2["Gate 2: Scoped Unit Coverage (100% Stmt & Branch)"]
-    G3["Gate 3: Mutation Testing Score (Effective Kill >= 80%)"]
-    G4["Gate 4: OpenAPI & 7-Point BVA Datagen Audit"]
-    G5["Gate 5: 30-Flow Use Case Automation Audit"]
-    G6["Gate 6: pip-audit Supply Chain Security (0 CVEs)"]
-    G7["Gate 7: Grand Master Verification Audit (11/11 Suites)"]
-    Pass["All 7 Gates Green: PR Approved for Merge"]
-    Block["Gate Failure: PR Blocked from Merge (Fail-Closed)"]
+    subgraph Job1["Job 1: static-and-whitebox-gates"]
+        G1["Gate 1: Radon CC / MI & Lizard on scoped_business_logic.py"]
+        G2["Gate 2: Pytest Unit Suite (100% Stmt & Branch Cov Required)"]
+        G3["Gate 3: Real AST Mutation Engine (>= 70% Gate, 100% Killable)"]
+        G4["Gate 4: OpenAPI 3.0 & Offline BVA/EP Regeneration"]
+        G5["Gate 5: pip-audit Supply Chain Scan (0 CVEs)"]
+    end
+    subgraph Job2["Job 2: live-compose-integration-gates (needs: Job 1)"]
+        G6["Gate 6: Docker Compose + seed + API / E2E / A11y / Security"]
+        G7["Gate 7: Grand Master Audit & AI-Use Integrity Verification"]
+    end
+    Pass["All 7 Gates Passed -> Merge Allowed"]
+    Block["Any Gate Exit != 0 -> PR Blocked"]
 
-    PR --> G1
-    G1 -->|Pass| G2
-    G1 -->|Fail: CC > 10| Block
-    G2 -->|Pass: Cov = 100%| G3
-    G2 -->|Fail: Cov < 100%| Block
-    G3 -->|Pass: Score >= 80%| G4
-    G3 -->|Fail: Score < 80%| Block
-    G4 -->|Pass: Validated| G5
-    G4 -->|Fail: Schema Drift| Block
-    G5 -->|Pass: 30/30 Flows| G6
-    G5 -->|Fail: Missing Flow| Block
-    G6 -->|Pass: 0 CVEs| G7
-    G6 -->|Fail: CVE Found| Block
-    G7 -->|Pass: 120/120 Marks| Pass
-    G7 -->|Fail: Any Suite Fails| Block
+    PR --> G1 --> G2 --> G3 --> G4 --> G5 --> G6 --> G7 --> Pass
+    G1 -. Fail .-> Block
+    G2 -. Fail .-> Block
+    G3 -. Fail .-> Block
+    G4 -. Fail .-> Block
+    G5 -. Fail .-> Block
+    G6 -. Fail .-> Block
+    G7 -. Fail .-> Block
+```
+
+> **Publication Scope Note:** `.github/workflows/pr-gate.yml` is committed locally and verified via local execution + Red-Gate failure simulation (`scripts/verify_mutation_and_ci_gate.py`). Remote GitHub Actions PR run URLs (`github.com/sohaibAkhlaq/sqe_pretix_project/actions/...`) require pushing the repository and opening live blocking/passing PRs against GitHub after authentication.
+
+---
+
+## 2. Local Passing Verification Transcript (Green Gate)
+
+```text
+======================================================================
+SE3002 Component 10: Mutation Analysis & CI Quality Gate Audit (8 Marks, CLO3)
+======================================================================
+
+--- [CHECK 1] Executing Live Mutation Testing Engine ---
+  Target: upstream\pretix\base\scoped_business_logic.py | Mutants Generated: 51
+  [STAGE 1] Running Initial Weak Baseline Suite across all AST Mutants...
+   -> Stage 1 Surviving Mutants Found: 33 (Rubric Minimum >= 15)
+  [STAGE 2] Running Enhanced White-Box Suite across all AST Mutants...
+   -> Stage 2 Killed: 48 | Equivalent: 3 | Killable Survived: 0
+   -> Effective Mutation Score: 100.00% | Raw Kill Rate: 94.12%
+  [SUCCESS] Mutation quality gate PASSED (100.00% effective score).
+
+--- [CHECK 2 & 3] Scoped Coverage & Domain Mutation Operators ---
+  Scoped Coverage (upstream/pretix/base/scoped_business_logic.py): 70/70 Stmts (100.00%), 32/32 Branches (100.00%)
+  Custom Operator 1 (BCR): 8/10 Killed (100.0% killable, 2 domain equivalent)
+  Custom Operator 2 (ADR): 8/8 Killed (100.0% killable)
+  Standard Mutators (ROR, COR, LCR, SVR): 32/33 Killed (100.0% killable, 1 domain equivalent)
+
+--- [CHECK 4] Verified Enforced Gates in .github/workflows/pr-gate.yml ---
+  [PASS] Gate 1: Static Analysis             -> radon cc / mi / lizard on scoped_business_logic.py
+  [PASS] Gate 2: Scoped Branch Coverage 100% -> --cov=upstream.pretix.base.scoped_business_logic --cov-fail-under=100
+  [PASS] Gate 3: Mutation Score Gate         -> python scripts/run_mutation_tests.py
+  [PASS] Gate 4: Vulnerability Scan          -> pip_audit -r requirements-test.txt (48 pkgs, 0 CVEs)
+  [PASS] Gate 5: Live Integration Runner     -> python scripts/run_api_tests.py / e2e / a11y / security
 ```
 
 ---
 
-## 2. Demonstration Scenario A: Passing Pull Request (Green Gate)
+## 3. Local Failing Gate Simulation Transcript (Red Gate)
 
-In a compliant pull request, all 7 quality gates execute in sequence and succeed with zero errors:
+`scripts/verify_mutation_and_ci_gate.py` Check 5 directly proves fail-closed blocking behavior by invoking pytest with `--cov=upstream.pretix.base.scoped_business_logic --cov-branch --cov-fail-under=101`:
 
-### Execution Transcript:
 ```text
-=======================================================================
-RUNNING STATIC COMPLEXITY CHECK (RADON CC <= 10, MI >= 40)
-=======================================================================
-tests/team/unit/test_quota_early_outs.py - A (CCN 1.8)
-tests/team/unit/test_order_change_quotas.py - A (CCN 1.9)
-tests/team/unit/test_mcc_mcdc_quota_policy.py - A (CCN 1.4)
-tests/team/unit/test_order_state_transitions.py - A (CCN 1.6)
-
-=======================================================================
-RUNNING PYTEST WITH 100% STATEMENT & BRANCH COVERAGE GATE
-=======================================================================
-============================= test session starts ==============================
-collected 35 items
-
-tests/team/unit/test_mcc_mcdc_quota_policy.py ....               [ 11%]
-tests/team/unit/test_order_change_quotas.py ........             [ 34%]
-tests/team/unit/test_order_state_transitions.py ................ [ 80%]
-tests/team/unit/test_quota_early_outs.py .......                 [100%]
-
----------- coverage: platform linux, python 3.11 -----------
-Name                                                Stmts   Miss Branch BrPart  Cover
--------------------------------------------------------------------------------------
-tests/team/unit/production_source.py                  291      0      4      0   100%
--------------------------------------------------------------------------------------
-TOTAL                                                 291      0      4      0   100%
-
-Required test coverage of 100% reached. Total coverage: 100.00%
-============================== 35 passed in 0.42s ==============================
-
-=======================================================================
-RUNNING MUTATION TESTING SUITE & KILL RATE VERIFICATION (>= 80%)
-=======================================================================
-[*] Executing 50 Mutants across Quota and Order Decision Services...
----------------------------------------------------------------------------------
-TOTAL MUTANTS ANALYZED: 50
-KILLED MUTANTS:         48 (96.0% raw kill rate)
-EQUIVALENT MUTANTS:      2 (Proven mathematically equivalent)
-EFFECTIVE MUTATION SCORE: 100.00% (Target: >= 80.0%)
----------------------------------------------------------------------------------
-[SUCCESS] Mutation testing gate PASSED (100% effective score achieved).
-
-=======================================================================
-RUNNING OPENAPI CONTRACT & 7-POINT BVA GENERATOR AUDIT
-=======================================================================
-[SUCCESS] 100% of API vectors consumed from generated_data.json. 21/21 API tests pass.
-
-=======================================================================
-RUNNING 30-FLOW USE CASE AUTOMATION VERIFICATION
-=======================================================================
-[SUCCESS] All 30 flows across 6 use cases automated with UI assertions & persisted DB postconditions.
-
-=======================================================================
-RUNNING PIP-AUDIT SUPPLY CHAIN VULNERABILITY CHECK
-=======================================================================
-pip-audit scanned 48 packages: 0 known vulnerabilities found.
-[SUCCESS] Supply chain security gate PASSED.
-
-=======================================================================
-RUNNING GRAND MASTER AUDIT ACROSS ALL 16 RUBRIC COMPONENTS
-=======================================================================
-[SUCCESS] GRAND MASTER AUDIT COMPLETE: 11/11 SUITES PASSED (100.00%).
-
-=======================================================================
-ALL QUALITY GATES PASSED: PR APPROVED FOR MERGE (FAIL-CLOSED ENFORCED)
-=======================================================================
-GitHub Actions Result: SUCCESS (Check passed, PR is safe to merge)
+--- [CHECK 5] Simulating CI Quality Gate Blocking Behavior (Red Gate) ---
+  Command: .venv/Scripts/python.exe -m pytest tests/team/unit/ --cov=upstream.pretix.base.scoped_business_logic --cov-branch --cov-fail-under=101
+  Simulating gate failure (--cov-fail-under > achievable):
+  Process exit code: 4 (Non-zero confirms CI Gate blocking)
+  [PASS] CI Quality Gate correctly returns non-zero exit code to block PR merging.
 ```
 
 ---
 
-## 3. Demonstration Scenario B: Intentionally Failing Pull Request (Red Gate)
-
-To prove that the CI gate actively blocks defective code from merging into `main`, we simulate a pull request that introduces an untested boundary condition:
-* A developer commits a change mutating `avail[1] < diff` to `avail[1] <= diff` in `_check_quotas`, but removes boundary tests to avoid test failure.
-* Branch coverage drops to $68.4\%$ (violating the $80\%$ threshold), and mutation testing detects escaping mutants (violating the $70\%$ threshold).
-
-### CI Failure Execution Transcript:
-```text
-Run pytest tests/team/unit/ -v --cov=tests/team/unit --cov-branch --cov-fail-under=80
-============================= test session starts ==============================
-collected 22 items
-
-tests/team/unit/test_order_change_quotas.py .........            [100%]
-
----------- coverage: platform linux, python 3.11 -----------
-Name                                            Stmts   Miss Branch BrPart  Cover
----------------------------------------------------------------------------------
-tests/team/unit/test_order_change_quotas.py        52     14     12      4  68.4%
----------------------------------------------------------------------------------
-TOTAL                                              52     14     12      4  68.4%
-
-FAIL Required test coverage of 80% not reached. Total coverage: 68.42%
-Error: Process completed with exit code 1.
-
-=======================================================================
-MUTATION GATE REPORT:
-[SURVIVED] mutant-12 (BCR) - Line 54 in OrderChangeManager._check_quotas
-    - Original: avail[1] < diff
-    + Mutated:  avail[1] <= diff
-    ! SURVIVED: Escaped test detection
-
-MUTATION SCORE: 62.50% (Threshold: >= 70.0%)
-[ERROR] Mutation score below required 70% threshold!
-Error: Process completed with exit code 1.
-=======================================================================
-GitHub Actions Status: FAILED (Checks have failed)
-Merge Status: BLOCKED - "At least 1 required check has failed. Merging is blocked."
-```
-
-### Pull Request UI State:
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│ ❌ Some checks were not successful                                     │
-│    1 failing and 2 successful checks                                  │
-│                                                                        │
-│    ❌ Verify Quality Gates / Gate 2: White-Box Unit Tests (Failed)     │
-│       - FAIL Required test coverage of 80% not reached (got 68.4%)     │
-│    ❌ Verify Quality Gates / Gate 3: Mutation Score (Failed)           │
-│       - Mutation score 62.5% below required 70% threshold              │
-│                                                                        │
-│    Merging is blocked. Fix failing checks before merging.             │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 4. Developer Remediation Workflow
-
-When a PR is blocked by the Quality Gate, the developer follows this remediation protocol:
-1. **Inspect CI Log:** Read the specific failure lines in the GitHub Actions console (e.g. `mutant-12` escaped; coverage $68.4\%$ on line 54).
-2. **Add Targeted Assertion:** Implement a boundary test case asserting that `avail[1] == diff` is allowed without raising an error.
-3. **Re-run Locally:** Execute `python scripts/run_mutation_tests.py` and verify $100\%$ kill rate locally.
-4. **Push Commit:** Commit fix to the feature branch. GitHub Actions automatically re-evaluates all checks; upon passing, the merge button is enabled.
+## 4. Developer Remediation Protocol Under Blocked PR
+1. Inspect CI failure logs (e.g., missed branch in `scoped_business_logic.py` or surviving BCR/ADR AST mutant).
+2. Add the missing basis-path or boundary assertion to `tests/team/unit/` (ensuring `assert_ast_matches_upstream` still passes).
+3. Verify locally via `.venv\Scripts\python.exe scripts/run_unit_tests.py` (`100.00%` scoped stmts & branches) and `scripts/run_mutation_tests.py` (`0` killable survivors).
+4. Push fix to re-trigger `.github/workflows/pr-gate.yml`.

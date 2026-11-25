@@ -1,265 +1,64 @@
+AST Mutation Testing Engine (Target: upstream/pretix/base/scoped_business_logic.py)
+Run Timestamp: 2026-11-25 15:58:48 UTC
+Operators: BCR (Boundary Condition), ADR (Arithmetic Delta), Standard (ROR/COR/LCR/SVR)
 --------------------------------------------------------------------------------
-mutmut 3.8.1 - Python 3 Mutation Testing Engine Report
-Target Paths: upstream/pretix/base/services/quotas.py, orders.py
-Execution Timestamp: 2026-11-24 16:38:19
+[MUT-01] _compute_early_outs:L32 | COR (and -> or)                      | KILLED     | Killed by enh_br2_closed_ignored
+[MUT-02] _compute_early_outs:L32 | LCR (delete not)                     | KILLED     | Killed by enh_br2_closed_not_ignored
+[MUT-03] _compute_early_outs:L33 | SVR (AVAILABILITY_ORDERED -> AVAILABILITY_OK) | KILLED     | Killed by enh_br2_closed_not_ignored
+[MUT-04] _compute_early_outs:L34 | ROR (is -> is not)                   | KILLED     | Killed by enh_br2_closed_ignored
+[MUT-05] _compute_early_outs:L35 | SVR (AVAILABILITY_OK -> AVAILABILITY_GONE) | KILLED     | Killed by enh_br2_unlimited
+[MUT-06] _compute_early_outs:L36 | ROR (== -> !=)                       | KILLED     | Killed by enh_br2_closed_ignored
+[MUT-07] _compute_early_outs:L36 | BCR (== -> <=)                       | EQUIVALENT | Pretix models.Quota.size is an unsigned PositiveIntegerField(null=True); negative q.size cannot exist in valid domain inputs, so q.size == 0 <=> q.size <= 0.
+[MUT-08] _compute_early_outs:L36 | ADR (0 -> 1)                         | KILLED     | Killed by enh_br2_zero
+[MUT-09] _compute_early_outs:L36 | ADR (0 -> -1)                        | KILLED     | Killed by enh_br2_zero
+[MUT-10] _compute_early_outs:L37 | SVR (AVAILABILITY_GONE -> AVAILABILITY_ORDERED) | KILLED     | Killed by enh_br2_zero
+[MUT-11] _check_quotas:L43 | BCR (>=)                             | KILLED     | Killed by enh_br1_non_positive_must_not_queue
+[MUT-12] _check_quotas:L43 | BCR (<=)                             | KILLED     | Killed by enh_br1_non_positive_must_not_queue
+[MUT-13] _check_quotas:L43 | ADR (0 -> 1)                         | KILLED     | Killed by Exception: KeyError
+[MUT-14] _check_quotas:L43 | ADR (0 -> -1)                        | KILLED     | Killed by enh_br1_non_positive_must_not_queue
+[MUT-15] _check_quotas:L46 | BCR (<)                              | KILLED     | Killed by Exception: KeyError
+[MUT-16] _check_quotas:L46 | BCR (>=)                             | KILLED     | Killed by Exception: KeyError
+[MUT-17] _check_quotas:L46 | BCR (< 1)                            | EQUIVALENT | For discrete integer quota deltas diff in Z, diff <= 0 is logically identical to diff < 1.
+[MUT-18] _check_quotas:L46 | ADR (0 -> 1)                         | KILLED     | Killed by enh_br1_gone_must_raise
+[MUT-19] _check_quotas:L46 | ADR (0 -> -1)                        | KILLED     | Killed by Exception: KeyError
+[MUT-20] _check_quotas:L49 | ROR (!= -> ==)                       | KILLED     | Killed by Exception: SimOrderError
+[MUT-21] _check_quotas:L49 | SVR (AVAILABILITY_OK -> AVAILABILITY_GONE) | KILLED     | Killed by Exception: SimOrderError
+[MUT-22] _check_quotas:L49 | COR (and -> or)                      | KILLED     | Killed by Exception: TypeError
+[MUT-23] _check_quotas:L49 | ROR (is not -> is)                   | KILLED     | Killed by Exception: TypeError
+[MUT-24] _check_quotas:L49 | BCR (<=)                             | KILLED     | Killed by Exception: SimOrderError
+[MUT-25] _check_quotas:L49 | BCR (>)                              | KILLED     | Killed by enh_br1_insufficient_must_raise
+[MUT-26] _check_quotas:L49 | ADR (diff -> diff + 1)               | KILLED     | Killed by Exception: SimOrderError
+[MUT-27] _check_quotas:L49 | ADR (diff -> diff - 1)               | KILLED     | Killed by enh_br1_insufficient_must_raise
+[MUT-28] cancel_allowed:L62 | COR (and -> or)                      | KILLED     | Killed by enh_br3_cancel_c_1
+[MUT-29] cancel_allowed:L62 | ROR (in -> not in)                   | KILLED     | Killed by enh_br3_cancel_n_1
+[MUT-30] cancel_allowed:L62 | SVR (tuple permute)                  | EQUIVALENT | Python tuple membership 'x in (A, B, C)' is order-invariant with identical equality semantics.
+[MUT-31] cancel_allowed:L62 | SVR (STATUS_EXPIRED -> STATUS_CANCELED) | KILLED     | Killed by enh_br3_cancel_e_1
+[MUT-32] cancel_allowed:L62 | SVR (STATUS_EXPIRED -> STATUS_CANCELED) | KILLED     | Killed by enh_br3_cancel_e_1
+[MUT-33] _can_be_paid:L65 | LCR (True -> False)                  | KILLED     | Killed by enh_br4_default_kwargs
+[MUT-34] _can_be_paid:L65 | LCR (False -> True)                  | KILLED     | Killed by enh_br4_past_term_last_blocked_default
+[MUT-35] _can_be_paid:L65 | LCR (False -> True)                  | KILLED     | Killed by enh_br4_require_approval_default_args
+[MUT-36] _can_be_paid:L65 | LCR (False -> True)                  | KILLED     | Killed by enh_br4_default_kwargs
+[MUT-37] _can_be_paid:L73 | LCR (delete not)                     | KILLED     | Killed by enh_br4_require_approval_default_args
+[MUT-38] _can_be_paid:L77 | COR (and -> or)                      | KILLED     | Killed by enh_br4_ignore_date_term_last
+[MUT-39] _can_be_paid:L77 | LCR (delete not)                     | KILLED     | Killed by enh_br4_past_term_last_blocked_default
+[MUT-40] _can_be_paid:L78 | BCR (>=)                             | KILLED     | Killed by enh_br4_exact_term_last_allowed
+[MUT-41] _can_be_paid:L78 | BCR (<=)                             | KILLED     | Killed by enh_br4_exact_term_last_allowed
+[MUT-42] _can_be_paid:L81 | ROR (== -> !=)                       | KILLED     | Killed by enh_br4_exact_term_last_allowed
+[MUT-43] _can_be_paid:L82 | LCR (True -> False)                  | KILLED     | Killed by enh_br4_force_bypasses_approval
+[MUT-44] _can_be_paid:L83 | COR (and -> or)                      | KILLED     | Killed by enh_br4_default_avail
+[MUT-45] _can_be_paid:L83 | LCR (delete not)                     | KILLED     | Killed by enh_br4_default_avail
+[MUT-46] _can_be_paid:L83 | LCR (delete not)                     | KILLED     | Killed by enh_br4_mcc_False_False_False
+[MUT-47] _can_be_paid:L83 | LCR (delete not)                     | KILLED     | Killed by enh_br4_mcc_False_False_False
+[MUT-48] mark_order_expired:L101 | SVR (STATUS_EXPIRED -> STATUS_CANCELED) | KILLED     | Killed by enh_br3_mark_expired_status
+[MUT-49] mark_order_expired:L105 | LCR (False -> True)                  | KILLED     | Killed by enh_br3_invoice_filter
+[MUT-50] mark_order_expired:L106 | COR (and -> or)                      | KILLED     | Killed by enh_br3_referred_skips_cancel
+[MUT-51] mark_order_expired:L106 | LCR (delete not)                     | KILLED     | Killed by enh_br3_cancellation_generated
 --------------------------------------------------------------------------------
-
-[KILLED] mutant-01 (COR) - Line 43 in QuotaAvailability._compute_early_outs
-    - Original: if q.closed and not ignore_closed:
-    + Mutated:  if q.closed or not ignore_closed:
-    * Killed by: test_path_3_closed_quota_ignored
-
-[KILLED] mutant-02 (BCR (Custom 1)) - Line 45 in QuotaAvailability._compute_early_outs
-    - Original: elif q.size is None:
-    + Mutated:  elif q.size is not None:
-    * Killed by: test_path_3_closed_quota_ignored
-
-[KILLED] mutant-03 (BCR (Custom 1)) - Line 47 in QuotaAvailability._compute_early_outs
-    - Original: elif q.size == 0:
-    + Mutated:  elif q.size != 0:
-    * Killed by: test_path_3_closed_quota_ignored
-
-[KILLED] mutant-04 (SVR) - Line 44 in QuotaAvailability._compute_early_outs
-    - Original: results[q] = AVAILABILITY_ORDERED, 0
-    + Mutated:  results[q] = AVAILABILITY_GONE, 0
-    * Killed by: test_path_2_closed_quota_not_ignored
-
-[KILLED] mutant-05 (SVR) - Line 46 in QuotaAvailability._compute_early_outs
-    - Original: results[q] = AVAILABILITY_OK, None
-    + Mutated:  results[q] = AVAILABILITY_GONE, None
-    * Killed by: test_path_4_unlimited_quota
-
-[KILLED] mutant-06 (SVR) - Line 48 in QuotaAvailability._compute_early_outs
-    - Original: results[q] = AVAILABILITY_GONE, 0
-    + Mutated:  results[q] = AVAILABILITY_OK, 0
-    * Killed by: test_path_5_size_zero_gone
-
-[EQUIVALENT] mutant-07 (BCR (Custom 1)) - Line 47 in QuotaAvailability._compute_early_outs
-    - Original: elif q.size == 0:
-    + Mutated:  elif q.size <= 0:
-    = EQUIVALENT MUTANT: Pretix Quota model strictly enforces size >= 0 via PositiveIntegerField validator; q.size < 0 is impossible in production domain.
-
-[KILLED] mutant-08 (LCR) - Line 43 in QuotaAvailability._compute_early_outs
-    - Original: if q.closed and not ignore_closed:
-    + Mutated:  if q.closed and ignore_closed:
-    * Killed by: test_path_2_closed_quota_not_ignored
-
-[KILLED] mutant-09 (SVR) - Line 44 in QuotaAvailability._compute_early_outs
-    - Original: results[q] = AVAILABILITY_ORDERED, 0
-    + Mutated:  results[q] = AVAILABILITY_ORDERED, 1
-    * Killed by: test_path_2_closed_quota_not_ignored
-
-[KILLED] mutant-10 (COR) - Line 42 in QuotaAvailability._compute_early_outs
-    - Original: for q in quotas:
-    + Mutated:  for q in (quotas if len(quotas) > 0 else [MockQuota(closed=True)]):
-    * Killed by: test_path_1_empty_quotas
-
-[KILLED] mutant-11 (ROR) - Line 47 in QuotaAvailability._compute_early_outs
-    - Original: elif q.size == 0:
-    + Mutated:  elif q.size < 0:
-    * Killed by: test_path_5_size_zero_gone
-
-[KILLED] mutant-12 (BCR (Custom 1)) - Line 43 in QuotaAvailability._compute_early_outs
-    - Original: ignore_closed=False
-    + Mutated:  ignore_closed=True
-    * Killed by: test_path_1_empty_quotas
-
-[KILLED] mutant-13 (BCR (Custom 1)) - Line 54 in OrderChangeManager._check_quotas
-    - Original: queued = [k for k, v in quotadiff.items() if v > 0]
-    + Mutated:  queued = [k for k, v in quotadiff.items() if v >= 0]
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-14 (BCR (Custom 1)) - Line 56 in OrderChangeManager._check_quotas
-    - Original: if diff <= 0: continue
-    + Mutated:  if diff < 0: continue
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-15 (BCR (Custom 1)) - Line 56 in OrderChangeManager._check_quotas
-    - Original: if diff <= 0: continue
-    + Mutated:  if diff == 0: continue
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-16 (ROR) - Line 59 in OrderChangeManager._check_quotas
-    - Original: if avail[0] != AVAILABILITY_OK
-    + Mutated:  if avail[0] == AVAILABILITY_OK
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-17 (BCR (Custom 1)) - Line 59 in OrderChangeManager._check_quotas
-    - Original: avail[1] < diff
-    + Mutated:  avail[1] <= diff
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-18 (ROR) - Line 59 in OrderChangeManager._check_quotas
-    - Original: avail[1] < diff
-    + Mutated:  avail[1] > diff
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-19 (COR) - Line 59 in OrderChangeManager._check_quotas
-    - Original: if avail[0] != AVAILABILITY_OK or (...):
-    + Mutated:  if avail[0] != AVAILABILITY_OK and (...):
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-20 (ADR (Custom 2)) - Line 59 in OrderChangeManager._check_quotas
-    - Original: avail[1] < diff
-    + Mutated:  avail[1] < (diff - 1)
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-21 (ADR (Custom 2)) - Line 59 in OrderChangeManager._check_quotas
-    - Original: avail[1] < diff
-    + Mutated:  avail[1] < (diff + 1)
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-22 (BCR (Custom 1)) - Line 59 in OrderChangeManager._check_quotas
-    - Original: avail[1] is not None
-    + Mutated:  avail[1] is None
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-23 (SVR) - Line 61 in OrderChangeManager._check_quotas
-    - Original: return True, queued
-    + Mutated:  return False, queued
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-24 (SVR) - Line 61 in OrderChangeManager._check_quotas
-    - Original: return True, queued
-    + Mutated:  return True, []
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-25 (ROR) - Line 56 in OrderChangeManager._check_quotas
-    - Original: diff <= 0
-    + Mutated:  diff > 0
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-26 (COR) - Line 54 in OrderChangeManager._check_quotas
-    - Original: if v > 0
-    + Mutated:  if v != 0
-    * Killed by: test_path_2_non_positive_diffs
-
-[KILLED] mutant-27 (BCR (Custom 1)) - Line 67 in evaluate_purchasability
-    - Original: c3 = bool(quota_avail > 0)
-    + Mutated:  c3 = bool(quota_avail >= 0)
-    * Killed by: TC-MCC-03_quota_exhausted_zero
-
-[KILLED] mutant-28 (LCR) - Line 69 in evaluate_purchasability
-    - Original: return bool(c1 and c2 and c3 and c4)
-    + Mutated:  return bool(c1 or c2 and c3 and c4)
-    * Killed by: TC-MCC-02_date_invalid
-
-[KILLED] mutant-29 (LCR) - Line 69 in evaluate_purchasability
-    - Original: return bool(c1 and c2 and c3 and c4)
-    + Mutated:  return bool(c1 and c2 and not c3 and c4)
-    * Killed by: TC-MCC-01_all_true
-
-[KILLED] mutant-30 (LCR) - Line 69 in evaluate_purchasability
-    - Original: return bool(c1 and c2 and c3 and c4)
-    + Mutated:  return bool(c1 and c2 and c3 and not c4)
-    * Killed by: TC-MCC-01_all_true
-
-[KILLED] mutant-31 (COR) - Line 65 in evaluate_purchasability
-    - Original: c1 = bool(event_live)
-    + Mutated:  c1 = not bool(event_live)
-    * Killed by: TC-MCC-01_all_true
-
-[KILLED] mutant-32 (COR) - Line 66 in evaluate_purchasability
-    - Original: c2 = bool(item_active)
-    + Mutated:  c2 = not bool(item_active)
-    * Killed by: TC-MCC-01_all_true
-
-[KILLED] mutant-33 (BCR (Custom 1)) - Line 67 in evaluate_purchasability
-    - Original: c3 = bool(quota_avail > 0)
-    + Mutated:  c3 = bool(quota_avail > 1)
-    * Killed by: TC-MCC-01_quota_boundary_one_true
-
-[KILLED] mutant-34 (BCR (Custom 1)) - Line 67 in evaluate_purchasability
-    - Original: c3 = bool(quota_avail > 0)
-    + Mutated:  c3 = bool(quota_avail != 0)
-    * Killed by: TC-MCC-03_quota_negative
-
-[KILLED] mutant-35 (LCR) - Line 69 in evaluate_purchasability
-    - Original: return bool(c1 and c2 and c3 and c4)
-    + Mutated:  return bool(c1 and c2 or c3 and c4)
-    * Killed by: TC-MCC-02_date_invalid
-
-[KILLED] mutant-36 (SVR) - Line 69 in evaluate_purchasability
-    - Original: return bool(c1 and c2 and c3 and c4)
-    + Mutated:  return True
-    * Killed by: TC-MCC-02_date_invalid
-
-[KILLED] mutant-37 (SVR) - Line 69 in evaluate_purchasability
-    - Original: return bool(c1 and c2 and c3 and c4)
-    + Mutated:  return False
-    * Killed by: TC-MCC-01_all_true
-
-[KILLED] mutant-38 (COR) - Line 68 in evaluate_purchasability
-    - Original: c4 = bool(date_valid)
-    + Mutated:  c4 = not bool(date_valid)
-    * Killed by: TC-MCC-01_all_true
-
-[KILLED] mutant-39 (SVR) - Line 85 in transition_order_state
-    - Original: status: next_state ('p')
-    + Mutated:  status: 'c' (forces canceled on pay)
-    * Killed by: test_transition_pending_to_paid
-
-[KILLED] mutant-40 (SVR) - Line 85 in transition_order_state
-    - Original: status: next_state ('c')
-    + Mutated:  status: 'p' (forces paid on cancel)
-    * Killed by: test_transition_pending_to_canceled_restores_quota
-
-[KILLED] mutant-41 (ADR (Custom 2)) - Line 84 in transition_order_state
-    - Original: restored_quota = positions_count
-    + Mutated:  restored_quota = 0 (skips restore)
-    * Killed by: test_transition_pending_to_canceled_restores_quota
-
-[KILLED] mutant-42 (ROR) - Line 80 in transition_order_state
-    - Original: if next_state not in VALID_TRANSITIONS.get(current_state, []):
-    + Mutated:  if next_state in VALID_TRANSITIONS.get(current_state, []):
-    * Killed by: test_valid_transition_exception_thrown
-
-[KILLED] mutant-43 (COR) - Line 83 in transition_order_state
-    - Original: if next_state in ['c', 'e', 'r']:
-    + Mutated:  if next_state in ['c', 'e']:
-    * Killed by: test_transition_paid_to_refunded_restores_quota
-
-[KILLED] mutant-44 (COR) - Line 83 in transition_order_state
-    - Original: if next_state in ['c', 'e', 'r']:
-    + Mutated:  if next_state in ['c', 'r']:
-    * Killed by: test_transition_pending_to_expired_restores_quota
-
-[KILLED] mutant-45 (ADR (Custom 2)) - Line 84 in transition_order_state
-    - Original: restored_quota = positions_count
-    + Mutated:  restored_quota = positions_count - 1
-    * Killed by: test_transition_pending_to_canceled_restores_quota
-
-[KILLED] mutant-46 (ADR (Custom 2)) - Line 84 in transition_order_state
-    - Original: restored_quota = positions_count
-    + Mutated:  restored_quota = positions_count + 1
-    * Killed by: test_transition_pending_to_canceled_restores_quota
-
-[KILLED] mutant-47 (SVR) - Line 75 in transition_order_state
-    - Original: 'c': [] (canceled terminal)
-    + Mutated:  'c': ['c'] (self transition allowed)
-    * Killed by: test_terminal_self_transition_rejected
-
-[EQUIVALENT] mutant-48 (COR) - Line 80 in transition_order_state
-    - Original: VALID_TRANSITIONS.get(current_state, [])
-    + Mutated:  VALID_TRANSITIONS.get(current_state, ['p', 'c'])
-    = EQUIVALENT MUTANT: All order states are strictly bounded by pretix Order.STATUS_CHOICE enum; undefined fallback states cannot be passed from ORM.
-
-[KILLED] mutant-49 (ROR) - Line 80 in transition_order_state
-    - Original: next_state not in VALID_TRANSITIONS.get(current_state, [])
-    + Mutated:  next_state not in VALID_TRANSITIONS.get(current_state, ())
-    * Killed by: test_valid_transition_exception_thrown
-
-[KILLED] mutant-50 (SVR) - Line 82 in transition_order_state
-    - Original: restored_quota = 0
-    + Mutated:  restored_quota = -1
-    * Killed by: test_transition_pending_to_paid
-
---------------------------------------------------------------------------------
-TOTAL MUTANTS EVALUATED:      50
-BASELINE SURVIVORS ANALYZED:  30
+TOTAL MUTANTS EVALUATED:      51
+BASELINE SURVIVORS ANALYZED:  33
 FINAL MUTANTS KILLED:         48
-EQUIVALENT MUTANTS (E):       2
-RAW KILL RATE:                96.00%
+EQUIVALENT MUTANTS (E):       3
+RAW KILL RATE:                94.12%
 EFFECTIVE MUTATION SCORE:     100.00%
 QUALITY GATE STATUS:          PASSED (Score >= 70.0% threshold)
 --------------------------------------------------------------------------------

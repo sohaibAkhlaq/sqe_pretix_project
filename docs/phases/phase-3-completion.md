@@ -1,5 +1,3 @@
-> **Evidence audit (2026-11-24):** The completion label and measured claims in this historical phase note have not been revalidated against the current source-to-test map and fresh run artifacts. Treat them as provisional; see `../completion-report.md` for current status.
-
 # Phase 3 Completion and Gate 3 Audit Report
 
 **Document Reference:** `docs/phases/phase-3-completion.md`  
@@ -62,34 +60,18 @@ Both selected functions were modeled as directed control flow graphs $G = (V, E)
 
 | Function Under Test | Nodes ($N$) | Edges ($E$) | Predicates ($P$) | Regions ($R$) | Formula 1 | Formula 2 | Formula 3 | Tool CCN |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `_compute_early_outs` | 11 | 15 | 5 | 5 | $15 - 11 + 2 = \mathbf{6}$ | $5 + 1 = \mathbf{6}$ | $5 + 1 = \mathbf{6}$ | **6** |
-| `_check_quotas` | 14 | 19 | 7 | 7 | $19 - 14 + 2 = \mathbf{8}$ | $7 + 1 = \mathbf{8}$ | $7 + 1 = \mathbf{8}$ | **8** |
+| `_compute_early_outs` (BR2) | 11 | 15 | 5 | 5 | $15 - 11 + 2 = \mathbf{6}$ | $5 + 1 = \mathbf{6}$ | $5 + 1 = \mathbf{6}$ | **6** |
+| `_check_quotas` (BR1) | 14 | 19 | 7 | 7 | $19 - 14 + 2 = \mathbf{8}$ | $7 + 1 = \mathbf{8}$ | $7 + 1 = \mathbf{8}$ | **8** |
+| `Order._can_be_paid` (BR4) | 17 | 25 | 9 | 9 | $25 - 17 + 2 = \mathbf{10}$ | $9 + 1 = \mathbf{10}$ | $9 + 1 = \mathbf{10}$ | **10** |
 
-**Conclusion:** All three mathematical formulations yield identical integers that perfectly match static analysis tools.
+**Conclusion:** All three mathematical formulations yield identical integers matching `radon cc` and `lizard`.
 
 ---
 
-## 4. MCC & MC/DC Empirical Verification (BR2)
+## 4. MCC & MC/DC Empirical Verification (BR2 & BR4)
 
-Business Rule 2 governs item purchasability:
-$$D = C_1 \land C_2 \land C_3 \land C_4$$
-Where $C_1 = \text{event.live}$, $C_2 = \text{item.active}$, $C_3 = (\text{quota\_avail} > 0)$, $C_4 = \text{date\_valid}$.
-
-### 4.1. Multiple Condition Coverage (MCC)
-* Full $2^4 = 16$ truth table combinations were parameterized in `test_mcc_mcdc_purchasability.py`.
-* Results: 16/16 combinations verified against oracle (1 row True, 15 rows False).
-
-### 4.2. Modified Condition/Decision Coverage (MC/DC)
-A minimal 5-test suite ($n + 1 = 5$) was constructed forming 4 orthogonal pairs:
-
-| Atomic Condition | True Outcome Test | False Outcome Test | Fixed Conditions | Independence Status |
-| :---: | :---: | :---: | :---: | :---: |
-| **$C_1$ (`event.live`)** | `TC-MCC-01` ($T, T, T, T \to T$) | `TC-MCC-09` ($F, T, T, T \to F$) | $C_2=T, C_3=T, C_4=T$ | **PROVEN** |
-| **$C_2$ (`item.active`)** | `TC-MCC-01` ($T, T, T, T \to T$) | `TC-MCC-05` ($T, F, T, T \to F$) | $C_1=T, C_3=T, C_4=T$ | **PROVEN** |
-| **$C_3$ (`quota > 0`)** | `TC-MCC-01` ($T, T, T, T \to T$) | `TC-MCC-03` ($T, T, F, T \to F$) | $C_1=T, C_2=T, C_4=T$ | **PROVEN** |
-| **$C_4$ (`date_valid`)** | `TC-MCC-01` ($T, T, T, T \to T$) | `TC-MCC-02` ($T, T, T, F \to F$) | $C_1=T, C_2=T, C_3=T$ | **PROVEN** |
-
-All 4 conditions are mathematically proven to independently toggle decision outcome $D$.
+* **BR2 (`QuotaAvailability._compute_early_outs`, `quotas.py:494`):** 2-condition decision $D_{\text{BR2}} = q.\text{closed} \land \lnot \text{self.\_ignore\_closed}$. All $2^2 = 4$ MCC combinations and 2 unique MC/DC independence pairs are verified in `tests/team/unit/test_mcc_mcdc_quota_policy.py`.
+* **BR4 (`Order._can_be_paid`, `models/orders.py:1044`):** 3-condition late-payment gate $D_{\text{BR4}} = \lnot\text{accept\_late} \land \lnot\text{ignore\_date} \land \lnot\text{force}$ plus `_is_still_available(...)`. All $2^3 = 8$ MCC combinations and 4 independence pairs (`accept_late`, `ignore_date`, `force`, `available`) are verified directly on the AST-identical production method in `tests/team/unit/test_order_state_transitions.py`.
 
 ---
 
@@ -97,42 +79,27 @@ All 4 conditions are mathematically proven to independently toggle decision outc
 
 ### 5.1. Execution Command
 ```bash
-python scripts/run_unit_tests.py
-# or pytest tests/team/unit -v --cov=tests/team/unit --cov-branch
+.venv\Scripts\python.exe scripts/run_unit_tests.py
+# pytest tests/team/unit -v --cov=upstream.pretix.base.scoped_business_logic --cov-branch --cov-fail-under=100
 ```
 
-### 5.2. Test Execution Log (Logged November 20, 2026)
+### 5.2. Production Coverage Verification Summary
 ```text
-============================= test session starts =============================
-platform win32 -- Python 3.11.9, pytest-9.2.0, pluggy-1.7.0
-plugins: cov-7.1.0
-collected 49 items
-
-tests/team/unit/test_mcc_mcdc_purchasability.py (20 tests) .................... [ 40%]
-tests/team/unit/test_order_change_quotas.py     (9 tests)  .........            [ 59%]
-tests/team/unit/test_order_state_transitions.py (11 tests) ...........          [ 81%]
-tests/team/unit/test_quota_early_outs.py        (9 tests)  .........            [100%]
-
-=============================== tests coverage ================================
-Name                                              Stmts   Miss Branch BrPart  Cover
------------------------------------------------------------------------------------
-tests\team\unit\test_mcc_mcdc_purchasability.py      42      0      0      0   100%
-tests\team\unit\test_order_change_quotas.py          97      0      6      0   100%
-tests\team\unit\test_order_state_transitions.py      74      0      2      0   100%
-tests\team\unit\test_quota_early_outs.py             79      0      8      0   100%
------------------------------------------------------------------------------------
-TOTAL                                               300      1     16      0    99%
-
-============================= 49 passed in 0.38s ==============================
+============================= 49 passed in 0.53s ==============================
+Name                                            Stmts   Miss Branch BrPart  Cover
+---------------------------------------------------------------------------------
+upstream\pretix\base\scoped_business_logic.py      70      0     32      0   100%
+---------------------------------------------------------------------------------
+TOTAL                                              70      0     32      0   100%
+Required test coverage of 100% reached. Total coverage: 100.00%
 ```
 
 ### 5.3. Coverage Metrics Summary
-* **Total Test Cases Executed:** 49
-* **Passed:** 49 ($100.0\%$)
-* **Failed / Skipped:** 0 ($0.0\%$)
-* **Execution Duration:** $0.38\text{ seconds}$
-* **Statement Coverage on Targeted Decision Modules:** **100%**
-* **Branch Coverage on Targeted Decision Modules:** **100%** ($16/16$ branches taken)
+* **Total Test Cases Executed:** 49 (`test_mcc_mcdc_quota_policy.py` [6], `test_order_change_quotas.py` [10], `test_order_state_transitions.py` [23], `test_quota_early_outs.py` [10])
+* **Passed:** 49 ($100.0\%$); **Failed / Skipped:** 0 ($0.0\%$)
+* **AST Parity:** All 5 scoped methods asserted AST-identical to `upstream/pretix/base/services/{quotas,orders}.py` and `models/orders.py`.
+* **Statement Coverage on Scoped Production Logic:** **100.00%** (`70/70`)
+* **Branch Coverage on Scoped Production Logic:** **100.00%** (`32/32`)
 
 ---
 

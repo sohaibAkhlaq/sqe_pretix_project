@@ -1,97 +1,48 @@
-> **Audit correction (2026-11-24):** Historical PASS labels, measurements, screenshots, totals, and verification statements in this document have not been revalidated against one reproducible final run. Treat them as provisional until linked to raw evidence. Current release status is HOLD; see `docs/completion-report.md`.`r`n`r`n# SonarQube & Static Code Analysis Report
+# SonarQube Static Analysis & Structural Complexity Report
 
 **Document Reference:** `docs/cfg/sonarcloud_static_analysis.md`  
-**Course:** SE3002 Software Quality Engineering  
-**Application Under Test:** pretix (`upstream/pretix/base/services/`)  
-**Lead Contributor / Author:** Sohaib (`24i-3108`, Member 1 — Area A Lead)  
-**Reviewers:** M. Hasaam (`24i-3107`), Shaiman (`24i-3074`)  
-**Status:** Approved & Frozen Baseline (Gate 3 Deliverable)  
-**Date:** November 21, 2026  
+**Owner:** Sohaib (`24i-3108`, Member 1 — Area A Lead)  
+**Target Tools:** SonarQube Community `v9.9.8.100196 LTS` (`sonar-scanner 6.2.1.4610`), `radon 6.0.1`, `lizard 1.26.1`  
+**Raw JSON Evidence:** [`sonarqube_measures.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/static_analysis/sonarqube_measures.json), [`sonarqube_tree.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/static_analysis/sonarqube_tree.json), [`sonarqube_quality_gate.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/static_analysis/sonarqube_quality_gate.json), [`radon_lizard_summary.json`](file:///c:/Users/USER/Desktop/sqe_project/reports/static_analysis/radon_lizard_summary.json)
 
 ---
 
-## 1. Static Analysis Architecture & Tools
+## 1. Live SonarQube Project & Per-File Measurements
 
-Static analysis was performed using three complementary tools:
-1. **Radon 6.0.1:** Cyclomatic Complexity Numbers (CCN), Halstead metrics, and Maintainability Index (MI).
-2. **Lizard 1.26.1:** Multidimensional complexity metrics (NLOC, CCN, Token count, parameter count).
-3. **SonarQube Community Server (v9.9.8 LTS):** Full-scale static quality gate and code metrics engine deployed in Docker container `sonarqube` on port 9000, scanned using native `sonar-scanner`.
+Scan executed directly against local SonarQube (`http://localhost:9000/dashboard?id=sqe-pretix-team`) with `sonar.sources=upstream/pretix/base/services,upstream/pretix/base/models/orders.py,upstream/pretix/base/scoped_business_logic.py` and `sonar.python.coverage.reportPaths=reports/coverage/coverage.xml`.
 
----
+### 1.1. Per-File Breakdown (`sonarqube_tree.json`)
 
-## 2. Quantitative Complexity Metrics Summary
+| Analyzed File | NCLOC | Sonar CCN | Cognitive Complexity | Bugs | Vulns | Hotspots | Code Smells | Tech Debt (min) | Coverage | Branch Cov |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **`upstream/pretix/base/scoped_business_logic.py`** | **78** | **28** | **30** | **0** | **0** | **0** | 1 | 5 | **100.0%** | **100.0%** |
+| `upstream/pretix/base/services/quotas.py` | 357 | 111 | 174 | 0 | 0 | 0 | 7 | 102 | 0.0% (outside unit scope) | — |
+| `upstream/pretix/base/services/orders.py` | 3,074 | 827 | 1,352 | 0 | 0 | 0 | 59 | 1,182 | 0.0% (outside unit scope) | — |
+| `upstream/pretix/base/models/orders.py` | 2,751 | 689 | 715 | 0 | 0 | 1 (`S4790`) | 29 | 321 | 0.0% (outside unit scope) | — |
+| **Aggregate Analyzed Scope** | **6,260** | **1,655** | **2,271** | **0** | **0** | **1** | **96** | **1,610** | **2.6%** (`line: 1.8%`) | **100.0%** |
 
-### 2.1. Scoped Module Metrics Summary
-
-| Source Module | Physical LOC | Logical LOC (NLOC) | Functions Analyzed | Average CCN | High Risk Blocks (CCN > 15) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| `pretix.base.services.quotas` | 507 | 359 | 12 | **13.2** | 6 |
-| `pretix.base.services.orders` | 3,750 | 2,820 | 58 | **24.1** | 18 |
-
-### 2.2. Selected White-Box Target Functions
-
-| Function Name | Parent Class / File | Line # | NLOC | Radon CCN | Lizard CCN | Complexity Rank |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| `_compute_early_outs` | `QuotaAvailability` (`quotas.py`) | 493 | 8 | **6** | **6** | Rank B (Low Risk) |
-| `_check_quotas` | `OrderChangeManager` (`orders.py`) | 2285 | 10 | **8** | **8** | Rank B (Low Risk) |
-
-Both selected functions fall precisely within the required range of 6 to 10 decision paths mandated by the SE3002 specification.
+### 1.2. Risk Interpretation & Quality Gate Assessment
+* **Zero Bugs & Zero Vulnerabilities:** Across all `6,260` NCLOC of pinned upstream Pretix order/quota services, models, and scoped production rules, SonarQube detects **0 Bugs** and **0 Vulnerabilities**.
+* **Legacy Security Hotspot Finding (`models/orders.py:131`, `python:S4790`):** SonarQube flags a single `LOW` hotspot inside pinned upstream `Order.objects` lookup: `hashlib.sha1(order.secret.lower().encode()).hexdigest()`, marked `# TODO: remove this clause after a while (compatibility with old secrets currently in flight)`. Because primary verification first uses `hmac.compare_digest` with modern tagged secrets, exposure is bounded backward-compatibility technical debt outside team modifications.
+* **Coverage & Duplication Context:** Importing full upstream Django ORM files (`6,182` NCLOC across `services/` and `models/orders.py`) alongside the `78`-NCLOC scoped target intentionally exposes project-wide `2.6%` (`new_coverage: 5.8%`, `duplicated_lines_density: 2.3%`) causing SonarQube's default *Sonar way* new-code Quality Gate to report `ERROR` (`unreviewed hotspot` + `new_coverage < 80%`) on the unexecuted ORM layer — while **`scoped_business_logic.py` itself achieves `100.0%` coverage and `100.0%` branch coverage with `0` bugs, `0` vulnerabilities, and `0` hotspots**.
 
 ---
 
-## 3. Maintainability Index (MI) & Technical Debt
+## 2. Focused Radon & Lizard Concordance (BR1–BR4)
 
-Using Radon's Maintainability Index formula ($MI = 171 - 5.2 \ln(V) - 0.23(G) - 16.2 \ln(L) + 50 \sin(\sqrt{2.4 C})$):
+| Business Rule | Scoped Production Symbol | Upstream File & Lines | `radon cc` | Rank | `lizard` CCN | Hand CFG $V(G)$ |
+| :---: | :--- | :--- | :---: | :---: | :---: | :---: |
+| **BR2** | `QuotaAvailability._compute_early_outs` | `services/quotas.py:493–500` | **6** | B | **6** | **6** |
+| **BR1** | `OrderChangeManager._check_quotas` | `services/orders.py:2285–2294` | **8** | B | **8** | **8** |
+| **BR4** | `Order._can_be_paid` | `models/orders.py:1026–1047` | **10** | B | **10** | **10** |
+| **BR3** | `mark_order_expired` | `services/orders.py:360–382` | **5** | A | **5** | — |
+| **BR3** | `Order.cancel_allowed` | `models/orders.py:646–648` | **2** | A | **2** | — |
 
-* **`quotas.py` Maintainability Index:** **58.4 (Rank B)** — Moderate maintainability; modular caching logic.
-* **`orders.py` Maintainability Index:** **42.1 (Rank B/C)** — High transactional coupling due to multi-step order approval and cancellation pipelines.
-
----
-
-## 4. SonarQube Project Configuration
-
-The SonarQube project configuration is defined in `sonar-project.properties`:
-
-```ini
-sonar.projectKey=sqe-pretix-team
-sonar.organization=sqe-fall-2026
-sonar.projectName=pretix-sqe-testing
-sonar.projectVersion=1.0.0
-sonar.host.url=http://localhost:9000
-
-sonar.sources=upstream/pretix/base/services
-sonar.tests=tests/team
-sonar.python.coverage.reportPaths=reports/coverage/coverage.xml
-sonar.sourceEncoding=UTF-8
-sonar.exclusions=**/migrations/**, **/static/**, **/__pycache__/**
-```
+**Maintainability Index (`radon mi`):** `scoped_business_logic.py` = **60.29 (Rank A)**; `quotas.py` = **27.08 (Rank A)**; `services/orders.py` (`3,074` NCLOC) & `models/orders.py` (`2,751` NCLOC) = **0.00 (Rank C)** — motivating focused white-box and AST mutation isolation on the core quota/order decision paths.
 
 ---
 
-## 5. Live SonarQube Dashboard Audit & Evidence Verification
+## 3. Live SonarQube UI Evidence
 
-The authentic SonarQube analysis was executed live against `upstream/pretix/base/services`. The project dashboard confirmed a **Passed** quality gate status across all criteria.
-
-### 5.1. Verified SonarQube Metrics Summary
-
-| Quality Dimension | Observed SonarQube Metric | Course / Target Standard | Rating | Evaluator Interpretation |
-| :--- | :---: | :---: | :---: | :--- |
-| **Quality Gate Status** | **PASSED (Green)** | Pass required | Pass | All quality conditions passed with zero escape hatches. |
-| **Reliability** | **0 Bugs** | 0 Bugs | **A** | Zero runtime exceptions, dead code paths, or null references. |
-| **Security** | **0 Vulnerabilities** | 0 Vulnerabilities | **A** | Zero SQL injections, command injections, or path traversals. |
-| **Security Review** | **0 Security Hotspots** | 0 Hotspots | **A** | Safe encryption, secure session configuration, and safe CSRF tokens. |
-| **Maintainability** | **66 Code Smells** | Rating A | **A** | Technical debt of 2d 5h (<5% debt ratio); minor style/refactoring opportunities. |
-| **Duplications** | **0.0% Duplication** | $< 3.0\%$ | **A** | 0 duplicated blocks across 3,431 lines of business services. |
-| **Cyclomatic Complexity** | **938** | Baseline recorded | — | Total McCabe decision paths across all business service functions. |
-| **Logical Lines (NCLOC)** | **3,431 Lines** | Domain Scope | — | Scoped domain services: `quotas.py` and `orders.py`. |
-
-### 5.2. Captured Genuine Screenshots from Live Web UI
-
-The following authentic screenshots were captured from the running SonarQube container at `http://localhost:9000/dashboard?id=sqe-pretix-team`:
-
-1. **Overview Dashboard:** [reports/static_analysis/01_sonarqube_overview_dashboard.png](file:///c:/Users/USER/Desktop/sqe_project/reports/static_analysis/01_sonarqube_overview_dashboard.png)  
-   *Displays: Quality Gate Passed, 0 Bugs (Rating A), 0 Vulnerabilities (Rating A), 0 Security Hotspots (Rating A), 66 Code Smells (Rating A), and 0.0% Duplications.*
-2. **Measures & Complexity Page:** [reports/static_analysis/02_sonarqube_measures_complexity.png](file:///c:/Users/USER/Desktop/sqe_project/reports/static_analysis/02_sonarqube_measures_complexity.png)  
-   *Displays: Total Cyclomatic Complexity (938), Cognitive Complexity (1,526), 3,431 NCLOC, 88 Functions, 4 Classes, and 0 Duplicated Lines.*
-3. **Source Code Breakdown:** [reports/static_analysis/03_sonarqube_code_breakdown.png](file:///c:/Users/USER/Desktop/sqe_project/reports/static_analysis/03_sonarqube_code_breakdown.png)  
-   *Displays: Granular metric breakdown for `upstream/pretix/base/services` (3,431 NCLOC, 0 Bugs, 0 Vulnerabilities, 66 Smells, 0 Hotspots).*
+* ![SonarQube Dashboard](../../reports/static_analysis/real_sonarqube_dashboard.png)
+* ![SonarQube Measures](../../reports/static_analysis/real_sonarqube_measures.png)

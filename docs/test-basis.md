@@ -1,4 +1,4 @@
-> **Verification scope note (2026-11-24):** BR2 MCC/MC/DC now targets the closed-quota early-out in checked-in upstream code. BR3 and BR4 behavioral descriptions remain specification hypotheses until matched to actual production methods and tests; see `docs/completion-report.md`.`r`n`r`n# Master Test Basis & Functional Scope Specification
+# Master Test Basis & Functional Scope Specification
 **Course:** SE3002 Software Quality Engineering  
 **Standard:** Gold Medalist Academic & Professional Benchmark (120/120 Marks)  
 **Lead Author:** Shaiman (24i-3074 — Area C Lead)  

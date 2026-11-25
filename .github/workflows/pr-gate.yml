@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  quality-gate:
-    name: Verify Quality Gates (Static, Unit 100%, Mutation, API, E2E, Security)
+  static-and-whitebox-gates:
+    name: "Offline Quality Gates (Static, 100% Scoped Coverage, Real AST Mutation, OpenAPI, Supply Chain)"
     runs-on: ubuntu-latest
 
     steps:
@@ -28,65 +28,84 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-test.txt
 
-      - name: "Gate 1: Static Analysis & Complexity Audit"
+      - name: "Gate 1: Static Analysis & Complexity Audit on Scoped Production Module"
         run: |
-          echo "======================================================================="
-          echo "RUNNING STATIC COMPLEXITY CHECK (RADON CC <= 10, MI >= 40)"
-          echo "======================================================================="
-          radon cc -s -a tests/team/unit/
-          radon mi -s tests/team/unit/
+          radon cc -s -a upstream/pretix/base/scoped_business_logic.py
+          radon mi -s upstream/pretix/base/scoped_business_logic.py
+          lizard -C 15 upstream/pretix/base/scoped_business_logic.py
 
-      - name: "Gate 2: Scoped Production Unit Tests & Branch Coverage Gate (Threshold >= 80%, Actual 100%)"
+      - name: "Gate 2: Scoped Production Unit Tests & 100% Statement/Branch Coverage Gate"
         run: |
-          echo "======================================================================="
-          echo "RUNNING PYTEST WITH STRICT BRANCH COVERAGE (>= 80%, ACHIEVING 100%)"
-          echo "======================================================================="
           pytest tests/team/unit/ \
             -v \
-            --cov=tests/team/unit/production_source \
+            --cov=upstream.pretix.base.scoped_business_logic \
             --cov-branch \
             --cov-report=term-missing \
             --cov-report=xml:reports/coverage/coverage.xml \
-            --cov-fail-under=80
+            --cov-fail-under=100
 
-      - name: "Gate 3: Mutation Testing Quality Gate (Effective Kill Rate >= 80%)"
+      - name: "Gate 3: Real AST Mutation Testing Quality Gate (Threshold >= 70%, 100% Killable)"
         run: |
-          echo "======================================================================="
-          echo "RUNNING MUTATION TESTING SUITE & KILL RATE VERIFICATION (>= 80%)"
-          echo "======================================================================="
           python scripts/run_mutation_tests.py
 
-      - name: "Gate 4: OpenAPI Contract & Datagen Validation"
+      - name: "Gate 4: OpenAPI 3.0 Contract & Deterministic Test Data Regeneration"
         run: |
-          echo "======================================================================="
-          echo "RUNNING OPENAPI CONTRACT & 7-POINT BVA GENERATOR AUDIT"
-          echo "======================================================================="
-          python scripts/verify_datagen_and_openapi.py
+          python scripts/verify_datagen_and_openapi.py --offline
 
-      - name: "Gate 5: Use Case Automation & Flow Verification"
+      - name: "Gate 5: Supply Chain Vulnerability Audit (0 Known CVEs)"
         run: |
-          echo "======================================================================="
-          echo "RUNNING 30-FLOW USE CASE AUTOMATION VERIFICATION"
-          echo "======================================================================="
-          python scripts/verify_use_case_test_automation.py
-
-      - name: "Gate 6: Defensive Security & Supply Chain Audit (0 Known CVEs)"
-        run: |
-          echo "======================================================================="
-          echo "RUNNING PIP_AUDIT SUPPLY CHAIN VULNERABILITY CHECK"
-          echo "======================================================================="
           python -m pip_audit -r requirements-test.txt
 
-      - name: "Gate 7: Grand Master Verification Audit (120/120 Marks)"
-        run: |
-          echo "======================================================================="
-          echo "RUNNING GRAND MASTER AUDIT ACROSS ALL 16 RUBRIC COMPONENTS"
-          echo "======================================================================="
-          python scripts/verify_grand_master_audit.py
+  live-compose-integration-gates:
+    name: "Live Container Integration Gates (API, E2E, Accessibility, Security, Master Audit)"
+    needs: static-and-whitebox-gates
+    runs-on: ubuntu-latest
 
-      - name: "Quality Gate Sign-Off"
-        if: success()
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11 & Playwright Chromium
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies & Chromium
         run: |
-          echo "======================================================================="
-          echo "ALL QUALITY GATES PASSED: PR APPROVED FOR MERGE (FAIL-CLOSED ENFORCED)"
-          echo "======================================================================="
+          pip install -r requirements-test.txt
+          playwright install chromium
+
+      - name: Provision Ephemeral Secrets & Start Pretix Compose Stack
+        run: |
+          cat <<EOF > .env
+          PRETIX_DJANGO_SECRET=$(openssl rand -hex 24)
+          PRETIX_DATABASE_PASSWORD=$(openssl rand -hex 16)
+          SQE_ADMIN_PASSWORD=$(openssl rand -hex 16)
+          SQE_AUDITOR_PASSWORD=$(openssl rand -hex 16)
+          EOF
+          docker compose up -d
+          for i in $(seq 1 40); do
+            if curl -fsS http://localhost:8345/control/login >/dev/null 2>&1; then
+              echo "Pretix web service ready."
+              break
+            fi
+            sleep 3
+          done
+          python scripts/seed.py
+
+      - name: "Gate 6: Live REST API, Playwright E2E, Accessibility & Defensive Security Suites"
+        run: |
+          python scripts/run_api_tests.py
+          python scripts/run_e2e_tests.py
+          python scripts/run_a11y_tests.py
+          python scripts/run_security_tests.py
+
+      - name: "Gate 7: Grand Master Audit & Integrity Verification"
+        run: |
+          python scripts/verify_grand_master_audit.py
+          python scripts/verify_ai_use_record.py
+
+      - name: Tear Down Compose Stack
+        if: always()
+        run: docker compose down -v
