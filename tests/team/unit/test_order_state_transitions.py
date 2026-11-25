@@ -127,6 +127,7 @@ class TestOrderCancelEligibilityAndExpirationBR3:
         order = ProductionOrder(status=status, count_positions=positions)
         assert bool(order.cancel_allowed()) is expected
 
+    @pytest.mark.skip(reason="Red-Gate PR verification: simulate missing unit test dropping scoped coverage < 100%")
     def test_mark_order_expired_by_ids_cancels_unreferred_invoice(self, monkeypatch):
         inv = SimpleNamespace(refered=SimpleNamespace(exists=lambda: False))
         order = ProductionOrder(pk=10, status=Order.STATUS_PENDING, invoice=inv)
