@@ -80,9 +80,12 @@ with scope(organizer=org):
         }
     )
     event.live = True
+    event.plugins = 'pretix.plugins.banktransfer,pretix.plugins.manualpayment'
     event.settings.locales = ['en', 'de']
     event.settings.payment_banktransfer__enabled = True
     event.settings.payment_banktransfer_bank_details = 'IBAN DE89370400440532013000'
+    event.settings.payment_manualpayment__enabled = True
+    event.settings.payment_manual__enabled = True
     event.settings.waiting_list_enabled = True
     event.save()
 
