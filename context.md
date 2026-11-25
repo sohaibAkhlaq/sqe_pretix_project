@@ -372,7 +372,7 @@ sqe_project/
    - **M. Hasaam (24i-3107):** Member 2 (Area B: API Testing, Data Generation, Performance)
      - GitHub: `M-Hasaam` (`m.hasaam.official@gmail.com`)
    - **Shaiman (24i-3074):** Member 3 (Area C: Use Cases, E2E Playwright, Usability, A11y, Security)
-     - GitHub: `ShaimanQasir` (`shaiman.qasir.official@gmail.com`)
+     - GitHub: `ShaimanQasir` (`shamshaiman312@gmail.com`)
 2. **Execution Environment:** Docker Desktop on Windows (Engine 29.9.3).
 3. **Static Analysis & Gate Platform:** SonarCloud (official cloud platform for SonarQube with GitHub Actions PR gate integration).
 

@@ -2,7 +2,7 @@
 
 **Milestone Tag:** `gate-7`  
 **Git Branch:** `feature/defensive-security` (merged into `main` via `--no-ff`)  
-**Lead Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`)  
+**Lead Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shamshaiman312@gmail.com>`)  
 **Target Application:** pretix v2026.9.3 (commit `db000dc2986ff595eb3fe4703c4a46c5fe180abe`)  
 **Verification Date:** November 20, 2026  
 **Execution Status:** **100% VERIFIED — ALL PASSING (0 FAILURES, 0 KNOWN VULNERABILITIES)**

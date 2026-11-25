@@ -247,29 +247,46 @@ def generate_issues_payload():
         print(f"[OUTPUT] Generated GitHub Issues JSON payload: {payload_file.relative_to(BASE_DIR)}")
 
     # Check for GITHUB_TOKEN environment variable
-    token = os.environ.get("GITHUB_TOKEN")
-    if token:
+    token = (os.environ.get("GITHUB_TOKEN") or "").strip()
+    if token and not token.startswith("<") and "your-github-pat" not in token.lower():
         try:
             import urllib.request
+            import urllib.error
             headers = {
-                "Authorization": f"token {token}",
-                "Accept": "application/vnd.github.v3+json",
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
                 "User-Agent": "SQE-Defect-Sync"
             }
             url = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
-            print(f"[*] GITHUB_TOKEN detected. Synchronizing {len(issues)} issues to GitHub API...")
+            print(f"[*] GITHUB_TOKEN detected. Checking existing issues on {GITHUB_REPO}...")
+            existing_titles = {}
+            get_req = urllib.request.Request(f"{url}?state=all&per_page=100", headers=headers)
+            with urllib.request.urlopen(get_req) as resp:
+                for ex in json.loads(resp.read().decode()):
+                    existing_titles[ex["title"]] = (ex["number"], ex["html_url"])
+
+            print(f"[*] Synchronizing {len(issues)} issues to GitHub API...")
             for item in issues:
+                if item["title"] in existing_titles:
+                    num, html_url = existing_titles[item["title"]]
+                    print(f"  [EXISTS] Issue #{num}: {item['title'][:50]}... -> {html_url}")
+                    continue
                 post_payload = {"title": item["title"], "body": item["body"], "labels": item.get("labels", [])}
                 data = json.dumps(post_payload).encode("utf-8")
-                req = urllib.request.Request(url, data=data, headers=headers)
+                req = urllib.request.Request(url, data=data, headers=headers, method="POST")
                 with urllib.request.urlopen(req) as resp:
                     res_json = json.loads(resp.read().decode())
                     print(f"  [SYNCED] Issue #{res_json.get('number')}: {item['title'][:50]}... -> {res_json.get('html_url')}")
             print("\n[SUCCESS] All 12 issues synchronized live to GitHub Issues!")
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8", errors="replace")
+            print(f"[WARNING] GitHub API sync failed ({e.code} {e.reason}): {err_body}")
+            print(f"[HINT] Ensure GITHUB_TOKEN is a real PAT (classic 'repo' scope OR fine-grained Issues: Read & write on {GITHUB_REPO}).")
         except Exception as e:
             print(f"[WARNING] GitHub API sync failed: {e}. Payload preserved in {payload_file.name}")
     else:
-        print("[INFO] GITHUB_TOKEN not set in environment. Payload ready for instant sync via GitHub API or CLI.")
+        print("[INFO] Valid GITHUB_TOKEN not set (replace '<your-github-pat>' placeholder with a real GitHub PAT). Payload ready in github_issues_payload.json.")
         print(f"[SUMMARY] {len(issues)} IEEE 1044 defects registered with severity, priority, labels, and triage decisions.")
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 # Pretix Defensive Security & Threat Model
 
 **Component:** SE3002 Software Quality Engineering - Order & Quota Module  
-**Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`)  
+**Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shamshaiman312@gmail.com>`)  
 **Target Application:** pretix v2026.9.3 (commit `db000dc2986ff595eb3fe4703c4a46c5fe180abe`)  
 **Scope:** Order Placement (Workflow A), Order Cancellation/Transitions (Workflow B), Quota Availability, REST API, Control Panel, Storefront.
 

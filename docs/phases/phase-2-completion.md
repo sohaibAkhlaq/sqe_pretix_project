@@ -124,7 +124,7 @@ All deliverables were prepared on `feature/test-management` and committed under 
 | :--- | :--- | :--- | :--- |
 | `935c44e` | Sohaib (`24i-3108`) | `sohaibikhlaq5@gmail.com` | `docs(test-plan): author comprehensive IEEE 829 master test plan` |
 | `e49118e` | M. Hasaam (`24i-3107`) | `m.hasaam.official@gmail.com` | `docs(estimation): establish PERT 3-point effort model and confidence intervals` |
-| `0c73500` | Shaiman (`24i-3074`) | `shaiman.qasir.official@gmail.com` | `docs(risk-rtm): construct 5x5 risk register and bi-directional traceability matrix` |
+| `0c73500` | Shaiman (`24i-3074`) | `shamshaiman312@gmail.com` | `docs(risk-rtm): construct 5x5 risk register and bi-directional traceability matrix` |
 | `Merge` | Team Merge PR #2 | — | `Merge pull request #2 from feature/test-management (Gate 2: Test Management Foundation)` |
 
 ---

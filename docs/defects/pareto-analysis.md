@@ -1,7 +1,7 @@
 # Pareto Defect Distribution Analysis (80/20 Rule)
 
 **Component:** SE3002 Software Quality Engineering Final Project  
-**Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`)  
+**Author:** Shaiman (`24i-3074`, Git: `ShaimanQasir <shamshaiman312@gmail.com>`)  
 **Contributors:** Sohaib (24i-3108), M. Hasaam (24i-3107)  
 **Standard:** Juran’s Pareto Principle (80% of defects stem from 20% of root causes)  
 **Milestone:** Phase 10 (`gate-10`)

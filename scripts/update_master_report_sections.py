@@ -12,7 +12,7 @@ def update_master_report():
 * **Commit Lineage & Traceability:** Linear commit history authored by verified team member accounts:
   - Sohaib (`24i-3108`, Git: `sohaibAkhlaq <sohaibikhlaq5@gmail.com>`) — Area 1 Lead
   - M. Hasaam (`24i-3107`, Git: `M-Hasaam <m.hasaam.official@gmail.com>`) — Area 2 Lead
-  - Shaiman (`24i-3074`, Git: `ShaimanQasir <shaiman.qasir.official@gmail.com>`) — Area 3 Lead
+  - Shaiman (`24i-3074`, Git: `ShaimanQasir <shamshaiman312@gmail.com>`) — Area 3 Lead
 * **Milestone Git Tags:** `gate-0` through `gate-10`, and final submission tag `v1.0-submission`.
 
 ### 2.2 Reproducible Baseline & Multi-Container Architecture

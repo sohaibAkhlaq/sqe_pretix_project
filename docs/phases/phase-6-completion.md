@@ -126,8 +126,8 @@ All Phase 6 deliverables were developed on `feature/usability-accessibility` and
 
 | Commit SHA | Author | Email | Message / Deliverable |
 | :--- | :--- | :--- | :--- |
-| `bdae3a1` | Shaiman (`24i-3074`) | `shaiman.qasir.official@gmail.com` | `docs(a11y): document WCAG 2.1 AA audit, Lighthouse score, and before/after remediation` |
-| `3ed4e8e` | Shaiman (`24i-3074`) | `shaiman.qasir.official@gmail.com` | `test(a11y): implement automated axe-core scans, keyboard navigation, and remediation tests` |
+| `bdae3a1` | Shaiman (`24i-3074`) | `shamshaiman312@gmail.com` | `docs(a11y): document WCAG 2.1 AA audit, Lighthouse score, and before/after remediation` |
+| `3ed4e8e` | Shaiman (`24i-3074`) | `shamshaiman312@gmail.com` | `test(a11y): implement automated axe-core scans, keyboard navigation, and remediation tests` |
 | `Merge` | Team Merge PR #6 | — | `Merge pull request #6 from feature/usability-accessibility (Gate 6: Usability & Accessibility Testing)` |
 
 ---

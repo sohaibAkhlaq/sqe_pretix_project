@@ -99,8 +99,8 @@ All Phase 5 deliverables were developed on `feature/usecases-playwright-e2e` and
 
 | Commit SHA | Author | Email | Message / Deliverable |
 | :--- | :--- | :--- | :--- |
-| `01dc91c` | Shaiman (`24i-3074`) | `shaiman.qasir.official@gmail.com` | `docs(use-cases): specify 6 detailed use cases across 30 execution flows` |
-| `a1cf79f` | Shaiman (`24i-3074`) | `shaiman.qasir.official@gmail.com` | `test(e2e): implement Playwright browser automation suite and capture screen evidence` |
+| `01dc91c` | Shaiman (`24i-3074`) | `shamshaiman312@gmail.com` | `docs(use-cases): specify 6 detailed use cases across 30 execution flows` |
+| `a1cf79f` | Shaiman (`24i-3074`) | `shamshaiman312@gmail.com` | `test(e2e): implement Playwright browser automation suite and capture screen evidence` |
 | `Merge` | Team Merge PR #5 | — | `Merge pull request #5 from feature/usecases-playwright-e2e (Gate 5: Use Cases & Playwright E2E Automation)` |
 
 ---
