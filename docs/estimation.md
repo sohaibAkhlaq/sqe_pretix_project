@@ -101,35 +101,35 @@ All effort figures represent engineering hours.
 | **T11.2**| Master Project Report authoring & formatting | All | 6.0 | 10.0 | 16.0 | 10.33 | 1.67 | 2.78 |
 | **T11.3**| Final package assembly, archive creation & Git tag | All | 2.0 | 3.0 | 5.0 | 3.17 | 0.50 | 0.25 |
 | **T12.1**| Live viva assertion rehearsal & live mutation test prep | All | 3.0 | 5.0 | 8.0 | 5.17 | 0.83 | 0.69 |
-| **TOTAL**| **Entire Project Lifecycle (All Tasks T0.1 – T12.1)** | **Team** | **128.5** | **207.5** | **341.0** | **216.58** | **5.98** | **35.79** |
+| **TOTAL**| **Entire Project Lifecycle (All Tasks T0.1 – T12.1)** | **Team** | **132.5** | **217.0** | **366.5** | **227.83** | **5.91** | **34.93** |
 
 ---
 
 ## 3. Statistical Distribution & Confidence Intervals
 
-* **Total Optimistic Effort ($O_{\text{total}}$):** $128.50\text{ hours}$
-* **Total Most Likely Effort ($M_{\text{total}}$):** $207.50\text{ hours}$
-* **Total Pessimistic Effort ($P_{\text{total}}$):** $341.00\text{ hours}$
-* **Total Expected Effort ($E_{\text{total}}$):** $\mathbf{216.58\text{ hours}}$
-* **Cumulative Project Variance ($\sum \text{Var}_i$):** $35.79\text{ hours}^2$
-* **Project Standard Deviation ($\sigma_{\text{total}} = \sqrt{35.79}$):** $\mathbf{5.98\text{ hours}}$
+* **Total Optimistic Effort ($O_{\text{total}}$):** $132.50\text{ hours}$
+* **Total Most Likely Effort ($M_{\text{total}}$):** $217.00\text{ hours}$
+* **Total Pessimistic Effort ($P_{\text{total}}$):** $366.50\text{ hours}$
+* **Total Expected Effort ($E_{\text{total}}$):** $\mathbf{227.83\text{ hours}}$ (Sum of rounded task rows $E_i$: `227.88` hrs)
+* **Cumulative Project Variance ($\sum \text{Var}_i$):** $34.93\text{ hours}^2$
+* **Project Standard Deviation ($\sigma_{\text{total}} = \sqrt{34.93}$):** $\mathbf{5.91\text{ hours}}$
 
 ### 3.1. Probabilistic Confidence Intervals
 Applying the normal distribution model:
 
 ```mermaid
 xychart-beta
-    title "Effort Probability Distribution (Expected: 216.58 hrs, Sigma: 5.98 hrs)"
-    x-axis ["198h (-3σ)", "204h (-2σ)", "210h (-1σ)", "216.6h (Mean)", "222h (+1σ)", "228h (+2σ)", "234h (+3σ)"]
+    title "Effort Probability Distribution (Expected: 227.83 hrs, Sigma: 5.91 hrs)"
+    x-axis ["210h (-3σ)", "216h (-2σ)", "222h (-1σ)", "227.8h (Mean)", "234h (+1σ)", "240h (+2σ)", "246h (+3σ)"]
     y-axis "Relative Probability Density" 0 --> 0.08
     line [0.005, 0.025, 0.060, 0.075, 0.060, 0.025, 0.005]
 ```
 
-* **$68.2\%$ Confidence Range ($E \pm 1\sigma$):** $[210.60\text{ hrs},\, 222.56\text{ hrs}]$
-* **$95.4\%$ Confidence Range ($E \pm 2\sigma$):** $[204.62\text{ hrs},\, 228.54\text{ hrs}]$
-* **$99.7\%$ Confidence Range ($E \pm 3\sigma$):** $[198.64\text{ hrs},\, 234.52\text{ hrs}]$
+* **$68.2\%$ Confidence Range ($E \pm 1\sigma$):** $[221.92\text{ hrs},\, 233.74\text{ hrs}]$
+* **$95.4\%$ Confidence Range ($E \pm 2\sigma$):** $[216.01\text{ hrs},\, 239.65\text{ hrs}]$
+* **$99.7\%$ Confidence Range ($E \pm 3\sigma$):** $[210.10\text{ hrs},\, 245.56\text{ hrs}]$
 
-With $95.4\%$ statistical certainty, the total quality engineering effort will be completed within **$204.6$ to $228.5$ engineering hours**.
+With $95.4\%$ statistical certainty, the total quality engineering effort will be completed within **$216.0$ to $239.7$ engineering hours**.
 
 ---
 
@@ -141,34 +141,34 @@ To ensure equity across the three team members and fulfill the rubrics for indiv
 
 ```mermaid
 pie title Effort Distribution Across Team Members
-    "Sohaib (Area A)" : 60.5
-    "M. Hasaam (Area B)" : 45.4
-    "Shaiman (Area C)" : 57.0
-    "Shared Collaboration" : 53.7
+    "Sohaib (Area A)" : 72.83
+    "M. Hasaam (Area B)" : 50.50
+    "Shaiman (Area C)" : 60.75
+    "Shared Collaboration" : 43.75
 ```
 
 | Member / ID | Primary Functional Area | Solo Expected Hours | Share of Shared Effort | Total Effective Hours | % of Project Effort |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **Sohaib (`24i-3108`)** | Area A: Static, White-Box, Mutation, CI | 60.50 hrs | 17.89 hrs | **78.39 hrs** | $36.2\%$ |
-| **M. Hasaam (`24i-3107`)** | Area B: API, Datagen, Performance, Load | 45.41 hrs | 17.89 hrs | **63.30 hrs** | $29.2\%$ |
-| **Shaiman (`24i-3074`)** | Area C: E2E, Playwright, A11y, Security | 57.00 hrs | 17.89 hrs | **74.89 hrs** | $34.6\%$ |
-| **Project Total** | Full Quality Engineering Scope | 162.91 hrs | 53.67 hrs | **216.58 hrs** | $\mathbf{100.0\%}$ |
+| **Sohaib (`24i-3108`)** | Area A: Static, White-Box, Mutation, CI | 72.83 hrs | 14.58 hrs | **87.42 hrs** | $38.4\%$ |
+| **M. Hasaam (`24i-3107`)** | Area B: API, Datagen, Performance, Load | 50.50 hrs | 14.58 hrs | **65.08 hrs** | $28.6\%$ |
+| **Shaiman (`24i-3074`)** | Area C: E2E, Playwright, A11y, Security | 60.75 hrs | 14.58 hrs | **75.33 hrs** | $33.1\%$ |
+| **Project Total** | Full Quality Engineering Scope | 184.08 hrs | 43.75 hrs | **227.83 hrs** | $\mathbf{100.0\%}$ |
 
 ### 4.2. Effort Breakdown by Quality Discipline
 
 | Discipline / Test Level | Lead Member | Expected Hours ($E$) | Percentage |
 | :--- | :--- | :---: | :---: |
-| **Test Planning, Baseline & Governance** | All | 31.83 hrs | $14.7\%$ |
-| **White-Box, CFG, MCC, MC/DC Testing** | Sohaib | 31.25 hrs | $14.4\%$ |
-| **Mutation Testing & CI PR Gate** | Sohaib | 27.91 hrs | $12.9\%$ |
-| **API Testing & Automated Datagen** | M. Hasaam | 24.84 hrs | $11.5\%$ |
-| **Performance, Concurrency & Fault Recovery** | M. Hasaam | 12.17 hrs | $5.6\%$ |
-| **Use Cases & Playwright E2E Automation** | Shaiman | 19.83 hrs | $9.2\%$ |
-| **Defensive Security & RBAC Enforcement** | Shaiman | 11.58 hrs | $5.3\%$ |
-| **Usability & Accessibility (WCAG 2.1 AA)** | Shaiman | 12.75 hrs | $5.9\%$ |
-| **Defects, RCA, Pareto & GQM Reporting** | All | 19.76 hrs | $9.1\%$ |
-| **Master Report, Clean Verification & Viva Prep** | All | 24.66 hrs | $11.4\%$ |
-| **Total** | — | **216.58 hrs** | **100.0%** |
+| **Spikes, Baseline, Test Plan & Governance (`T0–T2`)** | All | 49.75 hrs | $21.8\%$ |
+| **White-Box, CFG, MCC, MC/DC Testing (`T3`)** | Sohaib | 27.25 hrs | $12.0\%$ |
+| **Mutation Testing & CI PR Gate (`T8`)** | Sohaib | 25.92 hrs | $11.4\%$ |
+| **API Testing & Automated Datagen (`T4`)** | M. Hasaam | 24.83 hrs | $10.9\%$ |
+| **Performance, Concurrency & Fault Recovery (`T9`)** | M. Hasaam | 12.17 hrs | $5.3\%$ |
+| **Use Cases & Playwright E2E Automation (`T5`)** | Shaiman | 19.83 hrs | $8.7\%$ |
+| **Defensive Security & RBAC Enforcement (`T7`)** | Shaiman | 11.58 hrs | $5.1\%$ |
+| **Usability & Accessibility (WCAG 2.1 AA) (`T6`)** | Shaiman | 12.75 hrs | $5.6\%$ |
+| **Defects, RCA, Pareto & GQM Reporting (`T10`)** | All | 19.75 hrs | $8.7\%$ |
+| **Master Report, Clean Verification & Viva Prep (`T11–T12`)** | All | 24.00 hrs | $10.5\%$ |
+| **Total** | — | **227.83 hrs** | **100.0%** |
 
 ---
 
@@ -183,16 +183,16 @@ pie title Effort Distribution Across Team Members
 
 ## 6. Actual Effort Tracking & PERT Variance Reconciliation
 
-Actual hours recorded below reconcile the baseline PERT estimate ($E = 216.58\text{ hrs}$) against completed project phases (`Phase 0`–`Phase 11`), Git commit authorship (`87+` repository commits prior to final submission packaging), and verification-script execution logs.
+Actual hours recorded below reconcile the baseline PERT estimate ($E = 227.83\text{ hrs}$) against completed project phases (`Phase 0`–`Phase 11`), Git commit authorship (`87+` repository commits prior to final submission packaging), and verification-script execution logs.
 
 ### 6.1. Variance by Team Member & Primary Area
 
 | Member / ID | Primary Area | Git Commits (Baseline) | Expected Hours ($E$) | Actual Hours Logged | Variance ($\text{Actual} - E$) | Variance % | Evidence / Source Basis |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Sohaib (`24i-3108`)** | Area A: Static, White-Box, AST Mutation, CI Gate, Reporting | 55 | 78.39 hrs | **82.50 hrs** | +4.11 hrs | +5.2% | Unit tests, AST mutator, `.github/workflows/pr-gate.yml`, `phase-{0,1,2,3,8,10,11}-completion.md` |
-| **M. Hasaam (`24i-3107`)** | Area B: Test Mgmt, OpenAPI/Datagen, REST API, Perf/k6, Defects | 12 | 63.30 hrs | **64.00 hrs** | +0.70 hrs | +1.1% | `tools/datagen/generator.py`, `tests/team/api/`, dual 60s `k6` & recovery, `defect-log.md` |
-| **Shaiman (`24i-3074`)** | Area C: Use Cases, 30 E2E Flows, A11y/Lighthouse, Security | 20 | 74.89 hrs | **74.50 hrs** | -0.39 hrs | -0.5% | `docs/use-cases.md`, 30 E2E Playwright flows, container a11y patches, 7-decision RBAC matrix |
-| **Project Total** | Full SE3002 Quality Engineering Scope | **87+** | **216.58 hrs** | **221.00 hrs** | **+4.42 hrs** | **+2.04%** | Within $+0.74\sigma$ of PERT expected total ($< 2\sigma = 12.0\text{ hrs}$ schedule buffer) |
+| **Sohaib (`24i-3108`)** | Area A: Static, White-Box, AST Mutation, CI Gate, Reporting | 55 | 87.42 hrs | **82.50 hrs** | -4.92 hrs | -5.6% | Unit tests, AST mutator, `.github/workflows/pr-gate.yml`, `phase-{0,1,2,3,8,10,11}-completion.md` |
+| **M. Hasaam (`24i-3107`)** | Area B: Test Mgmt, OpenAPI/Datagen, REST API, Perf/k6, Defects | 12 | 65.08 hrs | **64.00 hrs** | -1.08 hrs | -1.7% | `tools/datagen/generator.py`, `tests/team/api/`, dual 60s `k6` & recovery, `defect-log.md` |
+| **Shaiman (`24i-3074`)** | Area C: Use Cases, 30 E2E Flows, A11y/Lighthouse, Security | 20 | 75.33 hrs | **74.50 hrs** | -0.83 hrs | -1.1% | `docs/use-cases.md`, 30 E2E Playwright flows, container a11y patches, 7-decision RBAC matrix |
+| **Project Total** | Full SE3002 Quality Engineering Scope | **87+** | **227.83 hrs** | **221.00 hrs** | **-6.83 hrs** | **-3.00%** | Within $-1.16\sigma$ of PERT expected total ($95.4\%$ CI $[216.01, 239.65]$ hrs) |
 
 ### 6.2. Key Drivers of Schedule Variance
 * **Positive Variance (+4.11 hrs in Area A):** Unplanned Windows POSIX `fork()` failure in `mutmut` (`DEF-08`, `PRJ2`) and migrating unit/mutation coverage from helper scripts directly onto AST-verified upstream production functions (`upstream/pretix/base/scoped_business_logic.py`).

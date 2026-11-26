@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPORT_MD_PATH = os.path.join(BASE_DIR, 'docs', 'MASTER_REPORT.md')
-OUTPUT_PDF_PATH_A = os.path.join(BASE_DIR, 'Project_24i-3108_24i-3107_24i-3074_A.pdf')
+OUTPUT_PDF_PATH_C = os.path.join(BASE_DIR, 'Project_24i-3108_24i-3107_24i-3074_C.pdf')
 if os.path.exists(os.path.join(BASE_DIR, 'Project_24i-3108_24i-3074_24i-3107.pdf')):
     os.remove(os.path.join(BASE_DIR, 'Project_24i-3108_24i-3074_24i-3107.pdf'))
 
@@ -171,9 +171,9 @@ with sync_playwright() as p:
     # Wait for KaTeX rendering
     page.wait_for_timeout(1500)
     
-    # Generate A-section named PDF
+    # Generate C-section named PDF
     page.pdf(
-        path=OUTPUT_PDF_PATH_A,
+        path=OUTPUT_PDF_PATH_C,
         format='A4',
         print_background=True,
         margin={
@@ -192,4 +192,4 @@ with sync_playwright() as p:
 if os.path.exists(temp_html):
     os.remove(temp_html)
 
-print("Generated:", OUTPUT_PDF_PATH_A, f"({os.path.getsize(OUTPUT_PDF_PATH_A) / 1024:.1f} KB)")
+print("Generated:", OUTPUT_PDF_PATH_C, f"({os.path.getsize(OUTPUT_PDF_PATH_C) / 1024:.1f} KB)")

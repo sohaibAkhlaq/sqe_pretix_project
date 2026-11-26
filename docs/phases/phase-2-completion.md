@@ -19,7 +19,7 @@ Phase 2 establishes the comprehensive **Test Management Foundation** for the qua
 
 ### Core Deliverables Summary
 1. **Master Test Plan (`docs/test-plan.md`):** Complete 18-section IEEE 829-2008 test plan defining test items, items not tested, quantitative pass/fail thresholds, suspension/resumption triggers, environmental needs, and milestone gates.
-2. **PERT 3-Point Estimation (`docs/estimation.md`):** Probabilistic effort model covering 50 atomic tasks across all 11 project phases. Total expected duration is $216.58\text{ engineering hours}$ ($\sigma = 5.98\text{ hrs}$), with a $95.4\%$ confidence interval of $[204.62\text{ hrs},\, 228.54\text{ hrs}]$. Workload is equitably distributed across all 3 group members (Sohaib: 36.2%, Shaiman: 34.6%, M. Hasaam: 29.2%).
+2. **PERT 3-Point Estimation (`docs/estimation.md`):** Probabilistic effort model covering 50 atomic tasks across all 11 project phases. Total expected duration is $227.83\text{ engineering hours}$ ($\sigma = 5.91\text{ hrs}$), with a $95.4\%$ confidence interval of $[216.01\text{ hrs},\, 239.65\text{ hrs}]$. Workload is equitably distributed across all 3 group members (Sohaib: 38.4%, Shaiman: 33.1%, M. Hasaam: 28.6%).
 3. **5x5 Risk Register (`docs/risk-register.md`):** Comprehensive evaluation of 8 Product Risks (PR1–PR8) and 2 Project Risks (PRJ1–PRJ2), detailing triggers, initial scores, concrete mitigations, contingencies, and post-mitigation residual scores ($\le 5$).
 4. **Requirements Traceability Matrix (`docs/traceability-matrix.md`):** Bi-directional matrix mapping 12 requirements and business rules + 10 risks to 34 planned automated test cases spanning Unit, API, E2E, Usability, Security, Mutation, and Performance testing.
 
@@ -59,24 +59,24 @@ The statistical model developed in `docs/estimation.md` provides probabilistic c
 ```mermaid
 xychart-beta
     title "Project Effort Normal Distribution (Hours)"
-    x-axis ["198h (-3σ)", "204h (-2σ)", "210h (-1σ)", "216.6h (Mean)", "222h (+1σ)", "228h (+2σ)", "234h (+3σ)"]
+    x-axis ["210h (-3σ)", "216h (-2σ)", "222h (-1σ)", "227.8h (Mean)", "234h (+1σ)", "240h (+2σ)", "246h (+3σ)"]
     y-axis "Probability Density" 0 --> 0.08
     line [0.005, 0.025, 0.060, 0.075, 0.060, 0.025, 0.005]
 ```
 
 ### Statistical Summary
-* **Total Optimistic Duration ($\sum O_i$):** $128.50\text{ hours}$
-* **Total Most Likely Duration ($\sum M_i$):** $207.50\text{ hours}$
-* **Total Pessimistic Duration ($\sum P_i$):** $341.00\text{ hours}$
-* **Expected Project Effort ($E_{\text{total}}$):** $\mathbf{216.58\text{ hours}}$
-* **Standard Deviation ($\sigma_{\text{total}}$):** $\mathbf{5.98\text{ hours}}$
-* **Variance ($\sigma_{\text{total}}^2$):** $35.79\text{ hours}^2$
-* **$95.4\%$ Confidence Interval:** $[204.62\text{ hrs},\, 228.54\text{ hrs}]$
+* **Total Optimistic Duration ($\sum O_i$):** $132.50\text{ hours}$
+* **Total Most Likely Duration ($\sum M_i$):** $217.00\text{ hours}$
+* **Total Pessimistic Duration ($\sum P_i$):** $366.50\text{ hours}$
+* **Expected Project Effort ($E_{\text{total}}$):** $\mathbf{227.83\text{ hours}}$
+* **Standard Deviation ($\sigma_{\text{total}}$):** $\mathbf{5.91\text{ hours}}$
+* **Variance ($\sigma_{\text{total}}^2$):** $34.93\text{ hours}^2$
+* **$95.4\%$ Confidence Interval:** $[216.01\text{ hrs},\, 239.65\text{ hrs}]$
 
 ### Workload Balance Check
-* **Sohaib (Area A Lead):** $78.39\text{ effective hrs}$ ($36.2\%$)
-* **Shaiman (Area C Lead):** $74.89\text{ effective hrs}$ ($34.6\%$)
-* **M. Hasaam (Area B Lead):** $63.30\text{ effective hrs}$ ($29.2\%$)
+* **Sohaib (Area A Lead):** $87.42\text{ effective hrs}$ ($38.4\%$)
+* **Shaiman (Area C Lead):** $75.33\text{ effective hrs}$ ($33.1\%$)
+* **M. Hasaam (Area B Lead):** $65.08\text{ effective hrs}$ ($28.6\%$)
 * **Assessment:** The workload is well-balanced across all three contributors, respecting individual task ownership while maintaining parity.
 
 ---

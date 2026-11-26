@@ -188,21 +188,27 @@ classDiagram
 ---
 
 ### 5.4. BR4 — Multi-Condition Decision Rule (Expired Order Late Payment)
-* **Code Reference:** `pretix.base.services.orders._perform_order` & `Order.payment_confirm`
-* **Boolean Conditions:**
-  * $C_1$: $\text{Order Current Status} == \text{'e'}$ (Expired)
-  * $C_2$: $\text{Payment Transaction Status} == \text{'VALID'}$
-  * $C_3$: $\text{Quota Availability} \ge \text{Order Size}$
+* **Code Reference:** `upstream/pretix/base/models/orders.py:1026-1047` (`Order._can_be_paid`, extracted verbatim in `upstream/pretix/base/scoped_business_logic.py`)
+* **Boolean Conditions (Expired-Order Late Payment Guard):**
+  * $C_1$: `accept_late` = `bool(self.event.settings.get('payment_term_accept_late'))`
+  * $C_2$: `ignore_date` (`ignore_date` flag passed to `_can_be_paid`)
+  * $C_3$: `force` (`force` override flag passed to `_can_be_paid`)
 * **Decision Formula:**
-  $$\text{Accept Late Payment} = C_1 \land C_2 \land C_3$$
-* **Decision Table:**
+  $$\text{Block Late Payment} = (\neg C_1) \land (\neg C_2) \land (\neg C_3)$$
+  When true for a non-pending (e.g., `'e'` Expired) order, `_can_be_paid` returns `error_messages['late']`. Otherwise, it delegates to `self._is_still_available(...)` to confirm quota headroom before permitting `'e' -> 'p'` settlement (plus pre-guards for `require_approval` and `time_machine_now() > payment_term_last` when `not force`).
+* **Complete 8-Row MCC Decision Table ($2^3 = 8$ Combinations) & Over-Quota Check:**
 
-| Rule | $C_1$ (Status == 'e') | $C_2$ (Payment Valid) | $C_3$ (Quota Space Available) | Expected Action |
-| :---: | :---: | :---: | :---: | :--- |
-| **R1** | True | True | True | **Accept Payment $\to$ Transition to Paid (`p`) $\to$ Deduct Quota** |
-| **R2** | True | True | False | **Reject Payment $\to$ Maintain Expired (`e`) $\to$ Trigger Over-Quota Refund** |
-| **R3** | True | False | True | **Reject Payment $\to$ Invalid Payment Error** |
-| **R4** | False | True | True | **Reject Action $\to$ Order Not in Expired State** |
+| Row | $C_1$ (`accept_late`) | $C_2$ (`ignore_date`) | $C_3$ (`force`) | `_is_still_available` | Expected Outcome |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **R1** | `False` | `False` | `False` | `True` | **Block (`error_messages['late']`)** |
+| **R2** | `False` | `False` | `True` | `True` | **Allow (`True`)** |
+| **R3** | `False` | `True` | `False` | `True` | **Allow (`True`)** |
+| **R4** | `False` | `True` | `True` | `True` | **Allow (`True`)** |
+| **R5** | `True` | `False` | `False` | `True` | **Allow (`True`)** |
+| **R6** | `True` | `False` | `True` | `True` | **Allow (`True`)** |
+| **R7** | `True` | `True` | `False` | `True` | **Allow (`True`)** |
+| **R8** | `True` | `True` | `True` | `True` | **Allow (`True`)** |
+| **Over-Quota** | `True` | `False` | `False` | `False` / Error str | **Reject (`no longer available` / HTTP 400)** |
 
 ---
 

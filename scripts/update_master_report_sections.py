@@ -95,18 +95,18 @@ $$\\text{Requirements Coverage} = \\frac{\\text{Requirements Covered by Passed T
 
 | Req / Risk ID | Specification Summary | Test Case ID | Test Level | Tool | Expected Outcome | Owner |
 | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| **FR1, PR5** | Idempotent Order Creation | `TC-API-01`, `TC-UNIT-01` | API / Unit | `requests`, `pytest` | Replay returns identical 201; 0 duplicate holds | M. Hasaam / Sohaib |
-| **FR2, BR1, PR1** | Quota Depletion Enforcement | `TC-UNIT-02`, `TC-API-02`, `TC-E2E-01`| Unit / API / E2E | `pytest`, `requests`, `Playwright` | QuotaExceededException, HTTP 400, Sold Out UI badge | Sohaib / Hasaam / Shaiman |
-| **FR3, PR3** | Cancellation Quota Release | `TC-UNIT-03`, `TC-API-03`, `TC-E2E-02`| Unit / API / E2E | `pytest`, `requests`, `Playwright` | Status 'c'; Quota restored ($9 \\to 10$); UI badge updated | Sohaib / Hasaam / Shaiman |
-| **FR4** | Payment Settlement | `TC-UNIT-04`, `TC-API-04` | Unit / API | `pytest`, `requests` | Status 'p'; Quota held permanently | Sohaib / M. Hasaam |
-| **FR5, PR7, PR8** | Expiration Quota Release | `TC-UNIT-05`, `TC-API-05` | Unit / API | `pytest`, `requests` | Status 'e'; Held quota released back to pool | Sohaib / M. Hasaam |
-| **FR6** | Multi-Tenant Scoping | `TC-UNIT-06`, `TC-API-06` | Unit / API | `pytest`, `requests` | ScopeError raised; HTTP 404 on invalid tenant | Sohaib / M. Hasaam |
-| **FR7, PR6** | Role-Based Access Enforcement | `TC-API-07`, `TC-SEC-01` | API / Security | `requests`, `Playwright` | Admin 200/201; Auditor 403 Forbidden on mutations | M. Hasaam / Shaiman |
-| **FR8, PR4** | Atomic Multi-Position Checkout | `TC-UNIT-07`, `TC-API-08` | Unit / API | `pytest`, `requests` | Rollback ensures 0 saved positions on failure | Sohaib / M. Hasaam |
+| **FR1, PR4** | Order Creation within Quota Limit | `TC-UNIT-01`, `TC-API-01`, `TC-E2E-01` | Unit / API / E2E | `pytest`, `requests`, `Playwright` | Order created in status `'n'`; quota decremented by $Q$; HTTP 201 | Sohaib / Hasaam / Shaiman |
+| **FR2, BR1, PR1** | Quota Depletion Boundary Rejection | `TC-UNIT-02`, `TC-API-02`, `TC-E2E-02` | Unit / API / E2E | `pytest`, `requests`, `Playwright` | `OrderError` / HTTP 400 `order.quota`, Sold Out UI badge; 0 holds | Sohaib / Hasaam / Shaiman |
+| **FR3, PR5** | Idempotent API Submission | `TC-API-03` | API Integration | `requests` | Duplicate `X-Idempotency-Key` replays HTTP 201; 0 duplicate holds | M. Hasaam |
+| **FR4, PR6** | Input Validation, Scoping & RBAC Guard | `TC-API-04`, `TC-SEC-01` | API / Security | `requests`, `Playwright` | Invalid payloads HTTP 400; invalid tenant 404; Auditor 403 on mutations | M. Hasaam / Shaiman |
+| **FR5, PR3** | Authorized Order Cancellation & Quota Release | `TC-UNIT-03`, `TC-API-05`, `TC-E2E-03` | Unit / API / E2E | `pytest`, `requests`, `Playwright` | Status `'c'`; held quota restored ($9 \\to 10$); UI badge updated | Sohaib / Hasaam / Shaiman |
+| **FR6, PR7, PR8** | Payment Expiration Handling | `TC-UNIT-04`, `TC-API-06` | Unit / API | `pytest`, `requests` | Status `'e'`; held quota released back to general pool | Sohaib / M. Hasaam |
+| **FR7, BR4** | Late Payment on Expired Order with Space | `TC-UNIT-05`, `TC-API-07`, `TC-E2E-04` | Unit / API / E2E | `pytest`, `requests`, `Playwright` | Order transitions `'e' -> 'p'`; quota re-reserved cleanly | Sohaib / Hasaam / Shaiman |
+| **FR8, BR4, PR8** | Late Payment Over-Quota Rejection | `TC-UNIT-06`, `TC-API-08` | Unit / API | `pytest`, `requests` | Expired order blocked (`_can_be_paid` / HTTP 400) when $A < Q$ | Sohaib / M. Hasaam |
 | **BR1** | Boundary Capacity Evaluation | `TC-UNIT-08`, `TC-API-09` | Unit / API | `pytest`, `requests` | BVA ($Q=9, 10, 11$); $Q \\le 10$ accepted, $11$ rejected | Sohaib / M. Hasaam |
-| **BR2** | Multi-Condition Purchasability | `TC-UNIT-09`, `TC-UNIT-10` | Unit MCC / MC/DC | `pytest` | 16-row MCC truth table; 4 MC/DC orthogonal pairs | Sohaib |
-| **BR3** | State Machine Integrity | `TC-UNIT-11`, `TC-API-10` | Unit / API | `pytest`, `requests` | Invalid transitions raise OrderError / HTTP 409 | Sohaib / M. Hasaam |
-| **BR4, PR7** | Payment Expiration Check | `TC-UNIT-12` | White-Box Unit | `pytest` | Payment rejected when $\\text{now}() > \\text{expires}$ | Sohaib |
+| **BR2** | Closed-Quota Early-Out Gate | `TC-UNIT-09`, `TC-UNIT-10` | Unit MCC / MC/DC | `pytest` | 4-row MCC + 2 MC/DC pairs on `QuotaAvailability._compute_early_outs` | Sohaib |
+| **BR3** | Cancel Eligibility & Expiration | `TC-UNIT-11`, `TC-API-10` | Unit / API | `pytest`, `requests` | `Order.cancel_allowed` & `mark_order_expired` + illegal transitions (HTTP 400) | Sohaib / M. Hasaam |
+| **BR4, PR8** | Expired-Order Late Payment Gate | `TC-UNIT-12`, `TC-API-11` | Unit MCC/MCDC / API | `pytest`, `requests` | 8-row MCC + 4 MC/DC pairs on `Order._can_be_paid` + headroom vs stockout API | Sohaib / M. Hasaam |
 | **PR1** | Concurrency Quota Exhaustion | `TC-PERF-01` | Performance | Grafana `k6` | Exactly 10 orders accepted; 0 oversold items | M. Hasaam |
 | **PR1, PRJ1** | Load Baseline SLA | `TC-PERF-02` | Performance | Grafana `k6` | $p95 < 500\\text{ ms}$, error rate $< 1.0\\%$ | M. Hasaam |
 | **PRJ1** | Service Recovery on Chaos | `TC-PERF-03` | Chaos Fault Injection | Docker CLI / Python | Service restores in $RTO < 15\\text{s}$; data intact | M. Hasaam |

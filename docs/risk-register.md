@@ -26,6 +26,8 @@ Risk assessment follows standard software quality engineering principles (ISO/IE
 
 ### 1.2. Risk Heat Map & Scoring Bands
 
+**Formula:** Risk Exposure Score ($R$) = Probability (P) $\times$ Impact (I) $\in [1, 25]$.
+
 $$\text{Risk Exposure Score } (R) = \text{Probability } (P) \times \text{Impact } (I) \quad [1 \le R \le 25]$$
 
 | Probability \ Impact | 1 (Negligible) | 2 (Minor) | 3 (Moderate) | 4 (Major) | 5 (Critical) |

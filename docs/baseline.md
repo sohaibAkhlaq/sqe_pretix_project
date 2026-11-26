@@ -17,7 +17,8 @@
 * **Pinned Upstream Release:** `pretix/standalone:stable` (aligned with upstream release `v2026.9.3`)
 * **Pinned Upstream Git Commit SHA:** `db000dc2986ff595eb3fe4703c4a46c5fe180abe`
 * **Local Git Tag:** `gate-0` / `gate-1`
-* **Licence:** GNU Affero General Public License v3.0 (AGPL-3.0) with pretix enterprise exception clauses (retained in repository root `LICENSE`)
+* **Licence:** GNU Affero General Public License v3.0 (AGPL-3.0) with pretix enterprise exception clauses (retained in repository root [`LICENSE`](file:///c:/Users/USER/Desktop/sqe_project/LICENSE), `51,854` bytes)
+* **Section C Course Registration Proof:** Registered Row 16 on `SQE Final Project Registration | Section C` (`24i-3108`, `24i-3107`, `24i-3074`, `https://github.com/pretix/pretix`) verified on `November 19, 8:43 PM` (`Sohaib Akhlaq`) — [`reports/scope/google_sheet_registration.jpg`](file:///c:/Users/USER/Desktop/sqe_project/reports/scope/google_sheet_registration.jpg) & [`reports/scope/google_sheet_version_history.png`](file:///c:/Users/USER/Desktop/sqe_project/reports/scope/google_sheet_version_history.png).
 
 ---
 

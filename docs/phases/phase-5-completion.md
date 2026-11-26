@@ -53,7 +53,7 @@ The automated E2E suite (`tests/team/e2e/`) drives headless Chromium against the
 | `test_customer_order_flow.py` | `test_customer_complete_order_journey` | UC1: Landing $\to$ Cart $\to$ Checkout wizard $\to$ Order placement | **PASS** |
 | `test_sold_out_ui_flow.py` | `test_storefront_item_and_pricing_elements` | UC4: Inventory display, price €50.00, quantity input bounds | **PASS** |
 | `test_organizer_control_panel_flow.py` | `test_admin_login_and_orders_view` | UC5: Admin login $\to$ Control panel $\to$ Event orders table view | **PASS** |
-| `test_auditor_access_control_ui.py` | `test_auditor_login_and_inspection` | UC5/FR7: Auditor authentication $\to$ Read-only order view | **PASS** |
+| `test_auditor_access_control_ui.py` | `test_auditor_login_and_inspection` | UC5/PR6: Auditor authentication $\to$ Read-only order view | **PASS** |
 
 ### Execution Command
 ```bash

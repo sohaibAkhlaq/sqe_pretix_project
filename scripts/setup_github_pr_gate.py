@@ -14,7 +14,7 @@ Implements end-to-end live GitHub governance for sohaibAkhlaq/sqe_pretix_project
    evidence in `docs/ci-gate-demo.md` and `docs/MASTER_REPORT.md` (§12.4), pushes Commit 2,
    waits for BOTH GitHub Actions jobs to pass GREEN, and merges the PR cleanly into `main`.
 4. Syncs local `main`, updates `v1.0-submission` tag, cleans the merged demo branch,
-   and rebuilds `Project_24i-3108_24i-3107_24i-3074_A.pdf` and `.zip`.
+   and rebuilds `Project_24i-3108_24i-3107_24i-3074_C.pdf` and `.zip`.
 """
 import argparse
 import json
@@ -45,8 +45,8 @@ CI_DEMO_DOC_REL = "docs/ci-gate-demo.md"
 MASTER_REPORT_REL = "docs/MASTER_REPORT.md"
 SELF_REL = "scripts/setup_github_pr_gate.py"
 
-PDF_NAME = "Project_24i-3108_24i-3107_24i-3074_A.pdf"
-ZIP_NAME = "Project_24i-3108_24i-3107_24i-3074_A.zip"
+PDF_NAME = "Project_24i-3108_24i-3107_24i-3074_C.pdf"
+ZIP_NAME = "Project_24i-3108_24i-3107_24i-3074_C.zip"
 
 PYTHON_BIN = str(PROJECT_ROOT / ".venv" / "Scripts" / "python.exe")
 if not os.path.exists(PYTHON_BIN):

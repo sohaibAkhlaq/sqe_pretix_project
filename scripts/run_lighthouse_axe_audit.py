@@ -139,11 +139,30 @@ def generate_unified_a11y_report():
         ),
     }
 
+    orders_html = REPORTS_DIR / "lighthouse_orders_logged_in.html"
+    axe_orders_json = REPORTS_DIR / "axe_orders_report.json"
+
     lighthouse_scores = {
         "storefront_landing": {"url": "http://localhost:8345/sqe/sqe2026/", **lh_storefront},
         "control_panel_login_before": {"url": "http://localhost:8345/control/login", **lh_before},
         "control_panel_login_after": {"url": "http://localhost:8345/control/login", **lh_after},
     }
+    axe_summary = {
+        "login_after": {"violations": after_violations, "passes": axe_login.get("passes_count", 0)},
+        "storefront": {"violations": storefront_violations, "passes": axe_storefront.get("passes_count", 0)},
+    }
+    if orders_html.exists():
+        lh_orders = parse_lighthouse_html(orders_html)
+        lighthouse_scores["control_panel_orders_logged_in"] = {
+            "url": "http://localhost:8345/control/event/sqe/sqe2026/orders/",
+            **lh_orders,
+        }
+    if axe_orders_json.exists():
+        axe_orders = json.loads(axe_orders_json.read_text(encoding="utf-8"))
+        axe_summary["orders_logged_in"] = {
+            "violations": int(axe_orders.get("violations_count", 0)),
+            "passes": axe_orders.get("passes_count", 0),
+        }
 
     report = {
         "report_title": "Unified Google Lighthouse & axe-core Accessibility & Usability Evaluation",
@@ -153,10 +172,7 @@ def generate_unified_a11y_report():
         "issue_register": unified_issues,
         "before_after_comparison": before_vs_after,
         "lighthouse_category_scores": lighthouse_scores,
-        "axe_reports_summary": {
-            "login_after": {"violations": after_violations, "passes": axe_login.get("passes_count", 0)},
-            "storefront": {"violations": storefront_violations, "passes": axe_storefront.get("passes_count", 0)},
-        },
+        "axe_reports_summary": axe_summary,
         "status": "COMPLETED_AND_VERIFIED",
     }
 

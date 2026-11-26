@@ -120,10 +120,10 @@ tests/team/api/test_rbac_api.py::TestRBACPermissionsAPI::test_auditor_cannot_can
 ```
 
 ### 5.3. Verified Functional Properties
-1. **Idempotency (FR1, PR5):** 5 consecutive replays of identical `X-Idempotency-Key` returned identical order code with 0 duplicate quota holds.
+1. **Idempotency (FR3, PR5):** 5 consecutive replays of identical `X-Idempotency-Key` returned identical order code with 0 duplicate quota holds.
 2. **Cross-Workflow Quota Coupling (Shared State):** Quota transitioned from $10 \to 9$ on creation, and restored from $9 \to 10$ upon cancellation.
 3. **State Machine Integrity (BR3):** Illegal transition ($\text{Canceled} \to \text{Paid}$) was strictly rejected with HTTP 400.
-4. **Role-Based Access Control (FR7, PR6):** Read-Only Auditor token successfully accessed all 5 read endpoints (HTTP 200) and was denied on all mutating endpoints (HTTP 403 Forbidden).
+4. **Role-Based Access Control (PR6):** Read-Only Auditor token successfully accessed all 5 read endpoints (HTTP 200) and was denied on all mutating endpoints (HTTP 403 Forbidden).
 
 ---
 

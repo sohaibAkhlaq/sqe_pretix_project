@@ -111,8 +111,12 @@ def run_pip_audit():
                     "description": vuln.get("description", "")
                 })
 
-    # Extract container runtime Python packages for complete inventory transparency
+    # Extract container runtime Python packages & run pip-audit against pretix_web
     docker_pkgs = []
+    c_deps_scanned = 0
+    c_vulns = []
+    c_raw_path = REPORTS_DIR / "pip_audit_container_raw.json"
+    c_req_path = REPORTS_DIR / "container_requirements.txt"
     try:
         from scripts.reset import find_docker_bin
         dk = find_docker_bin()
@@ -120,8 +124,32 @@ def run_pip_audit():
         if dk_res.returncode == 0 and dk_res.stdout.strip().startswith("["):
             docker_pkgs = json.loads(dk_res.stdout)
             (REPORTS_DIR / "container_runtime_packages.json").write_text(json.dumps(docker_pkgs, indent=2), encoding="utf-8")
+        frz_res = subprocess.run([dk, "exec", "pretix_web", "pip", "freeze"], capture_output=True, text=True)
+        if frz_res.returncode == 0 and frz_res.stdout.strip():
+            c_req_path.write_text(frz_res.stdout, encoding="utf-8")
     except Exception as exc:
         print(f"      [WARN] Could not export container runtime packages: {exc}")
+
+    if c_req_path.exists():
+        c_cmd = [
+            sys.executable, "-m", "pip_audit",
+            "--no-deps", "--disable-pip",
+            "-r", str(c_req_path),
+            "--format", "json", "-o", str(c_raw_path)
+        ]
+        subprocess.run(c_cmd, capture_output=True, text=True)
+        if c_raw_path.exists():
+            c_raw = json.loads(c_raw_path.read_text(encoding="utf-8"))
+            c_deps = c_raw.get("dependencies", [])
+            c_deps_scanned = len(c_deps)
+            for pkg in c_deps:
+                for v in pkg.get("vulns", []):
+                    c_vulns.append({
+                        "package": pkg.get("name"),
+                        "version": pkg.get("version"),
+                        "id": v.get("id"),
+                        "fix_versions": v.get("fix_versions", []),
+                    })
 
     out_file = REPORTS_DIR / "pip_audit_report.json"
     report_content = {
@@ -132,7 +160,12 @@ def run_pip_audit():
         "container_runtime_packages_count": len(docker_pkgs),
         "vulnerabilities_found": len(vulnerabilities),
         "vulnerabilities": vulnerabilities,
-        "raw_audit": audit_data
+        "raw_audit": audit_data,
+        "container_dependencies_scanned": c_deps_scanned,
+        "container_vulnerabilities_found": len(c_vulns),
+        "container_affected_packages": sorted(list({v["package"] for v in c_vulns})),
+        "container_vulnerabilities": c_vulns,
+        "container_raw_artifact": "reports/security/pip_audit_container_raw.json",
     }
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(report_content, f, indent=2)
