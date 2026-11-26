@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-11-25T20:41:37.995408",
+  "timestamp": "2026-11-27T02:41:20.092337",
   "tool": "pip-audit 2.10.1",
   "target": "requirements-test.txt (host verification harness) + pretix_web pip inventory",
   "dependencies_scanned": 48,
@@ -85,7 +85,7 @@
       },
       {
         "name": "cyclonedx-python-lib",
-        "version": "11.12.0",
+        "version": "11.13.0",
         "vulns": []
       },
       {
