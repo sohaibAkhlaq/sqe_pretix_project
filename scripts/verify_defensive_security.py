@@ -73,9 +73,12 @@ def audit_defensive_security():
         pip_data = json.load(f)
     deps_scanned = pip_data.get("dependencies_scanned", len(pip_data.get("dependencies", [])))
     vulns_found = pip_data.get("vulnerabilities_found", sum(len(d.get("vulns", [])) for d in pip_data.get("dependencies", [])))
-    print(f"  pip-audit Inspected Packages: {deps_scanned}")
-    print(f"  pip-audit Vulnerabilities Detected: {vulns_found} CVEs")
-    assert vulns_found == 0, "Unexpected vulnerabilities found in pip-audit"
+    c_scanned = pip_data.get("container_dependencies_scanned", 0)
+    c_vulns = pip_data.get("container_vulnerabilities_found", 0)
+    print(f"  pip-audit Host Packages: {deps_scanned} ({vulns_found} CVEs)")
+    print(f"  pip-audit pretix_web Container Packages: {c_scanned} ({c_vulns} CVE records across {len(pip_data.get('container_affected_packages', []))} upstream packages, documented in §11.4)")
+    assert vulns_found == 0, "Unexpected vulnerabilities found in host requirements-test.txt"
+    assert c_scanned >= 150, f"Expected >= 150 pretix_web container packages audited, found {c_scanned}"
 
     zap_audit_json = os.path.join(PROJECT_ROOT, "reports", "security", "zap_passive_audit_report.json")
     assert os.path.exists(zap_audit_json), f"Missing {zap_audit_json}"

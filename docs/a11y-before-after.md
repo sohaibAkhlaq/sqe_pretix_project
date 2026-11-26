@@ -36,5 +36,6 @@ Findings from headless Chromium Google Lighthouse (`v13.6.0`) and Playwright `@a
 | **Control Login — BEFORE** | `lighthouse_before.html` | **69 / 100** | 96 / 100 | 50 / 100 | — | **4 active rule groups** (`html-has-lang`, `landmark-one-main`, `page-has-heading-one`, `region`) + `image-alt` | — |
 | **Control Login — AFTER** | `lighthouse_after.html` | **100 / 100 (+31 pts)** | **96 / 100** | **66 / 100 (+16 pts)** | **100 / 100** | **0 violations** (`axe_login_report.json`) | **33 rules passed** |
 | **Event Storefront — AFTER** | `lighthouse_storefront.html` | **100 / 100** | **92 / 100** | **100 / 100** | **50 / 100** (cold throttling) | **0 violations** (`axe_storefront_report.json`) | **43 rules passed** |
+| **Control Orders (Logged-In) — Audit** | `lighthouse_orders_logged_in.html` | **78 / 100** | **100 / 100** | **50 / 100** | **80 / 100** | **10 violations** (`axe_orders_report.json`) | **38 rules passed** |
 
 *Note on Storefront Lighthouse Performance (`50/100`):* Headless Chromium CPU/network simulation on an uncached local development container reports `50/100` for mobile rendering, reported unmodified directly from `lighthouse_storefront.html`. All WCAG 2.1 AA accessibility (`100/100`), keyboard traversal (`01_keyboard_tab_focus.png`), and usability task recovery (`workflow_a_01/02`, `workflow_b_01`) tests pass `8/8`.

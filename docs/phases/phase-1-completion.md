@@ -48,21 +48,21 @@ The functional requirements and business rules are documented in `docs/test-basi
 * **Workflow B (Order Cancellation & State Transition):** Transitions `Order` through states (`Pending` $\to$ `Paid`, `Pending` $\to$ `Canceled`, `Pending` $\to$ `Expired`), releasing quota holds upon cancellation/expiration.
 * **Shared State (`Quota Availability`):** Derived dynamically from total quota size minus active order positions and blocking vouchers ($A = S - (O_{paid} + O_{pending} + V_{blocking})$). Workflow A decrements $A$; Workflow B restores $A$.
 
-### 3.2. Functional Requirements (FR1 – FR8)
-* **FR1 (Idempotent Order Creation):** Duplicate submission with identical `X-Idempotency-Key` returns the original order without double-booking quota.
-* **FR2 (Quota Depletion Enforcement):** Order creation rejected with HTTP 400 when order count exceeds remaining quota.
-* **FR3 (Order Cancellation & Quota Release):** Canceling a pending order releases consumed quota back to the pool.
-* **FR4 (Order Payment & Quota Finalization):** Marking an order paid confirms quota retention without decrementing quota twice.
-* **FR5 (Expiration Quota Release):** Expired pending orders release quota back to the available pool.
-* **FR6 (Multi-Tenant Scoping):** All order and quota actions strictly scoped by `Organizer` and `Event` slug.
-* **FR7 (Role-Based Access Enforcement):** Admin token can read and mutate; Read-Only Auditor token receives HTTP 403 on mutation endpoints.
-* **FR8 (Atomic Transaction Rollback):** Multi-position order fails atomically if any single position fails quota checks.
+### 3.2. Functional Requirements (FR1 – FR8, Aligned to `docs/test-basis.md` §4)
+* **FR1 (Order Creation within Quota Limit — Workflow A):** Valid item/quantity $Q \le A$ creates an `Order` in status `n` (Pending), inserts $Q$ `OrderPosition` rows, decrements quota availability by $Q$, and returns HTTP 201.
+* **FR2 (Quota Depletion Boundary Rejection — Workflow A):** Request with $Q > A$ is rejected with HTTP 400 (`order.quota`) and zero database records created.
+* **FR3 (Idempotent API Submission — Workflow A):** Repeated submissions with identical `X-Idempotency-Key` replay the original HTTP 201 order response with zero duplicate quota holds.
+* **FR4 (Input Validation & Data Sanitization — Workflow A):** Malformed emails, negative prices, or nonexistent item IDs are rejected with HTTP 400 validation errors and zero state mutations.
+* **FR5 (Authorized Order Cancellation & Quota Release — Workflow B):** Canceling a pending order (`POST /orders/{code}/mark_canceled/`) transitions status to `c` (Canceled) and releases consumed quota back to the pool.
+* **FR6 (Payment Expiration Handling — Workflow B):** Orders past payment deadline (`expires < now()`) transition to `e` (Expired), returning held quota to the general pool.
+* **FR7 (Late Payment on Expired Order with Space — Workflow B):** Confirming payment on an expired order when $A \ge Q$ transitions status to `p` (Paid) and re-reserves quota.
+* **FR8 (Late Payment on Expired Order Over-Quota Rejection — Workflow B):** Confirming payment on an expired order when intervening orders exhausted quota ($A < Q$) rejects the transition and prevents overselling.
 
-### 3.3. Complex Business Rules (BR1 – BR4)
-* **BR1 (Boundary Capacity Rule):** Quota size $S=10$. Orders for $Q \le S$ succeed; order for $Q = S+1$ fails; boundary $Q = S$ transitions pool to sold out ($A=0$).
-* **BR2 (Multi-Condition Purchasability):** Item purchasable $\iff (\text{event.live} \land \text{item.active} \land A > 0 \land \text{now}() \in [\text{date\_from}, \text{date\_to}])$.
-* **BR3 (Order State Transition Machine):** Valid state transitions: $\text{Pending} \to \text{Paid}$, $\text{Pending} \to \text{Canceled}$, $\text{Pending} \to \text{Expired}$. Direct transitions like $\text{Canceled} \to \text{Paid}$ are strictly rejected.
-* **BR4 (Payment Expiration Rule):** Payment allowed $\iff (\text{status} = \text{Pending} \land \text{now}() \le \text{expires})$. If $\text{now}() > \text{expires}$, payment rejected or order marked expired.
+### 3.3. Complex Business Rules (BR1 – BR4, Aligned to Upstream Production AST)
+* **BR1 (Boundary Capacity Rule — `OrderChangeManager._check_quotas`):** Quota size $S=10$. For each positive `diff`, `avail = qa.results[quota]`; exact boundary `avail[1] == diff` passes, while `avail[0] != AVAILABILITY_OK` or `avail[1] < diff` raises `OrderError` (plus 3-point BVA $Q=9, 10, 11$).
+* **BR2 (Multi-Condition Closed-Quota Policy — `QuotaAvailability._compute_early_outs`):** Early-out `AVAILABILITY_ORDERED` triggers iff `q.closed and not self._ignore_closed` (4-row MCC truth table + 2 MC/DC pairs).
+* **BR3 (Order State Transition Machine — `Order.cancel_allowed` & `mark_order_expired`):** Allowed transitions `Pending -> Paid/Canceled/Expired`, `Paid -> Canceled`, `Expired -> Paid/Canceled`; disallowed transitions (e.g., `Canceled -> Paid`) rejected; `cancel_allowed` requires status in `{n, p, e}` and `count_positions > 0`.
+* **BR4 (Multi-Condition Late Payment Rule — `Order._can_be_paid`):** Expired/non-pending payment is blocked unless `(accept_late or ignore_date or force)` is true (`D = (not accept_late) and (not ignore_date) and (not force)`, 8-row MCC + MC/DC pairs) and `_is_still_available(...)` confirms quota headroom.
 
 ---
 

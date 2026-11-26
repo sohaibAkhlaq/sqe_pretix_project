@@ -19,8 +19,12 @@ SCREENSHOT_DIR = os.path.join("reports", "e2e", "screenshots")
 @pytest.fixture(scope="session")
 def browser_instance():
     os.makedirs(SCREENSHOT_DIR, exist_ok=True)
+    zap_proxy = os.environ.get("ZAP_PROXY")
+    launch_kwargs = {"headless": True}
+    if zap_proxy:
+        launch_kwargs["proxy"] = {"server": zap_proxy}
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(**launch_kwargs)
         yield browser
         browser.close()
 
@@ -28,7 +32,8 @@ def browser_instance():
 def page(browser_instance):
     context = browser_instance.new_context(
         viewport={"width": 1280, "height": 800},
-        locale="en"
+        locale="en",
+        ignore_https_errors=True,
     )
     page = context.new_page()
     yield page

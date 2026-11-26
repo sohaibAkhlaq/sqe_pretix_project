@@ -17,11 +17,11 @@ Six comprehensive Use Cases were designed—two per group member—capturing the
 | UC ID | Use Case Name | Primary Actor | Target Scope | Derived Requirements | Owner | Normal | Alt | Exc | Total Flows |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **UC1** | Customer Single Ticket Purchase via Storefront | Customer (Guest) | Storefront Checkout (Workflow A) | FR1, FR2, BR1 | Sohaib | 1 | 2 | 2 | 5 Flows |
-| **UC2** | Customer Self-Service Order Cancellation | Customer (Buyer) | Storefront Secret Link (Workflow B) | FR3, BR3 | Sohaib | 1 | 2 | 2 | 5 Flows |
-| **UC3** | Multi-Ticket Group Reservation | Customer (Group) | Multi-position Cart (Workflow A) | FR1, FR8, PR4 | M. Hasaam | 1 | 2 | 2 | 5 Flows |
+| **UC2** | Customer Self-Service Order Cancellation | Customer (Buyer) | Storefront Secret Link (Workflow B) | FR5, BR3 | Sohaib | 1 | 2 | 2 | 5 Flows |
+| **UC3** | Multi-Ticket Group Reservation | Customer (Group) | Multi-position Cart (Workflow A) | FR1, FR2, FR3, PR4 | M. Hasaam | 1 | 2 | 2 | 5 Flows |
 | **UC4** | Quota Depletion & Out-of-Stock Handling | Customer (Guest) | Quota Boundary & Guard (Workflow A) | FR2, BR1, BR2 | M. Hasaam | 1 | 2 | 2 | 5 Flows |
-| **UC5** | Organizer Order Administration & Mutation | Organizer Admin | Control Panel Management (Workflow B) | FR4, FR7, BR3 | Shaiman | 1 | 2 | 2 | 5 Flows |
-| **UC6** | Pending Order Expiration & Capacity Reclamation | System / Admin | Temporal Expiration (Workflow B) | FR5, BR4 | Shaiman | 1 | 2 | 2 | 5 Flows |
+| **UC5** | Organizer Order Administration & Mutation | Organizer Admin | Control Panel Management (Workflow B) | FR5, FR7, BR3, PR6 | Shaiman | 1 | 2 | 2 | 5 Flows |
+| **UC6** | Pending Order Expiration & Capacity Reclamation | System / Admin | Temporal Expiration (Workflow B) | FR6, FR7, FR8, BR4 | Shaiman | 1 | 2 | 2 | 5 Flows |
 | **TOTAL**| **Entire End-to-End Scope** | — | **Workflows A & B** | **All 12 Specs** | **Team** | **6** | **12** | **12** | **30 Flows** |
 
 ---
@@ -81,7 +81,7 @@ flowchart TD
 ## 3. Use Case 1: Customer Single Ticket Purchase via Storefront (UC1)
 * **Author / Owner:** Sohaib (`24i-3108`)
 * **Primary Actor:** Customer (Unauthenticated Guest Buyer)
-* **Derived Requirements:** FR1 (Idempotent Order Placement), FR2 (Quota Depletion Enforcement), BR1 (Boundary Capacity Evaluation)
+* **Derived Requirements:** FR1 (Order Creation within Quota Limit), FR2 (Quota Depletion Boundary Rejection), BR1 (Boundary Capacity Evaluation)
 * **Pre-Conditions:**
   1. Event `sqe2026` is live and within active ticket sale dates.
   2. Item `Conference Admission Ticket` (ID: 1) is active with available quota $A > 0$.
@@ -148,7 +148,7 @@ flowchart TD
 ## 4. Use Case 2: Customer Self-Service Order Cancellation (UC2)
 * **Author / Owner:** Sohaib (`24i-3108`)
 * **Primary Actor:** Customer (Ticket Buyer)
-* **Derived Requirements:** FR3 (Order Cancellation & Quota Release), BR3 (State Machine Transition Integrity)
+* **Derived Requirements:** FR5 (Authorized Order Cancellation & Quota Release), BR3 (State Machine Transition Integrity)
 * **Pre-Conditions:**
   1. An existing order exists in `Pending` state (`status='n'`).
   2. Item configuration has `allow_cancel=True`.
@@ -206,7 +206,7 @@ flowchart TD
 ## 5. Use Case 3: Multi-Ticket Group Reservation (UC3)
 * **Author / Owner:** M. Hasaam (`24i-3107`)
 * **Primary Actor:** Group Organizer / Corporate Buyer
-* **Derived Requirements:** FR1 (Order Placement), FR8 (Atomic Multi-Position Checkout), PR4 (Transaction Integrity)
+* **Derived Requirements:** FR1 (Order Creation within Quota Limit), FR2 (Quota Depletion Rejection), FR3 (Idempotent Submission), PR4 (Transaction Integrity)
 * **Pre-Conditions:**
   1. Available quota $A \ge 3$.
   2. Item `Conference Admission Ticket` is active and purchasable.
@@ -242,7 +242,7 @@ flowchart TD
 ## 6. Use Case 4: Quota Depletion & Out-of-Stock Handling (UC4)
 * **Author / Owner:** M. Hasaam (`24i-3107`)
 * **Primary Actor:** Customer (Prospective Buyer)
-* **Derived Requirements:** FR2 (Quota Depletion Enforcement), BR1 (Boundary Capacity Evaluation), BR2 (Multi-Condition Purchasability)
+* **Derived Requirements:** FR2 (Quota Depletion Boundary Rejection), BR1 (Boundary Capacity Evaluation), BR2 (Closed-Quota Early-Out Policy)
 * **Pre-Conditions:**
   1. Event `sqe2026` is live.
   2. Quota availability is completely exhausted ($A = 0$).
@@ -278,7 +278,7 @@ flowchart TD
 ## 7. Use Case 5: Organizer Order Administration & Status Mutation (UC5)
 * **Author / Owner:** Shaiman (`24i-3074`)
 * **Primary Actor:** Organizer Administrator
-* **Derived Requirements:** FR4 (Order Payment & Quota Finalization), FR7 (Role-Based Access Enforcement), BR3 (State Machine Transition Integrity)
+* **Derived Requirements:** FR5 (Order Cancellation & Quota Release), FR7 (Late Payment with Space), BR3 (State Machine Transition Integrity), PR6 (RBAC Enforcement)
 * **Pre-Conditions:**
   1. Admin user is authenticated with privileged team credentials (`admin@localhost`).
   2. At least one order exists in `Pending` state.
@@ -313,7 +313,7 @@ flowchart TD
 ## 8. Use Case 6: Pending Order Expiration & Capacity Reclamation (UC6)
 * **Author / Owner:** Shaiman (`24i-3074`)
 * **Primary Actor:** System Background Worker / Organizer Admin
-* **Derived Requirements:** FR5 (Expiration Quota Release), BR4 (Payment Expiration Multi-Condition)
+* **Derived Requirements:** FR6 (Payment Expiration Handling), FR7 (Late Payment with Space), FR8 (Late Payment Over-Quota Rejection), BR4 (Late Payment Decision)
 * **Pre-Conditions:**
   1. Order exists in `Pending` state with expiration timestamp in the past ($\text{now}() > \text{expires}$).
   2. Pretix background task scheduler (`runperiodic` or Celery worker) is active and connected to PostgreSQL database.

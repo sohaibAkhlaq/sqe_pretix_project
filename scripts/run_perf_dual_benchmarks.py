@@ -44,8 +44,8 @@ def reset_state():
         print(f"   [ERROR] Reset failed: {res.stderr}")
         sys.exit(1)
 
-def run_k6(script_path, output_json, description):
-    print(f"\n>> Running {description} (60s duration)...")
+def run_k6(script_path, output_json, description, extra_env=None):
+    print(f"\n>> Running {description} (60s steady-state)...")
     raw_output = output_json.with_name(output_json.stem + "_raw.json")
     cmd = [
         K6_BIN, "run",
@@ -53,8 +53,11 @@ def run_k6(script_path, output_json, description):
         "--summary-export", str(output_json),
         str(script_path)
     ]
+    env = runtime_env()
+    if extra_env:
+        env.update(extra_env)
     start = time.time()
-    res = subprocess.run(cmd, capture_output=True, text=True, env=runtime_env())
+    res = subprocess.run(cmd, capture_output=True, text=True, env=env)
     duration = time.time() - start
     print(f"   k6 finished in {duration:.2f}s. Exit code: {res.returncode}")
     if res.returncode not in (0, 99):
@@ -91,29 +94,27 @@ def main():
     print("  Limits: p95 <= 500 ms, Unexpected Failure Rate < 1.0%")
     print("=" * 80)
 
+    unified_script = BASE_DIR / "tests" / "team" / "perf" / "load_unified_60s.js"
+
     # 1. Setup 1: 1 VU, 60 seconds (Run 1)
     reset_state()
     run1_1vu_json = REPORTS_DIR / "k6_1vu_run1.json"
-    m_1vu_run1 = run_k6(BASE_DIR / "tests" / "team" / "perf" / "load_baseline_60s.js",
-                        run1_1vu_json, "Setup 1 (1 VU, 60s) - Run 1")
+    m_1vu_run1 = run_k6(unified_script, run1_1vu_json, "Setup 1 (1 VU, 60s) - Run 1", {"VUS": "1", "RAMP": "5s"})
 
     # 2. Setup 1: 1 VU, 60 seconds (Run 2)
     reset_state()
     run2_1vu_json = REPORTS_DIR / "k6_1vu_run2.json"
-    m_1vu_run2 = run_k6(BASE_DIR / "tests" / "team" / "perf" / "load_baseline_60s.js",
-                        run2_1vu_json, "Setup 1 (1 VU, 60s) - Run 2")
+    m_1vu_run2 = run_k6(unified_script, run2_1vu_json, "Setup 1 (1 VU, 60s) - Run 2", {"VUS": "1", "RAMP": "5s"})
 
     # 3. Setup 2: 5 VUs, 60 seconds (Run 1)
     reset_state()
     run1_5vu_json = REPORTS_DIR / "k6_5vu_run1.json"
-    m_5vu_run1 = run_k6(BASE_DIR / "tests" / "team" / "perf" / "load_concurrency_60s.js",
-                        run1_5vu_json, "Setup 2 (5 VUs, 60s) - Run 1")
+    m_5vu_run1 = run_k6(unified_script, run1_5vu_json, "Setup 2 (5 VUs, 60s) - Run 1", {"VUS": "5", "RAMP": "10s"})
 
     # 4. Setup 2: 5 VUs, 60 seconds (Run 2)
     reset_state()
     run2_5vu_json = REPORTS_DIR / "k6_5vu_run2.json"
-    m_5vu_run2 = run_k6(BASE_DIR / "tests" / "team" / "perf" / "load_concurrency_60s.js",
-                        run2_5vu_json, "Setup 2 (5 VUs, 60s) - Run 2")
+    m_5vu_run2 = run_k6(unified_script, run2_5vu_json, "Setup 2 (5 VUs, 60s) - Run 2", {"VUS": "5", "RAMP": "10s"})
 
     # 5. Controlled Failure and Recovery Test
     print("\n>> Running Controlled State-Changing Failure-and-Recovery Test...")

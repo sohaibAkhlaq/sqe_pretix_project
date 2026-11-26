@@ -250,5 +250,167 @@
       }
     ],
     "fixes": []
-  }
+  },
+  "container_dependencies_scanned": 151,
+  "container_vulnerabilities_found": 19,
+  "container_affected_packages": [
+    "dnspython",
+    "oauthlib",
+    "pypdf"
+  ],
+  "container_vulnerabilities": [
+    {
+      "package": "dnspython",
+      "version": "2.8.0",
+      "id": "CVE-2026-114605",
+      "fix_versions": [
+        "2.9.0"
+      ]
+    },
+    {
+      "package": "dnspython",
+      "version": "2.8.0",
+      "id": "CVE-2026-128089",
+      "fix_versions": [
+        "2.9.2"
+      ]
+    },
+    {
+      "package": "oauthlib",
+      "version": "3.3.1",
+      "id": "PYSEC-2026-4114",
+      "fix_versions": [
+        "4.0.0"
+      ]
+    },
+    {
+      "package": "oauthlib",
+      "version": "3.3.1",
+      "id": "PYSEC-2026-4114",
+      "fix_versions": [
+        "4.0.0"
+      ]
+    },
+    {
+      "package": "oauthlib",
+      "version": "3.3.1",
+      "id": "CVE-2026-49272",
+      "fix_versions": [
+        "4.0.1"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-113786",
+      "fix_versions": [
+        "6.21.1"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-113791",
+      "fix_versions": [
+        "6.21.0"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-113790",
+      "fix_versions": [
+        "6.21.0"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-113789",
+      "fix_versions": [
+        "6.21.0"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-115572",
+      "fix_versions": [
+        "6.21.2"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-115585",
+      "fix_versions": [
+        "6.21.2"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-115580",
+      "fix_versions": [
+        "6.21.2"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-119208",
+      "fix_versions": [
+        "6.21.3"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-119206",
+      "fix_versions": [
+        "6.21.3"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-119209",
+      "fix_versions": [
+        "6.21.3"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-119207",
+      "fix_versions": [
+        "6.21.3"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-119203",
+      "fix_versions": [
+        "6.21.4"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-119205",
+      "fix_versions": [
+        "6.21.4"
+      ]
+    },
+    {
+      "package": "pypdf",
+      "version": "6.20.1",
+      "id": "CVE-2026-119204",
+      "fix_versions": [
+        "6.21.4"
+      ]
+    }
+  ],
+  "container_raw_artifact": "reports/security/pip_audit_container_raw.json"
 }

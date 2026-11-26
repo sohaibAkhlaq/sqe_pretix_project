@@ -1,24 +1,26 @@
 {
   "workflow_a": {
-    "task": "Storefront Ticket Purchase with Rejection & Recovery",
-    "business_rule_violated": "Invalid email format rejection",
-    "validation_message_observed": "Please include an '@' in the email address. 'invalid-email-format' is missing an '@'.",
-    "corrected_value_submitted": "usability_buyer_1795621212@sqe.local",
+    "task": "Storefront Ticket Purchase with BR1 Rejection (Q=11>10), Keyboard Tab Order & Final Confirmation",
+    "business_rule_violated": "BR1: Over-quota quantity Q=11 > max 10",
+    "validation_message_observed": "Error:\nYou cannot select more than 10 items per order.",
+    "corrected_value_submitted": "quantity=1, email=usability_buyer_1795722340@sqe.local",
     "keyboard_operable": true,
-    "focus_after_tab": {
-      "tag": "SUMMARY",
-      "id": "",
-      "name": null,
-      "type": null
-    },
+    "keyboard_tab_sequence": [
+      "input#id_email",
+      "SUMMARY#Invoice information (optional)",
+      "A#Go back",
+      "BUTTON#Continue"
+    ],
+    "order_code_confirmed": "CJGKG",
     "confirmation_displayed": true,
-    "final_url": "http://localhost:8345/sqe/sqe2026/checkout/payment/",
+    "final_url": "http://localhost:8345/sqe/sqe2026/order/CJGKG/jtstwm05yrygyrhn/?thanks=yes",
     "status": "PASSED"
   },
   "workflow_b": {
-    "task": "Control Panel Order Management",
+    "task": "Control Panel Order Management & Cancellation",
     "auth_user": "admin@localhost",
-    "route_verified": "/control/event/sqe/sqe2026/orders/",
+    "order_code_canceled": "KDMRF",
+    "route_verified": "/control/event/sqe/sqe2026/orders/KDMRF/",
     "confirmation_displayed": true,
     "status": "PASSED"
   }

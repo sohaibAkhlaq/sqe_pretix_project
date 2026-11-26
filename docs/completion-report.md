@@ -32,7 +32,7 @@ All three pre-defined measurable release exit criteria have been met or exceeded
 | **Defensive Security & RBAC Access Matrix** | Comp 12 (6 Marks) | **100% VERIFIED** | `7`-decision Playwright RBAC matrix (`DEC-01`..`DEC-07`); `26/26` security tests pass; `48` host pkgs in `pip-audit 2.10.1` (`0` CVEs) + `152` container pkgs inventoried; ZAP-aligned passive scan (`0` High alerts). |
 | **Dual 60s Benchmarks & Fault Recovery** | Comp 13 (5 Marks) | **100% VERIFIED** | Dual 60s runs (1 VU & 5 VUs, all $p95 \le 354.47\text{ms} < 500\text{ms}$, 0.00% unexpected failures across `2,352` reqs); state-changing recovery (`TC-STATE-RECOVERY-01`, `PR4, PR5`) **RTO = 0.28s**, 0 duplicate records (`PSELH`). |
 | **Defect Tracking & Root Cause Analysis** | Comp 14 (7 Marks) | **100% RESOLVED** | 12 IEEE 1044-2009 defects resolved (`github_issues_payload.json` ready); 2 complete RCAs (5 Whys + Fishbone + CAPA); Pareto analysis in `docs/defects/pareto-analysis.md`. |
-| **Monitoring, GQM & Test Management** | Comp 3 & 15 (12 Marks) | **100% COMPLETE** | IEEE 829 Test Plan updated; 4 weekly GQM reports; 50-task PERT estimation (Expected **`216.58 hrs`**, Actual **`221.00 hrs`**, $+2.04\%$); RTM 100% traceable. |
+| **Monitoring, GQM & Test Management** | Comp 3 & 15 (12 Marks) | **100% COMPLETE** | IEEE 829 Test Plan updated; 4 weekly GQM reports; 50-task PERT estimation (Expected **`227.83 hrs`**, Actual **`221.00 hrs`**, $-3.00\%$); RTM 100% traceable. |
 
 ---
 

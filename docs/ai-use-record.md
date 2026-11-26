@@ -68,7 +68,7 @@ We, the undersigned group members, explicitly attest to the following:
 * **AI Output Summary:**
   Drafted IEEE 829 test plan sections, mathematical PERT equations, and initial RTM mapping.
 * **What Students Checked, Debugged & Changed:**
-  - Verified PERT mathematical equations by hand: Calculated $E = 216.58\text{ hrs}$, $\sigma = 5.98\text{ hrs}$, $V = 35.79\text{ hrs}^2$, and verified 95% Confidence Interval $[204.62\text{h}, 228.54\text{h}]$ across all 50 task work packages.
+  - Verified PERT mathematical equations by hand: Calculated $E = 227.83\text{ hrs}$, $\sigma = 5.91\text{ hrs}$, $V = 34.93\text{ hrs}^2$, and verified 95% Confidence Interval $[216.01\text{h}, 239.65\text{h}]$ across all 50 task work packages.
   - Verified 5x5 Risk Matrix: Evaluated pre-mitigation and post-mitigation RPN (Risk Priority Numbers) for 8 Product Risks and 2 Project Risks.
   - Verified RTM completeness: Ensured every requirement (8 FRs + 4 BRs) and all 10 risks mapped forward to planned test cases and backward to requirements.
 * **Committed Artifacts:** `docs/test-plan.md`, `docs/estimation.md`, `docs/risk-register.md`, `docs/traceability-matrix.md`, `docs/phases/phase-2-completion.md` (Tagged `gate-2`).
@@ -222,14 +222,14 @@ We, the undersigned group members, explicitly attest to the following:
 * **AI Tool:** Antigravity (Google DeepMind Agentic AI)
 * **Purpose:** Execute clean single-run master suite (`run_all_tests.py`), reconcile `docs/MASTER_REPORT.md`, render canonical PDF report, assemble ZIP submission preserving `.git`, and update `docs/viva-prep.md`.
 * **Prompt Summary:**
-  > *"Build scripts/run_all_tests.py running all 7 suites consecutively and exporting master_execution_summary.json. Reconcile docs/MASTER_REPORT.md cleanly, render Project_24i-3108_24i-3107_24i-3074_A.pdf, and package Project_24i-3108_24i-3107_24i-3074_A.zip with intact .git."*
+  > *"Build scripts/run_all_tests.py running all 7 suites consecutively and exporting master_execution_summary.json. Reconcile docs/MASTER_REPORT.md cleanly, render Project_24i-3108_24i-3107_24i-3074_C.pdf, and package Project_24i-3108_24i-3107_24i-3074_C.zip with intact .git."*
 * **AI Output Summary:**
   Executed master runner, verified table rendering and metric consistency, updated PDF generator and packager.
 * **What Students Checked, Debugged & Changed:**
   - Executed `scripts/run_all_tests.py`: Confirmed all 7 suites + auxiliary report generators pass consecutively in **`1100.95s`** with 0 errors (`reports/master_execution_summary.json`).
-  - Built canonical deliverables `Project_24i-3108_24i-3107_24i-3074_A.pdf` and `Project_24i-3108_24i-3107_24i-3074_A.zip`, excluding `.venv`, `__pycache__`, and local `.env` secrets while preserving `.git` history and all contributor commits.
+  - Built canonical deliverables `Project_24i-3108_24i-3107_24i-3074_C.pdf` and `Project_24i-3108_24i-3107_24i-3074_C.zip`, excluding `.venv`, `__pycache__`, and local `.env` secrets while preserving `.git` history and all contributor commits.
   - Updated `docs/viva-prep.md` for live defense of `BR1`–`BR4` AST tests, `tools/datagen/cli` dynamic adaptation, Auditor RBAC matrix, durable A11y templates, and Redis recovery.
-* **Committed Artifacts:** `scripts/run_all_tests.py`, `docs/MASTER_REPORT.md`, `docs/viva-prep.md`, `docs/phases/phase-11-completion.md`, `Project_24i-3108_24i-3107_24i-3074_A.pdf`, `Project_24i-3108_24i-3107_24i-3074_A.zip` (Tagged `v1.0-submission`).
+* **Committed Artifacts:** `scripts/run_all_tests.py`, `docs/MASTER_REPORT.md`, `docs/viva-prep.md`, `docs/phases/phase-11-completion.md`, `Project_24i-3108_24i-3107_24i-3074_C.pdf`, `Project_24i-3108_24i-3107_24i-3074_C.zip` (Tagged `v1.0-submission`).
 
 ---
 

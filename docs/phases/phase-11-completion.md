@@ -4,7 +4,7 @@
 **Git Branch:** `feature/final-packaging-master-report` (merged into `main` via `--no-ff`)  
 **Contributing Authors:** Sohaib (24i-3108), M. Hasaam (24i-3107), Shaiman (24i-3074)  
 **Verification Date:** November 25, 2026  
-**Final Submission Deliverables:** `Project_24i-3108_24i-3107_24i-3074_A.pdf` & `Project_24i-3108_24i-3107_24i-3074_A.zip`  
+**Final Submission Deliverables:** `Project_24i-3108_24i-3107_24i-3074_C.pdf` & `Project_24i-3108_24i-3107_24i-3074_C.zip`  
 **Execution Status:** **100% VERIFIED — ALL 7 TEST SUITES GREEN IN SINGLE MASTER RUN (1100.95s)**
 
 ---
@@ -71,13 +71,13 @@ Overall System Quality Status: 100% VERIFIED (GO RELEASE)
 
 ## 3. Final Packaging & Integrity Verification
 
-The final project deliverables `Project_24i-3108_24i-3107_24i-3074_A.pdf` and `Project_24i-3108_24i-3107_24i-3074_A.zip` are assembled with strict exclusion of local secrets (`.env`), scratch logs, and virtual environments (`.venv`):
+The final project deliverables `Project_24i-3108_24i-3107_24i-3074_C.pdf` and `Project_24i-3108_24i-3107_24i-3074_C.zip` are assembled with strict exclusion of local secrets (`.env`), scratch logs, and virtual environments (`.venv`):
 * **Contents:**
   - Complete code, test harnesses, and fixtures
   - Complete documentation (`docs/`)
   - All empirical reports and screenshots (`reports/`)
   - Continuous integration workflows (`.github/workflows/`)
-  - Canonical rendered report `Project_24i-3108_24i-3107_24i-3074_A.pdf`
+  - Canonical rendered report `Project_24i-3108_24i-3107_24i-3074_C.pdf`
   - Intact `.git` repository preserving all local branches, author commits, and tags (`gate-0`..`gate-10`, `v1.0-submission`).
 
 ---
@@ -87,7 +87,7 @@ The final project deliverables `Project_24i-3108_24i-3107_24i-3074_A.pdf` and `P
 | Document / Artifact | Path |
 | :--- | :--- |
 | **Comprehensive Master Report** | [`docs/MASTER_REPORT.md`](file:///c:/Users/USER/Desktop/sqe_project/docs/MASTER_REPORT.md) |
-| **Canonical PDF Report** | [`Project_24i-3108_24i-3107_24i-3074_A.pdf`](file:///c:/Users/USER/Desktop/sqe_project/Project_24i-3108_24i-3107_24i-3074_A.pdf) |
+| **Canonical PDF Report** | [`Project_24i-3108_24i-3107_24i-3074_C.pdf`](file:///c:/Users/USER/Desktop/sqe_project/Project_24i-3108_24i-3107_24i-3074_C.pdf) |
 | **Comprehensive Viva Preparation Guide** | [`docs/viva-prep.md`](file:///c:/Users/USER/Desktop/sqe_project/docs/viva-prep.md) |
 | **Master Test Execution Harness** | [`scripts/run_all_tests.py`](file:///c:/Users/USER/Desktop/sqe_project/scripts/run_all_tests.py) |
-| **Submission Archive** | [`Project_24i-3108_24i-3107_24i-3074_A.zip`](file:///c:/Users/USER/Desktop/sqe_project/Project_24i-3108_24i-3107_24i-3074_A.zip) |
+| **Submission Archive** | [`Project_24i-3108_24i-3107_24i-3074_C.zip`](file:///c:/Users/USER/Desktop/sqe_project/Project_24i-3108_24i-3107_24i-3074_C.zip) |

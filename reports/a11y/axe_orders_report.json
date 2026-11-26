@@ -1,0 +1,67 @@
+{
+  "url": "http://localhost:8345/control/event/sqe/sqe2026/orders/",
+  "violations_count": 10,
+  "passes_count": 38,
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "nodes": 6,
+      "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds"
+    },
+    {
+      "id": "empty-table-header",
+      "impact": "minor",
+      "nodes": 3,
+      "description": "Ensures table headers have discernible text"
+    },
+    {
+      "id": "heading-order",
+      "impact": "moderate",
+      "nodes": 1,
+      "description": "Ensures the order of headings is semantically correct"
+    },
+    {
+      "id": "html-has-lang",
+      "impact": "serious",
+      "nodes": 1,
+      "description": "Ensures every HTML document has a lang attribute"
+    },
+    {
+      "id": "image-alt",
+      "impact": "critical",
+      "nodes": 1,
+      "description": "Ensures <img> elements have alternate text or a role of none or presentation"
+    },
+    {
+      "id": "landmark-one-main",
+      "impact": "moderate",
+      "nodes": 1,
+      "description": "Ensures the document has a main landmark"
+    },
+    {
+      "id": "landmark-unique",
+      "impact": "moderate",
+      "nodes": 1,
+      "description": "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination"
+    },
+    {
+      "id": "link-in-text-block",
+      "impact": "serious",
+      "nodes": 2,
+      "description": "Ensure links are distinguished from surrounding text in a way that does not rely on color"
+    },
+    {
+      "id": "link-name",
+      "impact": "serious",
+      "nodes": 15,
+      "description": "Ensures links have discernible text"
+    },
+    {
+      "id": "region",
+      "impact": "moderate",
+      "nodes": 11,
+      "description": "Ensures all page content is contained by landmarks"
+    }
+  ]
+}

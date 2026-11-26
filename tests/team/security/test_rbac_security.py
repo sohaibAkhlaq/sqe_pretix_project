@@ -7,6 +7,8 @@ import pytest
 import requests
 import uuid
 
+from tests.team.e2e.e2e_helpers import ensure_quota_headroom
+
 class TestRBACSecurityMatrix:
     """Verifies that privileged operations require valid admin permissions and that auditor/anonymous roles are strictly bounded."""
 
@@ -61,6 +63,7 @@ class TestRBACSecurityMatrix:
 
     def test_auditor_forbidden_from_marking_order_paid(self, event_endpoints, admin_headers, auditor_headers):
         """SEC-RBAC-06: Auditor receives HTTP 403 Forbidden when attempting to transition an order to paid."""
+        ensure_quota_headroom(min_headroom=2)
         # 1. Admin creates an order
         orders_url = event_endpoints["orders"]
         payload = {
@@ -73,13 +76,17 @@ class TestRBACSecurityMatrix:
         assert create_resp.status_code == 201
         order_code = create_resp.json()["code"]
 
-        # 2. Auditor attempts mark_paid
-        paid_url = f"{orders_url}{order_code}/mark_paid/"
-        auditor_resp = requests.post(paid_url, headers=auditor_headers)
-        assert auditor_resp.status_code == 403, f"Auditor marked order paid! Expected 403, got {auditor_resp.status_code}"
+        try:
+            # 2. Auditor attempts mark_paid
+            paid_url = f"{orders_url}{order_code}/mark_paid/"
+            auditor_resp = requests.post(paid_url, headers=auditor_headers)
+            assert auditor_resp.status_code == 403, f"Auditor marked order paid! Expected 403, got {auditor_resp.status_code}"
+        finally:
+            requests.post(f"{orders_url}{order_code}/mark_canceled/", headers=admin_headers)
 
     def test_auditor_forbidden_from_canceling_order(self, event_endpoints, admin_headers, auditor_headers):
         """SEC-RBAC-07: Auditor receives HTTP 403 Forbidden when attempting to cancel an order."""
+        ensure_quota_headroom(min_headroom=2)
         # 1. Admin creates an order
         orders_url = event_endpoints["orders"]
         payload = {
@@ -92,10 +99,13 @@ class TestRBACSecurityMatrix:
         assert create_resp.status_code == 201
         order_code = create_resp.json()["code"]
 
-        # 2. Auditor attempts mark_canceled
-        cancel_url = f"{orders_url}{order_code}/mark_canceled/"
-        auditor_resp = requests.post(cancel_url, headers=auditor_headers)
-        assert auditor_resp.status_code == 403, f"Auditor cancelled order! Expected 403, got {auditor_resp.status_code}"
+        try:
+            # 2. Auditor attempts mark_canceled
+            cancel_url = f"{orders_url}{order_code}/mark_canceled/"
+            auditor_resp = requests.post(cancel_url, headers=auditor_headers)
+            assert auditor_resp.status_code == 403, f"Auditor cancelled order! Expected 403, got {auditor_resp.status_code}"
+        finally:
+            requests.post(f"{orders_url}{order_code}/mark_canceled/", headers=admin_headers)
 
     def test_anonymous_requests_rejected_with_401(self, event_endpoints, anonymous_headers):
         """SEC-RBAC-08: Anonymous unauthenticated requests to protected API endpoints return HTTP 401 Unauthorized."""

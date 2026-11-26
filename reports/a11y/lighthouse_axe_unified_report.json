@@ -1,6 +1,6 @@
 {
   "report_title": "Unified Google Lighthouse & axe-core Accessibility & Usability Evaluation",
-  "timestamp": "2026-11-25T15:48:50Z",
+  "timestamp": "2026-11-26T19:37:28Z",
   "total_unique_issues": 3,
   "deduplication_rule": "Issues flagged by both Lighthouse and axe-core counted strictly once",
   "issue_register": [
@@ -90,6 +90,13 @@
       "accessibility": 100,
       "best_practices": 96,
       "seo": 66
+    },
+    "control_panel_orders_logged_in": {
+      "url": "http://localhost:8345/control/event/sqe/sqe2026/orders/",
+      "performance": 80,
+      "accessibility": 78,
+      "best_practices": 100,
+      "seo": 50
     }
   },
   "axe_reports_summary": {
@@ -100,6 +107,10 @@
     "storefront": {
       "violations": 0,
       "passes": 43
+    },
+    "orders_logged_in": {
+      "violations": 10,
+      "passes": 38
     }
   },
   "status": "COMPLETED_AND_VERIFIED"

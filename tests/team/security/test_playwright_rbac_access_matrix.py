@@ -24,8 +24,13 @@ class TestPlaywrightRBACAccessMatrix:
     def test_verify_playwright_access_matrix(self, admin_password, auditor_password):
         access_results = []
 
+        zap_proxy = os.environ.get("ZAP_PROXY")
+        launch_kwargs = {"headless": True}
+        if zap_proxy:
+            launch_kwargs["proxy"] = {"server": zap_proxy}
+
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(**launch_kwargs)
 
             # =================================================================
             # CHECK 1: Admin Role - View Orders in Control Panel (ALLOWED)

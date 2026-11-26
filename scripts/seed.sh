@@ -19,6 +19,6 @@ else
     PYTHON_BIN="python"
 fi
 
-"$PYTHON_BIN" "$SCRIPT_DIR/seed_data.py"
+"$PYTHON_BIN" "$SCRIPT_DIR/seed.py"
 
 echo "Seeding completed successfully."

@@ -1,86 +1,353 @@
 {
-  "@programName": "OWASP ZAP-Aligned HTTP Passive Header & Django SecurityMiddleware Scanner",
-  "@version": "2.14-rules-python",
-  "generated": "Wed, 25 Nov 2026 20:41:45",
-  "site": [
+  "@programName": "OWASP ZAP",
+  "@version": "2.17.0",
+  "scan_mode": "Passive Proxy (Playwright Workflows A & B)",
+  "generated": "2026-11-26T20:23:51Z",
+  "target": "http://localhost:8345",
+  "urls_captured_count": 97,
+  "urls_captured": [
+    "http://localhost:8345",
+    "http://localhost:8345/control",
+    "http://localhost:8345/control/event",
+    "http://localhost:8345/control/event/sqe",
+    "http://localhost:8345/control/event/sqe/sqe2026",
+    "http://localhost:8345/control/event/sqe/sqe2026/orders",
+    "http://localhost:8345/control/event/sqe/sqe2026/orders/",
+    "http://localhost:8345/control/event/sqe/sqe2026/quotas",
+    "http://localhost:8345/control/event/sqe/sqe2026/quotas/",
+    "http://localhost:8345/control/event/sqe/sqe2026/quotas/1",
+    "http://localhost:8345/control/event/sqe/sqe2026/quotas/1/",
+    "http://localhost:8345/control/event/sqe/sqe2026/settings",
+    "http://localhost:8345/control/event/sqe/sqe2026/settings/",
+    "http://localhost:8345/control/login",
+    "http://localhost:8345/control/login/",
+    "http://localhost:8345/control/login?next=/control/login/",
+    "http://localhost:8345/js_helpers",
+    "http://localhost:8345/js_helpers/address_form",
+    "http://localhost:8345/js_helpers/address_form/?invoice=true&organizer=sqe&event=sqe2026&locale=en&is_business=individual&country=AF&transmission_type=email&transmission_type_required=false",
+    "http://localhost:8345/sqe",
+    "http://localhost:8345/sqe/sqe2026",
+    "http://localhost:8345/sqe/sqe2026/",
+    "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+    "http://localhost:8345/sqe/sqe2026/cart",
+    "http://localhost:8345/sqe/sqe2026/cart/add?async_id=8f50aa9e-4e5b-4938-9d0a-f9f8ceb02d4c&ajax=1&next=/sqe/sqe2026/&next_error=/sqe/sqe2026/&take_cart_id=ym6UTlWRaAFC5do7CSFD23knHdiUzxJJ38ClQuqS5GCifGjv@eizp9xn2ah9zxuflbgnjik2w12r3tgmy",
+    "http://localhost:8345/sqe/sqe2026/cart/add?next=/sqe/sqe2026/&next_error=/sqe/sqe2026/",
+    "http://localhost:8345/sqe/sqe2026/checkout",
+    "http://localhost:8345/sqe/sqe2026/checkout/payment",
+    "http://localhost:8345/sqe/sqe2026/checkout/payment/",
+    "http://localhost:8345/sqe/sqe2026/checkout/questions",
+    "http://localhost:8345/sqe/sqe2026/checkout/questions/",
+    "http://localhost:8345/sqe/sqe2026/checkout/start",
+    "http://localhost:8345/sqe/sqe2026/order",
+    "http://localhost:8345/sqe/sqe2026/order/9UCB9",
+    "http://localhost:8345/sqe/sqe2026/order/9UCB9/TAMPERED_SECRET_99999",
+    "http://localhost:8345/sqe/sqe2026/order/9UCB9/TAMPERED_SECRET_99999/",
+    "http://localhost:8345/sqe/sqe2026/order/A7S37",
+    "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv",
+    "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/",
+    "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/cancel",
+    "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/cancel/do",
+    "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/cancel/do?async_id=44560b23-cf91-4bbb-8685-ab7f6662c48f&ajax=1",
+    "http://localhost:8345/sqe/sqe2026/order/CPCJQ",
+    "http://localhost:8345/sqe/sqe2026/order/CPCJQ/m38tzm2afjol3t48",
+    "http://localhost:8345/sqe/sqe2026/order/CPCJQ/m38tzm2afjol3t48/",
+    "http://localhost:8345/sqe/sqe2026/order/NBMG7",
+    "http://localhost:8345/sqe/sqe2026/order/NBMG7/0l6zkl5wg0l0t38k",
+    "http://localhost:8345/sqe/sqe2026/order/NBMG7/0l6zkl5wg0l0t38k/",
+    "http://localhost:8345/sqe/sqe2026/order/NBMG7/0l6zkl5wg0l0t38k/cancel",
+    "http://localhost:8345/sqe/sqe2026/order/RVFAL",
+    "http://localhost:8345/sqe/sqe2026/order/RVFAL/6blrjqxjh6zgv23j",
+    "http://localhost:8345/sqe/sqe2026/order/RVFAL/6blrjqxjh6zgv23j/",
+    "http://localhost:8345/sqe/sqe2026/theme.css?version=c534d21b5f04-1795724444-1795724490",
+    "http://localhost:8345/static",
+    "http://localhost:8345/static/CACHE",
+    "http://localhost:8345/static/CACHE/css",
+    "http://localhost:8345/static/CACHE/css/output.07c5a2a22575.css",
+    "http://localhost:8345/static/CACHE/css/output.4ac299b4c227.css",
+    "http://localhost:8345/static/CACHE/css/output.a900505ab948.css",
+    "http://localhost:8345/static/CACHE/css/presale.e682b0035530.css",
+    "http://localhost:8345/static/CACHE/js",
+    "http://localhost:8345/static/CACHE/js/output.5fdb48aad448.js",
+    "http://localhost:8345/static/CACHE/js/presale.34df7ee68b13.js",
+    "http://localhost:8345/static/CACHE/js/walletdetection.22c9d1583bce.js",
+    "http://localhost:8345/static/fontawesome",
+    "http://localhost:8345/static/fontawesome/fonts",
+    "http://localhost:8345/static/fontawesome/fonts/fontawesome-webfont.af7ae505a9ee.woff2",
+    "http://localhost:8345/static/fonts",
+    "http://localhost:8345/static/fonts/opensans_bold_macroman",
+    "http://localhost:8345/static/fonts/opensans_bold_macroman/OpenSans-Bold-webfont.2e90d5152ce9.woff",
+    "http://localhost:8345/static/fonts/opensans_bolditalic_macroman",
+    "http://localhost:8345/static/fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.7657144ec477.woff",
+    "http://localhost:8345/static/fonts/opensans_italic_macroman",
+    "http://localhost:8345/static/fonts/opensans_italic_macroman/OpenSans-Italic-webfont.f42641eed834.woff",
+    "http://localhost:8345/static/fonts/opensans_regular_macroman",
+    "http://localhost:8345/static/fonts/opensans_regular_macroman/OpenSans-Regular-webfont.79515ad07889.woff",
+    "http://localhost:8345/static/jsi18n",
+    "http://localhost:8345/static/jsi18n/en",
+    "http://localhost:8345/static/jsi18n/en/djangojs.4af7c92927af.js",
+    "http://localhost:8345/static/lightbox",
+    "http://localhost:8345/static/lightbox/images",
+    "http://localhost:8345/static/lightbox/images/close.d9d2d0b1308c.png",
+    "http://localhost:8345/static/lightbox/images/loading.2299ad0b3f63.gif",
+    "http://localhost:8345/static/lightbox/images/next.31f15875975a.png",
+    "http://localhost:8345/static/lightbox/images/prev.84b76dee6b27.png",
+    "http://localhost:8345/static/pretixbase",
+    "http://localhost:8345/static/pretixbase/img",
+    "http://localhost:8345/static/pretixbase/img/pretix-icon-white-mini.c58f7b14da12.svg",
+    "http://localhost:8345/static/pretixbase/img/pretix-logo.a3ea71cc2c6f.svg",
+    "http://localhost:8345/static/pretixbase/js",
+    "http://localhost:8345/static/pretixbase/js/errors.b27e464c3e2b.js",
+    "http://localhost:8345/static/pretixcontrol",
+    "http://localhost:8345/static/pretixcontrol/js",
+    "http://localhost:8345/static/pretixcontrol/js/auth.06f549621217.js",
+    "http://localhost:8345/static/pretixpresale",
+    "http://localhost:8345/static/pretixpresale/js",
+    "http://localhost:8345/static/pretixpresale/js/csrfcookieretry.81e948c8357b.js"
+  ],
+  "total_alert_instances": 228,
+  "unique_alerts_count": 15,
+  "alerts_by_risk": {
+    "High": 0,
+    "Medium": 6,
+    "Low": 4,
+    "Informational": 5
+  },
+  "alerts": [
     {
-      "@name": "http://localhost:8345",
-      "@host": "localhost",
-      "@port": "8345",
-      "@ssl": "false",
-      "alerts": [
-        {
-          "pluginId": "10035",
-          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
-          "riskcode": "0",
-          "riskdesc": "Informational",
-          "url": "http://localhost:8345/sqe/sqe2026/",
-          "cweid": "319",
-          "wascid": "15"
-        },
-        {
-          "pluginId": "10035",
-          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
-          "riskcode": "0",
-          "riskdesc": "Informational",
-          "url": "http://localhost:8345/control/login/",
-          "cweid": "319",
-          "wascid": "15"
-        },
-        {
-          "pluginId": "10038",
-          "alert": "Content Security Policy (CSP) Header Not Set",
-          "riskcode": "2",
-          "riskdesc": "Medium",
-          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/",
-          "cweid": "693",
-          "wascid": "15"
-        },
-        {
-          "pluginId": "10035",
-          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
-          "riskcode": "0",
-          "riskdesc": "Informational",
-          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/",
-          "cweid": "319",
-          "wascid": "15"
-        },
-        {
-          "pluginId": "10038",
-          "alert": "Content Security Policy (CSP) Header Not Set",
-          "riskcode": "2",
-          "riskdesc": "Medium",
-          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/orders/",
-          "cweid": "693",
-          "wascid": "15"
-        },
-        {
-          "pluginId": "10035",
-          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
-          "riskcode": "0",
-          "riskdesc": "Informational",
-          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/orders/",
-          "cweid": "319",
-          "wascid": "15"
-        },
-        {
-          "pluginId": "10038",
-          "alert": "Content Security Policy (CSP) Header Not Set",
-          "riskcode": "2",
-          "riskdesc": "Medium",
-          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/quotas/",
-          "cweid": "693",
-          "wascid": "15"
-        },
-        {
-          "pluginId": "10035",
-          "alert": "Strict-Transport-Security Header Not Set (HTTP Local Baseline)",
-          "riskcode": "0",
-          "riskdesc": "Informational",
-          "url": "http://localhost:8345/api/v1/organizers/sqe/events/sqe2026/quotas/",
-          "cweid": "319",
-          "wascid": "15"
-        }
+      "pluginId": "10098",
+      "alert": "Cross-Domain Misconfiguration",
+      "risk": "Medium",
+      "confidence": "Medium",
+      "cweid": "264",
+      "wascid": "14",
+      "solution": "Ensure that sensitive data is not available in an unauthenticated manner (using IP address white-listing, for instance).\nConfigure the \"Access-Control-Allow-Origin\" HTTP header to a more restrictive set of domains, or remove all CORS headers entirely, to allow the web browser to enforce the Same Origin Policy (SOP) in a more restrictive manner.",
+      "instances_count": 17,
+      "sample_urls": [
+        "http://localhost:8345/static/pretixpresale/js/csrfcookieretry.81e948c8357b.js",
+        "http://localhost:8345/sqe/sqe2026/theme.css?version=c534d21b5f04-1795724444-1795724490",
+        "http://localhost:8345/static/jsi18n/en/djangojs.4af7c92927af.js",
+        "http://localhost:8345/static/fonts/opensans_regular_macroman/OpenSans-Regular-webfont.79515ad07889.woff",
+        "http://localhost:8345/static/fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.7657144ec477.woff"
+      ]
+    },
+    {
+      "pluginId": "10112",
+      "alert": "Session Management Response Identified",
+      "risk": "Informational",
+      "confidence": "Medium",
+      "cweid": "-1",
+      "wascid": "-1",
+      "solution": "This is an informational alert rather than a vulnerability and so there is nothing to fix.",
+      "instances_count": 20,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/cart/add?next=/sqe/sqe2026/&next_error=/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/cart/add?async_id=8f50aa9e-4e5b-4938-9d0a-f9f8ceb02d4c&ajax=1&next=/sqe/sqe2026/&next_error=/sqe/sqe2026/&take_cart_id=ym6UTlWRaAFC5do7CSFD23knHdiUzxJJ38ClQuqS5GCifGjv@eizp9xn2ah9zxuflbgnjik2w12r3tgmy",
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+        "http://localhost:8345/sqe/sqe2026/checkout/start"
+      ]
+    },
+    {
+      "pluginId": "10021",
+      "alert": "X-Content-Type-Options Header Missing",
+      "risk": "Low",
+      "confidence": "Medium",
+      "cweid": "693",
+      "wascid": "15",
+      "solution": "Ensure that the application/web server sets the Content-Type header appropriately, and that it sets the X-Content-Type-Options header to 'nosniff' for all web pages.\nIf possible, ensure that the end user uses a standards-compliant and modern web browser that does not perform MIME-sniffing at all, or that can be directed by the web application/web server to not perform MIME-sniffing.",
+      "instances_count": 16,
+      "sample_urls": [
+        "http://localhost:8345/static/pretixpresale/js/csrfcookieretry.81e948c8357b.js",
+        "http://localhost:8345/static/fonts/opensans_regular_macroman/OpenSans-Regular-webfont.79515ad07889.woff",
+        "http://localhost:8345/static/fonts/opensans_bold_macroman/OpenSans-Bold-webfont.2e90d5152ce9.woff",
+        "http://localhost:8345/static/fonts/opensans_italic_macroman/OpenSans-Italic-webfont.f42641eed834.woff",
+        "http://localhost:8345/static/fonts/opensans_bolditalic_macroman/OpenSans-BoldItalic-webfont.7657144ec477.woff"
+      ]
+    },
+    {
+      "pluginId": "10055",
+      "alert": "CSP: Failure to Define Directive with No Fallback",
+      "risk": "Medium",
+      "confidence": "High",
+      "cweid": "693",
+      "wascid": "15",
+      "solution": "Ensure that your web server, application server, load balancer, etc. is properly configured to set the Content-Security-Policy header.",
+      "instances_count": 17,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+        "http://localhost:8345/sqe/sqe2026/checkout/start",
+        "http://localhost:8345/sqe/sqe2026/checkout/questions/",
+        "http://localhost:8345/sqe/sqe2026/checkout/payment/"
+      ]
+    },
+    {
+      "pluginId": "10010",
+      "alert": "Cookie No HttpOnly Flag",
+      "risk": "Low",
+      "confidence": "Medium",
+      "cweid": "1004",
+      "wascid": "13",
+      "solution": "Ensure that the HttpOnly flag is set for all cookies.",
+      "instances_count": 11,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+        "http://localhost:8345/sqe/sqe2026/checkout/questions/",
+        "http://localhost:8345/sqe/sqe2026/checkout/payment/",
+        "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/cancel"
+      ]
+    },
+    {
+      "pluginId": "10054",
+      "alert": "Cookie without SameSite Attribute",
+      "risk": "Low",
+      "confidence": "Medium",
+      "cweid": "1275",
+      "wascid": "13",
+      "solution": "Ensure that the SameSite attribute is set to either 'lax' or ideally 'strict' for all cookies.",
+      "instances_count": 25,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/cart/add?next=/sqe/sqe2026/&next_error=/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/cart/add?async_id=8f50aa9e-4e5b-4938-9d0a-f9f8ceb02d4c&ajax=1&next=/sqe/sqe2026/&next_error=/sqe/sqe2026/&take_cart_id=ym6UTlWRaAFC5do7CSFD23knHdiUzxJJ38ClQuqS5GCifGjv@eizp9xn2ah9zxuflbgnjik2w12r3tgmy",
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+        "http://localhost:8345/sqe/sqe2026/checkout/start"
+      ]
+    },
+    {
+      "pluginId": "10202",
+      "alert": "Absence of Anti-CSRF Tokens",
+      "risk": "Medium",
+      "confidence": "Low",
+      "cweid": "352",
+      "wascid": "9",
+      "solution": "Phase: Architecture and Design\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\nFor example, use anti-CSRF packages such as the OWASP CSRFGuard.\n\nPhase: Implementation\nEnsure that your application is free of cross-site scripting issues, because most CSRF defenses can be bypassed using attacker-controlled script.\n\nPhase: Architecture and Design\nGenerate a unique nonce for each form, place the nonce into the form, and verify the nonce upon receipt of the form. Be sure that the nonce is not predictable (CWE-330).\nNote that this can be bypassed using XSS.\n\nIdentify especially dangerous operations. When the user performs a dangerous operation, send a separate confirmation request to ensure that the user intended to perform that operation.\nNote that this can be bypassed using XSS.\n\nUse the ESAPI Session Management control.\nThis control includes a component for CSRF.\n\nDo not use the GET method for any request that triggers a state change.\n\nPhase: Implementation\nCheck the HTTP Referer header to see if the request originated from an expected page. This could break legitimate functionality, because users or proxies may have disabled sending the Referer for privacy reasons.",
+      "instances_count": 56,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+        "http://localhost:8345/sqe/sqe2026/checkout/questions/",
+        "http://localhost:8345/sqe/sqe2026/checkout/payment/",
+        "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/"
+      ]
+    },
+    {
+      "pluginId": "10109",
+      "alert": "Modern Web Application",
+      "risk": "Informational",
+      "confidence": "Medium",
+      "cweid": "-1",
+      "wascid": "-1",
+      "solution": "This is an informational alert and so no changes are required.",
+      "instances_count": 15,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+        "http://localhost:8345/sqe/sqe2026/checkout/questions/",
+        "http://localhost:8345/sqe/sqe2026/checkout/payment/",
+        "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/"
+      ]
+    },
+    {
+      "pluginId": "10096",
+      "alert": "Timestamp Disclosure - Unix",
+      "risk": "Low",
+      "confidence": "Low",
+      "cweid": "497",
+      "wascid": "13",
+      "solution": "Manually confirm that the timestamp data is not sensitive, and that the data cannot be aggregated to disclose exploitable patterns.",
+      "instances_count": 35,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/",
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true",
+        "http://localhost:8345/sqe/sqe2026/checkout/questions/",
+        "http://localhost:8345/sqe/sqe2026/checkout/payment/",
+        "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/"
+      ]
+    },
+    {
+      "pluginId": "10003",
+      "alert": "Vulnerable JS Library",
+      "risk": "Medium",
+      "confidence": "Medium",
+      "cweid": "1395",
+      "wascid": "-1",
+      "solution": "Upgrade to the latest version of the affected library.",
+      "instances_count": 2,
+      "sample_urls": [
+        "http://localhost:8345/static/CACHE/js/presale.34df7ee68b13.js",
+        "http://localhost:8345/static/CACHE/js/output.5fdb48aad448.js"
+      ]
+    },
+    {
+      "pluginId": "10031",
+      "alert": "User Controllable HTML Element Attribute (Potential XSS)",
+      "risk": "Informational",
+      "confidence": "Low",
+      "cweid": "20",
+      "wascid": "20",
+      "solution": "Validate all input and sanitize output it before writing to any HTML attributes.",
+      "instances_count": 3,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/?require_cookie=true"
+      ]
+    },
+    {
+      "pluginId": "10027",
+      "alert": "Information Disclosure - Suspicious Comments",
+      "risk": "Informational",
+      "confidence": "Medium",
+      "cweid": "615",
+      "wascid": "13",
+      "solution": "Remove all comments that return information that may help an attacker and fix any underlying problems they refer to.",
+      "instances_count": 1,
+      "sample_urls": [
+        "http://localhost:8345/static/CACHE/js/presale.34df7ee68b13.js"
+      ]
+    },
+    {
+      "pluginId": "10020",
+      "alert": "Missing Anti-clickjacking Header",
+      "risk": "Medium",
+      "confidence": "Medium",
+      "cweid": "1021",
+      "wascid": "15",
+      "solution": "Modern Web browsers support the Content-Security-Policy and X-Frame-Options HTTP headers. Ensure one of them is set on all web pages returned by your site/app.\nIf you expect the page to be framed only by pages on your server (e.g. it's part of a FRAMESET) then you'll want to use SAMEORIGIN, otherwise if you never expect the page to be framed, you should use DENY. Alternatively consider implementing Content Security Policy's \"frame-ancestors\" directive.",
+      "instances_count": 6,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/",
+        "http://localhost:8345/sqe/sqe2026/order/A7S37/abzpg4fbexj9iulv/cancel",
+        "http://localhost:8345/sqe/sqe2026/order/NBMG7/0l6zkl5wg0l0t38k/",
+        "http://localhost:8345/sqe/sqe2026/order/NBMG7/0l6zkl5wg0l0t38k/cancel",
+        "http://localhost:8345/sqe/sqe2026/order/CPCJQ/m38tzm2afjol3t48/"
+      ]
+    },
+    {
+      "pluginId": "10038",
+      "alert": "Content Security Policy (CSP) Header Not Set",
+      "risk": "Medium",
+      "confidence": "High",
+      "cweid": "693",
+      "wascid": "15",
+      "solution": "Ensure that your web server, application server, load balancer, etc. is configured to set the Content-Security-Policy header.",
+      "instances_count": 2,
+      "sample_urls": [
+        "http://localhost:8345/sqe/sqe2026/order/9UCB9/TAMPERED_SECRET_99999/",
+        "http://localhost:8345/control/login/"
+      ]
+    },
+    {
+      "pluginId": "10111",
+      "alert": "Authentication Request Identified",
+      "risk": "Informational",
+      "confidence": "High",
+      "cweid": "-1",
+      "wascid": "-1",
+      "solution": "This is an informational alert rather than a vulnerability and so there is nothing to fix.",
+      "instances_count": 2,
+      "sample_urls": [
+        "http://localhost:8345/control/login?next=/control/login/"
       ]
     }
   ]

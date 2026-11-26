@@ -1,5 +1,5 @@
 AST Mutation Testing Engine (Target: upstream/pretix/base/scoped_business_logic.py)
-Run Timestamp: 2026-11-25 15:58:48 UTC
+Run Timestamp: 2026-11-26 21:13:46 UTC
 Operators: BCR (Boundary Condition), ADR (Arithmetic Delta), Standard (ROR/COR/LCR/SVR)
 --------------------------------------------------------------------------------
 [MUT-01] _compute_early_outs:L32 | COR (and -> or)                      | KILLED     | Killed by enh_br2_closed_ignored

@@ -17,12 +17,12 @@
 
 Phase 3 establishes the **Static Analysis and White-Box Unit Testing** foundation for `pretix`. Two business-critical functions exhibiting Cyclomatic Complexity Numbers (CCN) between 6 and 10 were analyzed, graphed into Control Flow Graphs (CFGs), mathematically calculated using three distinct formulas, and subjected to exhaustive white-box testing.
 
-Furthermore, Business Rule 2 (Multi-condition Purchasability) was verified under both full Multiple Condition Coverage (MCC, $2^4=16$ truth table rows) and Modified Condition/Decision Coverage (MC/DC, minimal 5-test suite proving condition orthogonality). All 49 automated unit tests pass with **100% Statement Coverage** and **100% Branch Coverage** on targeted logic, merged into `main` under Git tag `gate-3`.
+Furthermore, Business Rule 2 (`QuotaAvailability._compute_early_outs`) was verified under complete 4-row Multiple Condition Coverage (MCC, $2^2=4$) and MC/DC independence pairs, alongside Business Rule 4 (`Order._can_be_paid`, 8-row MCC + MC/DC pairs). All 49 automated unit tests pass with **100% Statement Coverage (70/70)** and **100% Branch Coverage (32/32)** on `upstream/pretix/base/scoped_business_logic.py`, merged into `main` under Git tag `gate-3`.
 
 ### Core Deliverables Summary
 1. **Complexity Audit & Shortlisting (`docs/cfg/sonarcloud_static_analysis.md`):** Radon and Lizard complexity scans isolating `QuotaAvailability._compute_early_outs` (CCN = 6) and `OrderChangeManager._check_quotas` (CCN = 8).
 2. **Control Flow Graph Analysis (`docs/cfg/cfg_analysis.md`):** Visual Mermaid flowcharts, complete node/edge/predicate inventories, 3-formula hand calculations, and linearly independent basis paths.
-3. **MCC & MC/DC Derivation (`docs/cfg/mcc_mcdc.md`):** Complete 16-row truth table for BR2 and mathematical independence proofs for all 4 atomic conditions.
+3. **MCC & MC/DC Derivation (`docs/cfg/mcc_mcdc.md`):** Complete 4-row MCC + MC/DC pairs for BR2 and 8-row MCC + MC/DC pairs for BR4 (`Order._can_be_paid`).
 4. **Pytest Unit Test Suite (`tests/team/unit/`):** 49 automated test cases executing in 0.38s achieving 100% branch and statement coverage.
 5. **Coverage Reports (`reports/coverage/`):** XML and HTML coverage reports generated for SonarCloud and auditing.
 6. **SonarCloud Quality Gate:** Frozen `sonar-project.properties` specifying quality gate rules.
