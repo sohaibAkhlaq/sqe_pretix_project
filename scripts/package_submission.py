@@ -11,7 +11,11 @@ EXCLUDE_DIRS = {
     'playwright-report',
 }
 EXCLUDE_EXTS = {'.pyc', '.pyo', '.zip'}
-EXCLUDE_FILES = {'.env', '.coverage'}
+EXCLUDE_FILES = {
+    '.env', '.coverage', 'final_verify.md',
+    'module1.md', 'module2.md', 'module3.md',
+    'module4.md', 'module5.md', 'module6.md',
+}
 
 def create_zip(zip_filename, pdf_path, root='.'):
     root = os.path.abspath(root)

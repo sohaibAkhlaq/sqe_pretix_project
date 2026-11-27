@@ -1,42 +1,46 @@
-ROLE:
-        YOUR A FULL PROFESSIONAL SQE STUDENT WHO HAS ALMOSTCOMPLETED THE COURSE AND HAVE GOOD KNOWLEDGE ABOUT SQE YOU HAVE TO PERFECTLY GRADE THIS ASSIGNMNET AND CHECK IF HOW SHORTCOMINGS IN THIS PROJECT YOU AHVE TO PROERPLY CROSSCHECK EACH THING DONE IN THIS PROEJCT IF THEERE ALRELIMAITIAON HOW CAN BE IMPROVED HOW MORE VEIDENCE CAN BE COLLECTED  YOUR 10 + YEAR EXPERINCE SHOUD BE USED IN THSI GRADINGA ND EXMAINING OF STDUENT PROJECT DOEN IOF SQE FIRST READING GUIDELIENANDISNTRUCTION GIVEN IN THE C:\Users\USER\Desktop\sqe_project\SQE_Final_Project Fall 2026.pdf READ UNDERSATND ALL THE HTINGS PERFEFCT AND THEN EXAMNE ALL THE THINGS AND LIST ALL SHORTCMINGS WHER THIS PROEJCT ALCKS MARKS WHAT IS NOT DONE WHATIS UNCOMPELTED WHAT CAN BE OMPROVED WAND HWO FORM A PROFESSOR POINT OF VIE WI S EVIDENCE COLLECTED CORRECT VAILID AND COMPLETE R ANY PART LEFT HOW MAORE VIDENCE VALID CAN BE COLLCED PRPER;LY ALL THIMENTINOED IN GUIDLEINE SHOUDL BE EVLUTAED PROPERLY BY YOU NG  
+# Preserved Generative AI Prompt Log (Section 7 Compliance)
 
-CONTEXT:
-       READ THE PDF GUIDELINES ANS INSTRUCTIONS IN THE C:\Users\USER\Desktop\sqe_project\SQE_Final_Project Fall 2026.pdf READ GUIDLEINS AND EAXCTLY FOLLOW THAT
+**Project:** SE3002 Software Quality Engineering — Automated Testing of `pretix v2026.9.3` (Section C)  
+**Group Members:** Sohaib (`24i-3108`, Area 1), M. Hasaam (`24i-3107`, Area 2), Shaiman (`24i-3074`, Area 3)  
+**AI Tool Disclosed:** Antigravity (Google DeepMind Agentic AI)  
+**Companion Record:** See [`docs/ai-use-record.md`](docs/ai-use-record.md) for the full disclosure of tool, purpose, AI output, and student verification/modifications for every phase.
 
+---
 
-TASK:
+## Phase-by-Phase Preserved Prompts
 
-    YOU HAVE TO EPRFECTLY DO WHAT I WILL ASK BELWO AND RPOEPRLY IN TERMS OF PDF GUIDLEISN YOU AHVE TO CROSS CHECK THAT AND PERFECT WTHOUT ANY ISSUE:
+### Phase 0 — Environment Scaffolding & Technical Spikes (`gate-0`)
+> *"Analyze the SQE Final Project guidelines and phased plan. Scaffold the multi-container Docker environment for pretix v2026.9.3 and execute 5 technical spikes covering seeding, idempotency, Radon complexity, mutmut compatibility, Playwright UI, and k6 load."*
 
-    "
-    6 Submit one final package
-One submission per group: the PDF report and a zip of your Git repository (public GitHub link in the report). The
-repository must include the upstream reference and baseline commit, reproducible setup and reset instructions,
-runnable scripts and test data, tool versions, CI configuration, the documented change and the blocked pull
-request. The PDF must contain the scope, risk register, traceability table, results for each testing activity, area
-ownership, the AI-use record, and evidence links. End with a release or hold decision and show actual versus target
-for each of your three release criteria.
+### Phase 1 — Scope, EARS Test Basis & Idempotent Reset (`gate-1`)
+> *"Author docs/test-basis.md with 8 EARS requirements (FR1–FR8), 4 business rules (BR1–BR4), and shared quota state. Implement scripts/reset.py and verify mathematical idempotence R(R(S)) = R(S)."*
 
-• File names: Project_RollNumber1_RollNumber2_RollNumber3_Section.zip and .pdf (e.g. Project_23I-0001_23I-
-0002_23I-0003_A.zip). Pairs leave out the third roll number.
+### Phase 2 — IEEE 829 Test Plan, PERT Estimation, Risk Register & RTM (`gate-2`)
+> *"Create full 18-section IEEE 829-2008 Master Test Plan, 50-task PERT 3-point effort estimation with variance and confidence intervals, 5x5 risk register with 10 risks (8 product, 2 project), and bi-directional traceability matrix."*
 
-• Include the .git folder in the zip so the commit history is kept.
-• The PDF must also include the test management documents and, for each API, accessibility, security and
-performance finding: root cause, severity, risk and fix, linked to the risk register.
-• Every member commits their own work; commit history is checked in the viva.
+### Phase 3 — Static Analysis, CFGs & White-Box Unit Testing (`gate-3`)
+> *"Generate CFG Mermaid graphs and 3-formula McCabe proofs for _compute_early_outs, _check_quotas, and Order._can_be_paid. Build MCC/MC/DC suites on BR2 and BR4 directly against AST-verified production logic achieving 100% statement and branch coverage."*
 
-Use free, open-source tools. Each member owns at least one area and is examined on it: (1) static analysis, white-
-box, mutation, CI; (2) API testing and data generation; (3) use cases, usability, accessibility, security, performance.
+### Phase 4 — OpenAPI 3.0, Automated Test Data Generation & API Integration (`gate-4`)
+> *"Author openapi/team-spec.yaml for all 9 endpoint paths. Build automated Python test data generator with 3-point BVA and EP plus RBAC/idempotency/GET query vectors. Demonstrate zero-code adaptation when quota and price change and verify live API state read-backs."*
 
-Pairs split area 3. Test management is shared.
-    "
+### Phase 5 — EARS Use Cases & Playwright E2E UI Automation (`gate-5`)
+> *"Specify 6 Use Cases covering 30 flows (normal, alternate, exceptional). Automate end-to-end browser tests using Playwright against the live pretix container with JUnit/HTML reporting and full-page screenshots."*
 
+### Phase 6 — Usability & Accessibility Evaluation (`gate-6`)
+> *"Run automated WCAG 2.1 AA axe-core and Google Lighthouse audits on storefront and control panel (including logged-in orders). Implement durable server template fixes, verify genuine Tab/Enter keyboard traversal and BR1 over-quota recovery, and compare authentic before/after scores."*
 
-the above is module 6 of my sqe project i did it ealrier with helo of ai nwo i have to cross check this ewht eachdimension to check all things in this module are prfectly done what you have to do is make module1.md in which first you list what was demanded inthis mdoule deeplya nd all htinsg nothing lleft be honest and then corss check in my system that what was demanded in this module  and what our system did then cross verufy and map with above to chekc if lal things done wirte all that in md if ther is nay conflict tell me whatwas dmeanded what we did are both correct with proeprl evidencde and argyment that i can giev to TA so jsutiifxation is perfect without nay delay.
+### Phase 7 — Defensive Security, OWASP ZAP Passive Proxy & `pip-audit` (`gate-7`)
+> *"Author docs/security-model.md with STRIDE threat model and RBAC matrix. Implement Playwright and pytest security suites covering 7 access decisions (Admin, Auditor, Anonymous), XSS, SQLi, parameter tampering, mass assignment, and HTTP security headers. Run OWASP ZAP in passive proxy mode during Playwright Workflows A & B and run pip-audit on both host and pretix_web container packages."*
 
+### Phase 8 — AST Mutation Testing & GitHub Actions CI PR Gate (`gate-8`)
+> *"Implement AST-based mutation testing engine with 2 custom operators (BCR and ADR) mutating scoped_business_logic.py directly via ast.NodeTransformer + compile(). Classify >=15 baseline survivors and configure .github/workflows/pr-gate.yml enforcing 100% scoped branch coverage, SonarQube quality gate, k6 benchmarks, and >=70% mutation score with a live blocked-to-green PR."*
 
-perfectly corss chekc what remiang any scrrenshot any check any condition any test remining rpoerly deply check check for speiclalyscreenshot what  captrues what we cna more capture to full proff our evidence tfr ta
+### Phase 9 — Unified Grafana k6 Benchmarks & Redis Chaos Recovery (`gate-9`)
+> *"Author unified parameterized script load_unified_60s.js (1 VU x2 and 5 VUs x2, 60s steady-state) for Grafana k6 OSS. Implement test_state_changing_recovery.py stopping pretix_redis mid-write, checking PostgreSQL zero-partial-writes, restarting Redis, retrying with identical X-Idempotency-Key, and verifying 0 duplicate records."*
 
-so go for module 6 now and then repsond me then wait for my enxt prompt
+### Phase 10 — Defect Management, RCAs, Pareto & Weekly GQM (`gate-10`)
+> *"Compile docs/defects/defect-log.md with 12 IEEE 1044 defects linked to GitHub Issues and the Risk Register. Author RCA-01 on Quota Race Conditions and RCA-02 on Protected FK Deletions using 5 Whys and Fishbone diagrams. Perform Pareto 80/20 analysis and write 4 weekly GQM reports."*
 
+### Phase 11 & 12 — Final Master Report, Rubric Audit & Submission Packaging (`v1.0-submission`)
+> *"Cross-verify every module and rubric criterion in SQE_Final_Project Fall 2026.pdf against all code, tests, CI gates, and screenshots. Reconcile docs/MASTER_REPORT.md, verify 11/11 Grand Master Audit suites, render Project_24i-3108_24i-3107_24i-3074_C.pdf, and package Project_24i-3108_24i-3107_24i-3074_C.zip preserving .git history."*

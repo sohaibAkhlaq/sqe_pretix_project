@@ -157,8 +157,8 @@ We, the undersigned group members, explicitly attest to the following:
   - **Mass Assignment Validation:** Verified that attempting to force `status: "p"` (Paid) in order creation returns `HTTP 400 Bad Request` with message `"You cannot create a paid order without a payment provider."`
   - **Non-Numeric Price Validation:** Verified that submitting string prices returns `HTTP 400` (`"A valid number is required."`).
   - **SQL Injection Safety:** Verified that payloads (`' OR '1'='1' --`) return 404 or empty results with 0 database errors and 0 syntax leaks.
-  - **Executed `pip-audit`:** Scanned 48 dependencies; verified **0 known vulnerabilities**.
-  - **Executed ZAP Passive Scan:** Evaluated 5 endpoints; verified **0 High-risk alerts**.
+  - **Executed `pip-audit 2.10.1`:** Scanned **48 host packages** (`0` CVEs) and **151 `pretix_web` container packages** (`19` low-risk upstream advisory records across `pypdf 6.20.1`, `oauthlib 3.3.1`, and `dnspython 2.8.0`, documented & scoped in `MASTER_REPORT.md` §11.4).
+  - **Executed Real OWASP ZAP `v2.17.0` Passive Proxy Scan:** Proxied Playwright Workflows A & B + RBAC matrix (`97` URLs captured); verified **0 High-risk alerts** and corroborated Django security settings.
 * **Committed Artifacts:** `docs/security-model.md`, `tests/team/security/`, `reports/security/`, `scripts/run_security_tests.py`, `docs/phases/phase-7-completion.md` (Tagged `gate-7`).
 
 ---
@@ -192,9 +192,9 @@ We, the undersigned group members, explicitly attest to the following:
   Generated dual 60s k6 scripts, state-changing recovery pytest test, and `scripts/run_perf_dual_benchmarks.py`.
 * **What Students Checked, Debugged & Changed:**
   - **Realigned Risk Mapping (`PR4, PR5`):** Replaced non-standard `RSK-04` labels with canonical risk IDs `PR4, PR5` across code and reports.
-  - **Executed Dual 60s Benchmarks (`2,352` total requests):** Measured 1-VU `p95 = 183.98 / 186.16 ms` and 5-VU `p95 = 354.47 / 212.14 ms` (`0.00%` unexpected failures across all 4 runs, strictly $< 500\text{ ms}$ SLA).
-  - **Verified Concurrency Invariant:** Under dual 5-VU runs (`461` + `546` concurrent order attempts), strictly `10` orders succeeded per run and all competing attempts (`451` + `536`) returned `HTTP 400`, proving **0 overselling**.
-  - **Verified State-Changing Redis Recovery (`TC-STATE-RECOVERY-01`):** Stopped `pretix_redis`; confirmed `ReadTimeout` containment with `0` partial PostgreSQL orders; restarted Redis (`RTO = 0.28s`); retried with `X-Idempotency-Key` (`HTTP 201`, `PSELH`) and replayed cleanly (`0` duplicates).
+  - **Executed Unified 60s Benchmarks (`load_unified_60s.js`, `2,772` total requests):** Measured 1-VU `p95 = 101.15 / 71.37 ms` and 5-VU `p95 = 57.60 / 111.39 ms` (`0.00%` unexpected failures across all 4 runs, strictly $< 500\text{ ms}$ SLA).
+  - **Verified Concurrency Invariant:** Under dual 5-VU runs, strictly `10` orders succeeded per run and all competing excess attempts returned `HTTP 400`, proving **0 overselling**.
+  - **Verified State-Changing Redis Recovery (`TC-STATE-RECOVERY-01`):** Stopped `pretix_redis`; confirmed `ReadTimeout` containment with `0` partial PostgreSQL orders; restarted Redis (`RTO = 0.05s - 0.27s`); retried with `X-Idempotency-Key` (`HTTP 201`, `KWY3U` / `MUQLD`) and replayed cleanly (`0` duplicates).
 * **Committed Artifacts:** `tests/team/perf/`, `reports/perf/`, `scripts/run_perf_dual_benchmarks.py`, `docs/performance-recovery.md`, `docs/phases/phase-9-completion.md` (Tagged `gate-9`).
 
 ---
