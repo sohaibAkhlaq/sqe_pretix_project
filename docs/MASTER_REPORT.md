@@ -2328,79 +2328,37 @@ Executed using **Grafana k6 OSS v2.2.0** running **one unified parameterized scr
 Automated in `tests/team/perf/test_state_changing_recovery.py` (`TC-STATE-RECOVERY-01`, Risk IDs `PR4, PR5`) targeting `POST /orders/` with `X-Idempotency-Key`:
 
 ```mermaid
-
 sequenceDiagram
-
     autonumber
-
     actor Client as Automated Test Client
-
     participant Web as Pretix Web Container (8345)
-
     participant Redis as Redis Broker (pretix_redis)
-
     participant DB as PostgreSQL (pretix_db)
-
     Note over DB: Baseline: Quota Available = 10, Total Orders = 0
-
     Client->>Redis: 1. Simulate Outage: docker stop pretix_redis
-
     Redis-->>Client: Container stopped (Dependency Down)
-
-    
-
     Client->>Web: 2. Attempt State-Changing POST /orders/ (Key: fault_recovery_key)
-
-    Web--xRedis: Connection refused / Timeout
-
+    Web--x Redis: Connection refused / Timeout
     Web-->>Client: 3. Write Failed / Contained (ReadTimeout)
-
-    
-
     Note over DB: 4. Verify Post-Failure Persisted State
-
     Client->>DB: Query Orders count & Quota availability
-
     DB-->>Client: Count = 0, Quota = 10 (Zero partial/corrupt records committed)
-
-    
-
     Client->>Redis: 5. Restore Dependency: docker start pretix_redis
-
     Redis-->>Client: Container restarted (Restored in RTO = 0.05s)
-
-    
-
     Note over Client,Web: 6. Retry Write with IDENTICAL X-Idempotency-Key
-
     Client->>Web: POST /orders/ (Key: fault_recovery_key)
-
     alt In-flight lock releasing
-
         Web-->>Client: HTTP 409 Conflict (Retry-After: 5)
-
         Client->>Client: Sleep 5s for lock expiry
-
         Client->>Web: Retry POST /orders/ (Key: fault_recovery_key)
-
     end
-
     Web->>DB: Atomically commit order & decrement quota (10 -> 9)
-
     Web-->>Client: HTTP 201 Created (Order Code: KWY3U)
-
-    
-
     Note over Client,DB: 7. Replay & Assert Zero Duplication
-
     Client->>Web: Replay POST /orders/ (Key: fault_recovery_key)
-
     Web-->>Client: HTTP 201 Created (Order Code: KWY3U, Matching)
-
-    Client->>DB: Query PostgreSQL for email: recovery_<ts>@sqe.local
-
+    Client->>DB: Query PostgreSQL for email: recovery_{ts}@sqe.local
     DB-->>Client: Exactly 1 record found (ZERO DUPLICATE RECORDS)
-
 ```
 
 #### Step-by-Step Empirical Verification:
